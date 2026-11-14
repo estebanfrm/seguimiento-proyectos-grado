@@ -179,6 +179,7 @@ verificar el nombre exacto en los `*Resource.java` generados) pero filtradas por
 - `service/ProyectoAccessService` (+impl): `esAdmin()`, `esEstudianteDe(id)`, `esTutorDe(id)`,
   `esJuradoDe(id)`, `puedeVer(id)`, `verificarPuedeVer(id)` (lanza `AccessDeniedException` → 403),
   `loginActual()`.
+- `config/ClockConfiguration`: bean `java.time.Clock` (usar `Instant.now(clock)`, nunca `Instant.now()` en reglas).
 - `service/AvanceService` (+impl simple) `int recalcular(Long proyectoId)`. El stream A reemplaza la impl.
 - Métodos de consulta añadidos a los repositorios (ver los `*Repository.java`).
 
