@@ -2,9 +2,9 @@
   "sgpgApp": {
     "Concepto": {
       "null": "",
-      "APROBADO": "APROBADO",
-      "APROBADO_CON_MODIFICACIONES": "APROBADO_CON_MODIFICACIONES",
-      "REPROBADO": "REPROBADO"
+      "APROBADO": "Aprobado",
+      "APROBADO_CON_MODIFICACIONES": "Aprobado con modificaciones",
+      "REPROBADO": "Reprobado"
     }
   }
 }

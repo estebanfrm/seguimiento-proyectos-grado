@@ -26,7 +26,13 @@
           </a>
         </li>
         @if (account() !== null) {
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" routerLink="/seguimiento" (click)="collapseNavbar()" data-cy="mis-proyectos">
+              <span jhiTranslate="global.menu.seguimiento">Mis proyectos</span>
+            </a>
+          </li>
           <li
+            *jhiHasAnyAuthority="'ROLE_ADMIN'"
             ngbDropdown
             class="nav-item dropdown pointer"
             display="static"
