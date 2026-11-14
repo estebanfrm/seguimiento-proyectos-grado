@@ -1,0 +1,30 @@
+{
+  "sgpgApp": {
+    "evaluacion": {
+      "home": {
+        "title": "Evaluacions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Evaluacion",
+        "createOrEditLabel": "Crear o editar Evaluacion",
+        "notFound": "Ningún Evaluacions encontrado"
+      },
+      "created": "Un nuevo Evaluacion ha sido creado con el identificador {{ param }}",
+      "updated": "Un Evaluacion ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Evaluacion ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Evaluacion {{ id }}?"
+      },
+      "detail": {
+        "title": "Evaluacion"
+      },
+      "id": "ID",
+      "etapa": "Etapa",
+      "calificacion": "Calificacion",
+      "concepto": "Concepto",
+      "comentarios": "Comentarios",
+      "fechaEvaluacion": "Fecha Evaluacion",
+      "jurado": "Jurado",
+      "proyecto": "Proyecto"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "sgpgApp": {
+    "Concepto": {
+      "null": "",
+      "APROBADO": "APROBADO",
+      "APROBADO_CON_MODIFICACIONES": "APROBADO_CON_MODIFICACIONES",
+      "REPROBADO": "REPROBADO"
+    }
+  }
+}

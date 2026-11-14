@@ -1,0 +1,27 @@
+{
+  "sgpgApp": {
+    "fechaLimiteEtapa": {
+      "home": {
+        "title": "Fecha Limite Etapas",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Fecha Limite Etapa",
+        "createOrEditLabel": "Crear o editar Fecha Limite Etapa",
+        "notFound": "Ningún Fecha Limite Etapas encontrado"
+      },
+      "created": "Un nuevo Fecha Limite Etapa ha sido creado con el identificador {{ param }}",
+      "updated": "Un Fecha Limite Etapa ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Fecha Limite Etapa ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Fecha Limite Etapa {{ id }}?"
+      },
+      "detail": {
+        "title": "Fecha Limite Etapa"
+      },
+      "id": "ID",
+      "etapa": "Etapa",
+      "fechaLimite": "Fecha Limite",
+      "descripcion": "Descripcion",
+      "proyecto": "Proyecto"
+    }
+  }
+}

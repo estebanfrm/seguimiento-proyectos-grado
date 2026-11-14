@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (observacion(); as observacionRef) {
+      <div>
+        <h2 data-cy="observacionDetailsHeading"><span jhiTranslate="sgpgApp.observacion.detail.title">Observacion</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ observacionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.observacion.contenido">Contenido</span></dt>
+          <dd>
+            <span>{{ observacionRef.contenido }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.observacion.tipo">Tipo</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.TipoObservacion.' + (observacionRef.tipo ?? 'null')">{{
+              { null: '', GENERAL: 'GENERAL', CORRECCION_REQUERIDA: 'CORRECCION_REQUERIDA' }[observacionRef.tipo ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.observacion.resuelta">Resuelta</span></dt>
+          <dd>
+            <span>{{ observacionRef.resuelta }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.observacion.fechaCreacion">Fecha Creacion</span></dt>
+          <dd>
+            <span>{{ observacionRef.fechaCreacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.observacion.autor">Autor</span></dt>
+          <dd>
+            <span>{{ observacionRef.autor?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.observacion.entrega">Entrega</span></dt>
+          <dd>
+            @if (observacion()!.entrega) {
+              <div>
+                <a [routerLink]="['/entrega', observacion()!.entrega?.id, 'view']">{{ observacionRef.entrega?.titulo }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/observacion', observacionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

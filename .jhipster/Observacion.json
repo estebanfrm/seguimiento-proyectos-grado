@@ -1,0 +1,53 @@
+{
+  "annotations": {
+    "changelogDate": "20231207211148"
+  },
+  "applications": ["sgpg"],
+  "documentation": "Observación del tutor sobre una entrega.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "contenido",
+      "fieldType": "TextBlob",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "tipo",
+      "fieldType": "TipoObservacion",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "GENERAL,CORRECCION_REQUERIDA"
+    },
+    {
+      "fieldName": "resuelta",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fechaCreacion",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Observacion",
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "autor",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "titulo",
+      "otherEntityName": "entrega",
+      "otherEntityRelationshipName": "observaciones",
+      "relationshipName": "entrega",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

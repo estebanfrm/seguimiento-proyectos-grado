@@ -1,0 +1,41 @@
+{
+  "annotations": {
+    "changelogDate": "20231207210948"
+  },
+  "applications": ["sgpg"],
+  "documentation": "Fecha límite de una etapa para un proyecto.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "etapa",
+      "fieldType": "Etapa",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PROPUESTA,ANTEPROYECTO,DESARROLLO,SUSTENTACION,FINALIZADO"
+    },
+    {
+      "fieldName": "fechaLimite",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "descripcion",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "250"
+    }
+  ],
+  "name": "FechaLimiteEtapa",
+  "relationships": [
+    {
+      "otherEntityField": "titulo",
+      "otherEntityName": "proyectoGrado",
+      "otherEntityRelationshipName": "fechasLimite",
+      "relationshipName": "proyecto",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

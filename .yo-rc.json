@@ -1,0 +1,23 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "sgpg",
+    "buildTool": "maven",
+    "cacheProvider": "no",
+    "clientFramework": "angular",
+    "creationTimestamp": 1701983268847,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableTranslation": true,
+    "entities": ["ProyectoGrado", "FechaLimiteEtapa", "Entrega", "Observacion", "Evaluacion", "HistorialEtapa"],
+    "jhipsterVersion": "9.4.0",
+    "jwtSecretKey": "NWQzY2Q3MzYyODVlNTI0MTA1MWY4ZjI4NmM2MmEzZjY3MmRiOWQ0MjQxOTk2ZmZjZmVhYjA0MTczOGEzN2ZiNzE1MzQ2MTI3ZjM0OGJmMGI5NTViYzk0YjZkZmE5NmQ1MTlhMTFmZjcyNjQwN2RkM2I3NTE0OTU3YWY0NWFhNTI=",
+    "languages": ["es"],
+    "lastLiquibaseTimestamp": 1701983628000,
+    "nativeLanguage": "es",
+    "packageName": "co.edu.sgpg",
+    "prodDatabaseType": "postgresql",
+    "serverPort": "8080"
+  }
+}

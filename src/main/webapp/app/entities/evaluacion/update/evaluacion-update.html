@@ -1,0 +1,181 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-evaluacion-heading" data-cy="EvaluacionCreateUpdateHeading" jhiTranslate="sgpgApp.evaluacion.home.createOrEditLabel">
+        Crear o editar Evaluacion
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let etapaRef = editForm.get('etapa')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_etapa" jhiTranslate="sgpgApp.evaluacion.etapa">Etapa</label>
+          <select class="form-select" name="etapa" formControlName="etapa" id="field_etapa" data-cy="etapa">
+            <option [ngValue]="null">{{ 'sgpgApp.Etapa.null' | translate }}</option>
+            @for (etapa of etapaValues; track $index) {
+              <option [value]="etapa">{{ 'sgpgApp.Etapa.' + etapa | translate }}</option>
+            }
+          </select>
+          @if (etapaRef.invalid && (etapaRef.dirty || etapaRef.touched)) {
+            <div>
+              @if (etapaRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let calificacionRef = editForm.get('calificacion')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_calificacion" jhiTranslate="sgpgApp.evaluacion.calificacion">Calificacion</label>
+          <input
+            type="number"
+            class="form-control"
+            name="calificacion"
+            id="field_calificacion"
+            data-cy="calificacion"
+            formControlName="calificacion"
+          />
+          @if (calificacionRef.invalid && (calificacionRef.dirty || calificacionRef.touched)) {
+            <div>
+              @if (calificacionRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              @if (calificacionRef.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >Este campo debe ser mayor que 0.</small
+                >
+              }
+              @if (calificacionRef.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '5' }"
+                  >Este campo no puede ser mayor que 5.</small
+                >
+              }
+              <small class="form-text text-danger" [hidden]="!calificacionRef.errors?.number" jhiTranslate="entity.validation.number"
+                >Este campo debe ser un número.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let conceptoRef = editForm.get('concepto')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_concepto" jhiTranslate="sgpgApp.evaluacion.concepto">Concepto</label>
+          <select class="form-select" name="concepto" formControlName="concepto" id="field_concepto" data-cy="concepto">
+            <option [ngValue]="null">{{ 'sgpgApp.Concepto.null' | translate }}</option>
+            @for (concepto of conceptoValues; track $index) {
+              <option [value]="concepto">{{ 'sgpgApp.Concepto.' + concepto | translate }}</option>
+            }
+          </select>
+          @if (conceptoRef.invalid && (conceptoRef.dirty || conceptoRef.touched)) {
+            <div>
+              @if (conceptoRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_comentarios" jhiTranslate="sgpgApp.evaluacion.comentarios">Comentarios</label>
+          <textarea
+            class="form-control"
+            name="comentarios"
+            id="field_comentarios"
+            data-cy="comentarios"
+            formControlName="comentarios"
+          ></textarea>
+        </div>
+
+        @let fechaEvaluacionRef = editForm.get('fechaEvaluacion')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_fechaEvaluacion" jhiTranslate="sgpgApp.evaluacion.fechaEvaluacion">Fecha Evaluacion</label>
+          <div class="d-flex">
+            <input
+              id="field_fechaEvaluacion"
+              data-cy="fechaEvaluacion"
+              type="datetime-local"
+              class="form-control"
+              name="fechaEvaluacion"
+              formControlName="fechaEvaluacion"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (fechaEvaluacionRef.invalid && (fechaEvaluacionRef.dirty || fechaEvaluacionRef.touched)) {
+            <div>
+              @if (fechaEvaluacionRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!fechaEvaluacionRef.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Este campo debe ser una fecha y hora.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_jurado" jhiTranslate="sgpgApp.evaluacion.jurado">Jurado</label>
+          <select class="form-select" id="field_jurado" data-cy="jurado" name="jurado" formControlName="jurado" [compareWith]="compareUser">
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection(); track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_proyecto" jhiTranslate="sgpgApp.evaluacion.proyecto">Proyecto</label>
+          <select
+            class="form-select"
+            id="field_proyecto"
+            data-cy="proyecto"
+            name="proyecto"
+            formControlName="proyecto"
+            [compareWith]="compareProyectoGrado"
+          >
+            @if (editForm.get(['proyecto'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (proyectoGradoOption of proyectoGradosSharedCollection(); track $index) {
+              <option [ngValue]="proyectoGradoOption">{{ proyectoGradoOption.titulo }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['proyecto'])!.invalid && (editForm.get(['proyecto'])!.dirty || editForm.get(['proyecto'])!.touched)) {
+          <div>
+            @if (editForm.get(['proyecto'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

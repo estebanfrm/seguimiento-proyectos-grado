@@ -1,0 +1,84 @@
+{
+  "annotations": {
+    "changelogDate": "20231207211048"
+  },
+  "applications": ["sgpg"],
+  "documentation": "Documento entregado por el estudiante en una etapa.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "etapa",
+      "fieldType": "Etapa",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PROPUESTA,ANTEPROYECTO,DESARROLLO,SUSTENTACION,FINALIZADO"
+    },
+    {
+      "fieldName": "titulo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "200"
+    },
+    {
+      "fieldName": "descripcion",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "archivo",
+      "fieldType": "AnyBlob"
+    },
+    {
+      "fieldName": "urlDocumento",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    },
+    {
+      "fieldName": "version",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "fechaEntrega",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "estado",
+      "fieldType": "EstadoEntrega",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ENVIADA,EN_REVISION,CON_OBSERVACIONES,APROBADA,RECHAZADA"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Entrega",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "observacion",
+      "otherEntityRelationshipName": "entrega",
+      "relationshipName": "observaciones",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "autor",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "titulo",
+      "otherEntityName": "proyectoGrado",
+      "otherEntityRelationshipName": "entregas",
+      "relationshipName": "proyecto",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

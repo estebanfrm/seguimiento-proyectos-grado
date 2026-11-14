@@ -1,0 +1,149 @@
+<div>
+  <h2 id="page-heading" data-cy="EvaluacionHeading">
+    <span jhiTranslate="sgpgApp.evaluacion.home.title">Evaluacions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="sgpgApp.evaluacion.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-evaluacion"
+        [routerLink]="['/evaluacion/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="sgpgApp.evaluacion.home.createLabel">Crear nuevo Evaluacion</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (evaluacions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="sgpgApp.evaluacion.home.notFound">Ningún Evaluacions encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="etapa">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.etapa">Etapa</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="calificacion">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.calificacion">Calificacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="concepto">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.concepto">Concepto</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="comentarios">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.comentarios">Comentarios</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaEvaluacion">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.fechaEvaluacion">Fecha Evaluacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="jurado.login">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.jurado">Jurado</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="proyecto.titulo">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.evaluacion.proyecto">Proyecto</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evaluacion of evaluacions(); track trackId(evaluacion)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/evaluacion', evaluacion.id, 'view']">{{ evaluacion.id }}</a>
+              </td>
+              <td [jhiTranslate]="'sgpgApp.Etapa.' + (evaluacion.etapa ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    PROPUESTA: 'PROPUESTA',
+                    ANTEPROYECTO: 'ANTEPROYECTO',
+                    DESARROLLO: 'DESARROLLO',
+                    SUSTENTACION: 'SUSTENTACION',
+                    FINALIZADO: 'FINALIZADO',
+                  }[evaluacion.etapa ?? 'null']
+                }}
+              </td>
+              <td>{{ evaluacion.calificacion }}</td>
+              <td [jhiTranslate]="'sgpgApp.Concepto.' + (evaluacion.concepto ?? 'null')">
+                {{
+                  { null: '', APROBADO: 'APROBADO', APROBADO_CON_MODIFICACIONES: 'APROBADO_CON_MODIFICACIONES', REPROBADO: 'REPROBADO' }[
+                    evaluacion.concepto ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ evaluacion.comentarios }}</td>
+              <td>{{ evaluacion.fechaEvaluacion | formatMediumDatetime }}</td>
+              <td>
+                {{ evaluacion.jurado?.login }}
+              </td>
+              <td>
+                @if (evaluacion.proyecto) {
+                  <div>
+                    <a [routerLink]="['/proyecto-grado', evaluacion.proyecto.id, 'view']">{{ evaluacion.proyecto.titulo }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/evaluacion', evaluacion.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a [routerLink]="['/evaluacion', evaluacion.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(evaluacion)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,29 @@
+{
+  "sgpgApp": {
+    "observacion": {
+      "home": {
+        "title": "Observacions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Observacion",
+        "createOrEditLabel": "Crear o editar Observacion",
+        "notFound": "Ningún Observacions encontrado"
+      },
+      "created": "Un nuevo Observacion ha sido creado con el identificador {{ param }}",
+      "updated": "Un Observacion ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Observacion ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Observacion {{ id }}?"
+      },
+      "detail": {
+        "title": "Observacion"
+      },
+      "id": "ID",
+      "contenido": "Contenido",
+      "tipo": "Tipo",
+      "resuelta": "Resuelta",
+      "fechaCreacion": "Fecha Creacion",
+      "autor": "Autor",
+      "entrega": "Entrega"
+    }
+  }
+}

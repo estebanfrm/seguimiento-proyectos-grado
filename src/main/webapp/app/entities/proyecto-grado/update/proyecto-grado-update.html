@@ -1,0 +1,252 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-proyecto-grado-heading"
+        data-cy="ProyectoGradoCreateUpdateHeading"
+        jhiTranslate="sgpgApp.proyectoGrado.home.createOrEditLabel"
+      >
+        Crear o editar Proyecto Grado
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let tituloRef = editForm.get('titulo')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_titulo" jhiTranslate="sgpgApp.proyectoGrado.titulo">Titulo</label>
+          <input type="text" class="form-control" name="titulo" id="field_titulo" data-cy="titulo" formControlName="titulo" />
+          @if (tituloRef.invalid && (tituloRef.dirty || tituloRef.touched)) {
+            <div>
+              @if (tituloRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              @if (tituloRef.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '10' }"
+                  >Este campo requiere al menos 10 caracteres.</small
+                >
+              }
+              @if (tituloRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '250' }"
+                  >Este campo no puede superar más de 250 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let resumenRef = editForm.get('resumen')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_resumen" jhiTranslate="sgpgApp.proyectoGrado.resumen">Resumen</label>
+          <textarea class="form-control" name="resumen" id="field_resumen" data-cy="resumen" formControlName="resumen"></textarea>
+          @if (resumenRef.invalid && (resumenRef.dirty || resumenRef.touched)) {
+            <div>
+              @if (resumenRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let programaRef = editForm.get('programa')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_programa" jhiTranslate="sgpgApp.proyectoGrado.programa">Programa</label>
+          <input type="text" class="form-control" name="programa" id="field_programa" data-cy="programa" formControlName="programa" />
+          @if (programaRef.invalid && (programaRef.dirty || programaRef.touched)) {
+            <div>
+              @if (programaRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              @if (programaRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '120' }"
+                  >Este campo no puede superar más de 120 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let etapaActualRef = editForm.get('etapaActual')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_etapaActual" jhiTranslate="sgpgApp.proyectoGrado.etapaActual">Etapa Actual</label>
+          <select class="form-select" name="etapaActual" formControlName="etapaActual" id="field_etapaActual" data-cy="etapaActual">
+            <option [ngValue]="null">{{ 'sgpgApp.Etapa.null' | translate }}</option>
+            @for (etapa of etapaValues; track $index) {
+              <option [value]="etapa">{{ 'sgpgApp.Etapa.' + etapa | translate }}</option>
+            }
+          </select>
+          @if (etapaActualRef.invalid && (etapaActualRef.dirty || etapaActualRef.touched)) {
+            <div>
+              @if (etapaActualRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let estadoRef = editForm.get('estado')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_estado" jhiTranslate="sgpgApp.proyectoGrado.estado">Estado</label>
+          <select class="form-select" name="estado" formControlName="estado" id="field_estado" data-cy="estado">
+            <option [ngValue]="null">{{ 'sgpgApp.EstadoProyecto.null' | translate }}</option>
+            @for (estadoProyecto of estadoProyectoValues; track $index) {
+              <option [value]="estadoProyecto">{{ 'sgpgApp.EstadoProyecto.' + estadoProyecto | translate }}</option>
+            }
+          </select>
+          @if (estadoRef.invalid && (estadoRef.dirty || estadoRef.touched)) {
+            <div>
+              @if (estadoRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let porcentajeAvanceRef = editForm.get('porcentajeAvance')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_porcentajeAvance" jhiTranslate="sgpgApp.proyectoGrado.porcentajeAvance"
+            >Porcentaje Avance</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="porcentajeAvance"
+            id="field_porcentajeAvance"
+            data-cy="porcentajeAvance"
+            formControlName="porcentajeAvance"
+          />
+          @if (porcentajeAvanceRef.invalid && (porcentajeAvanceRef.dirty || porcentajeAvanceRef.touched)) {
+            <div>
+              @if (porcentajeAvanceRef.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >Este campo debe ser mayor que 0.</small
+                >
+              }
+              @if (porcentajeAvanceRef.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '100' }"
+                  >Este campo no puede ser mayor que 100.</small
+                >
+              }
+              <small class="form-text text-danger" [hidden]="!porcentajeAvanceRef.errors?.number" jhiTranslate="entity.validation.number"
+                >Este campo debe ser un número.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let fechaRegistroRef = editForm.get('fechaRegistro')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_fechaRegistro" jhiTranslate="sgpgApp.proyectoGrado.fechaRegistro">Fecha Registro</label>
+          <div class="d-flex">
+            <input
+              id="field_fechaRegistro"
+              data-cy="fechaRegistro"
+              type="datetime-local"
+              class="form-control"
+              name="fechaRegistro"
+              formControlName="fechaRegistro"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (fechaRegistroRef.invalid && (fechaRegistroRef.dirty || fechaRegistroRef.touched)) {
+            <div>
+              @if (fechaRegistroRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!fechaRegistroRef.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Este campo debe ser una fecha y hora.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_fechaActualizacion" jhiTranslate="sgpgApp.proyectoGrado.fechaActualizacion"
+            >Fecha Actualizacion</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_fechaActualizacion"
+              data-cy="fechaActualizacion"
+              type="datetime-local"
+              class="form-control"
+              name="fechaActualizacion"
+              formControlName="fechaActualizacion"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_tutor" jhiTranslate="sgpgApp.proyectoGrado.tutor">Tutor</label>
+          <select class="form-select" id="field_tutor" data-cy="tutor" name="tutor" formControlName="tutor" [compareWith]="compareUser">
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection(); track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="field_estudianteses" jhiTranslate="sgpgApp.proyectoGrado.estudiantes">Estudiantes</label>
+          <select
+            class="form-select"
+            id="field_estudianteses"
+            data-cy="estudiantes"
+            multiple
+            name="estudianteses"
+            formControlName="estudianteses"
+            [compareWith]="compareUser"
+          >
+            @for (userOption of usersSharedCollection(); track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="field_juradoses" jhiTranslate="sgpgApp.proyectoGrado.jurados">Jurados</label>
+          <select
+            class="form-select"
+            id="field_juradoses"
+            data-cy="jurados"
+            multiple
+            name="juradoses"
+            formControlName="juradoses"
+            [compareWith]="compareUser"
+          >
+            @for (userOption of usersSharedCollection(); track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

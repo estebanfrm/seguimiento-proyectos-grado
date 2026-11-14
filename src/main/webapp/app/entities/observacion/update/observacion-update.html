@@ -1,0 +1,152 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-observacion-heading" data-cy="ObservacionCreateUpdateHeading" jhiTranslate="sgpgApp.observacion.home.createOrEditLabel">
+        Crear o editar Observacion
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let contenidoRef = editForm.get('contenido')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_contenido" jhiTranslate="sgpgApp.observacion.contenido">Contenido</label>
+          <textarea class="form-control" name="contenido" id="field_contenido" data-cy="contenido" formControlName="contenido"></textarea>
+          @if (contenidoRef.invalid && (contenidoRef.dirty || contenidoRef.touched)) {
+            <div>
+              @if (contenidoRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let tipoRef = editForm.get('tipo')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_tipo" jhiTranslate="sgpgApp.observacion.tipo">Tipo</label>
+          <select class="form-select" name="tipo" formControlName="tipo" id="field_tipo" data-cy="tipo">
+            <option [ngValue]="null">{{ 'sgpgApp.TipoObservacion.null' | translate }}</option>
+            @for (tipoObservacion of tipoObservacionValues; track $index) {
+              <option [value]="tipoObservacion">{{ 'sgpgApp.TipoObservacion.' + tipoObservacion | translate }}</option>
+            }
+          </select>
+          @if (tipoRef.invalid && (tipoRef.dirty || tipoRef.touched)) {
+            <div>
+              @if (tipoRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let resueltaRef = editForm.get('resuelta')!;
+        <div class="mb-3 form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            name="resuelta"
+            id="field_resuelta"
+            data-cy="resuelta"
+            formControlName="resuelta"
+          />
+          <label class="form-check-label" for="field_resuelta" jhiTranslate="sgpgApp.observacion.resuelta">Resuelta</label>
+          @if (resueltaRef.invalid && (resueltaRef.dirty || resueltaRef.touched)) {
+            <div>
+              @if (resueltaRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let fechaCreacionRef = editForm.get('fechaCreacion')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_fechaCreacion" jhiTranslate="sgpgApp.observacion.fechaCreacion">Fecha Creacion</label>
+          <div class="d-flex">
+            <input
+              id="field_fechaCreacion"
+              data-cy="fechaCreacion"
+              type="datetime-local"
+              class="form-control"
+              name="fechaCreacion"
+              formControlName="fechaCreacion"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (fechaCreacionRef.invalid && (fechaCreacionRef.dirty || fechaCreacionRef.touched)) {
+            <div>
+              @if (fechaCreacionRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!fechaCreacionRef.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Este campo debe ser una fecha y hora.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_autor" jhiTranslate="sgpgApp.observacion.autor">Autor</label>
+          <select class="form-select" id="field_autor" data-cy="autor" name="autor" formControlName="autor" [compareWith]="compareUser">
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection(); track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_entrega" jhiTranslate="sgpgApp.observacion.entrega">Entrega</label>
+          <select
+            class="form-select"
+            id="field_entrega"
+            data-cy="entrega"
+            name="entrega"
+            formControlName="entrega"
+            [compareWith]="compareEntrega"
+          >
+            @if (editForm.get(['entrega'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (entregaOption of entregasSharedCollection(); track $index) {
+              <option [ngValue]="entregaOption">{{ entregaOption.titulo }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['entrega'])!.invalid && (editForm.get(['entrega'])!.dirty || editForm.get(['entrega'])!.touched)) {
+          <div>
+            @if (editForm.get(['entrega'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

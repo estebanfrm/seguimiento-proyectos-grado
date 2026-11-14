@@ -1,0 +1,38 @@
+{
+  "sgpgApp": {
+    "proyectoGrado": {
+      "home": {
+        "title": "Proyecto Grados",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Proyecto Grado",
+        "createOrEditLabel": "Crear o editar Proyecto Grado",
+        "notFound": "Ningún Proyecto Grados encontrado"
+      },
+      "created": "Un nuevo Proyecto Grado ha sido creado con el identificador {{ param }}",
+      "updated": "Un Proyecto Grado ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Proyecto Grado ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Proyecto Grado {{ id }}?"
+      },
+      "detail": {
+        "title": "Proyecto Grado"
+      },
+      "id": "ID",
+      "titulo": "Titulo",
+      "resumen": "Resumen",
+      "programa": "Programa",
+      "etapaActual": "Etapa Actual",
+      "estado": "Estado",
+      "porcentajeAvance": "Porcentaje Avance",
+      "fechaRegistro": "Fecha Registro",
+      "fechaActualizacion": "Fecha Actualizacion",
+      "entregas": "Entregas",
+      "fechasLimite": "Fechas Limite",
+      "evaluaciones": "Evaluaciones",
+      "historial": "Historial",
+      "tutor": "Tutor",
+      "estudiantes": "Estudiantes",
+      "jurados": "Jurados"
+    }
+  }
+}

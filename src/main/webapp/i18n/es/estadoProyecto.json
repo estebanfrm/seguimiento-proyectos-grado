@@ -1,0 +1,11 @@
+{
+  "sgpgApp": {
+    "EstadoProyecto": {
+      "null": "",
+      "ACTIVO": "ACTIVO",
+      "APROBADO": "APROBADO",
+      "REPROBADO": "REPROBADO",
+      "CANCELADO": "CANCELADO"
+    }
+  }
+}
