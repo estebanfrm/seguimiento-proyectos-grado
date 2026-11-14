@@ -29,7 +29,7 @@
     {
       "otherEntityField": "titulo",
       "otherEntityName": "proyectoGrado",
-      "otherEntityRelationshipName": "fechasLimite",
+      "otherEntityRelationshipName": "fechaLimite",
       "relationshipName": "proyecto",
       "relationshipSide": "right",
       "relationshipType": "many-to-one",

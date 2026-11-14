@@ -41,7 +41,7 @@
     {
       "otherEntityField": "titulo",
       "otherEntityName": "entrega",
-      "otherEntityRelationshipName": "observaciones",
+      "otherEntityRelationshipName": "observacion",
       "relationshipName": "entrega",
       "relationshipSide": "right",
       "relationshipType": "many-to-one",

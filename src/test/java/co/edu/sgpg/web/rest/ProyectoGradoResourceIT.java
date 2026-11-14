@@ -703,46 +703,46 @@ class ProyectoGradoResourceIT {
 
     @Test
     @Transactional
-    void getAllProyectoGradosByEstudiantesIsEqualToSomething() throws Exception {
-        User estudiantes;
+    void getAllProyectoGradosByEstudianteIsEqualToSomething() throws Exception {
+        User estudiante;
         if (TestUtil.findAll(em, User.class).isEmpty()) {
             proyectoGradoRepository.saveAndFlush(proyectoGrado);
-            estudiantes = UserResourceIT.createEntity();
+            estudiante = UserResourceIT.createEntity();
         } else {
-            estudiantes = TestUtil.findAll(em, User.class).getFirst();
+            estudiante = TestUtil.findAll(em, User.class).getFirst();
         }
-        em.persist(estudiantes);
+        em.persist(estudiante);
         em.flush();
-        proyectoGrado.addEstudiantes(estudiantes);
+        proyectoGrado.addEstudiante(estudiante);
         proyectoGradoRepository.saveAndFlush(proyectoGrado);
-        Long estudiantesId = estudiantes.getId();
-        // Get all the proyectoGradoList where estudiantes equals to estudiantesId
-        defaultProyectoGradoShouldBeFound("estudiantesId.equals=" + estudiantesId);
+        Long estudianteId = estudiante.getId();
+        // Get all the proyectoGradoList where estudiante equals to estudianteId
+        defaultProyectoGradoShouldBeFound("estudianteId.equals=" + estudianteId);
 
-        // Get all the proyectoGradoList where estudiantes equals to (estudiantesId + 1)
-        defaultProyectoGradoShouldNotBeFound("estudiantesId.equals=" + (estudiantesId + 1));
+        // Get all the proyectoGradoList where estudiante equals to (estudianteId + 1)
+        defaultProyectoGradoShouldNotBeFound("estudianteId.equals=" + (estudianteId + 1));
     }
 
     @Test
     @Transactional
-    void getAllProyectoGradosByJuradosIsEqualToSomething() throws Exception {
-        User jurados;
+    void getAllProyectoGradosByJuradoIsEqualToSomething() throws Exception {
+        User jurado;
         if (TestUtil.findAll(em, User.class).isEmpty()) {
             proyectoGradoRepository.saveAndFlush(proyectoGrado);
-            jurados = UserResourceIT.createEntity();
+            jurado = UserResourceIT.createEntity();
         } else {
-            jurados = TestUtil.findAll(em, User.class).getFirst();
+            jurado = TestUtil.findAll(em, User.class).getFirst();
         }
-        em.persist(jurados);
+        em.persist(jurado);
         em.flush();
-        proyectoGrado.addJurados(jurados);
+        proyectoGrado.addJurado(jurado);
         proyectoGradoRepository.saveAndFlush(proyectoGrado);
-        Long juradosId = jurados.getId();
-        // Get all the proyectoGradoList where jurados equals to juradosId
-        defaultProyectoGradoShouldBeFound("juradosId.equals=" + juradosId);
+        Long juradoId = jurado.getId();
+        // Get all the proyectoGradoList where jurado equals to juradoId
+        defaultProyectoGradoShouldBeFound("juradoId.equals=" + juradoId);
 
-        // Get all the proyectoGradoList where jurados equals to (juradosId + 1)
-        defaultProyectoGradoShouldNotBeFound("juradosId.equals=" + (juradosId + 1));
+        // Get all the proyectoGradoList where jurado equals to (juradoId + 1)
+        defaultProyectoGradoShouldNotBeFound("juradoId.equals=" + (juradoId + 1));
     }
 
     private void defaultProyectoGradoFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

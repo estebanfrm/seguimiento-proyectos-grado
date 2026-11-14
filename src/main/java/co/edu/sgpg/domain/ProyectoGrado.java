@@ -65,16 +65,16 @@ public class ProyectoGrado implements Serializable {
     private Instant fechaActualizacion;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "proyecto")
-    @JsonIgnoreProperties(value = { "observacioneses", "autor", "proyecto" }, allowSetters = true)
-    private Set<Entrega> entregases = new HashSet<>();
+    @JsonIgnoreProperties(value = { "observacions", "autor", "proyecto" }, allowSetters = true)
+    private Set<Entrega> entregas = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "proyecto")
     @JsonIgnoreProperties(value = { "proyecto" }, allowSetters = true)
-    private Set<FechaLimiteEtapa> fechasLimites = new HashSet<>();
+    private Set<FechaLimiteEtapa> fechaLimites = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "proyecto")
     @JsonIgnoreProperties(value = { "jurado", "proyecto" }, allowSetters = true)
-    private Set<Evaluacion> evaluacioneses = new HashSet<>();
+    private Set<Evaluacion> evaluacions = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "proyecto")
     @JsonIgnoreProperties(value = { "usuario", "proyecto" }, allowSetters = true)
@@ -85,19 +85,19 @@ public class ProyectoGrado implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "rel_proyecto_grado__estudiantes",
+        name = "rel_proyecto_grado__estudiante",
         joinColumns = @JoinColumn(name = "proyecto_grado_id"),
-        inverseJoinColumns = @JoinColumn(name = "estudiantes_id")
+        inverseJoinColumns = @JoinColumn(name = "estudiante_id")
     )
-    private Set<User> estudianteses = new HashSet<>();
+    private Set<User> estudiantes = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "rel_proyecto_grado__jurados",
+        name = "rel_proyecto_grado__jurado",
         joinColumns = @JoinColumn(name = "proyecto_grado_id"),
-        inverseJoinColumns = @JoinColumn(name = "jurados_id")
+        inverseJoinColumns = @JoinColumn(name = "jurado_id")
     )
-    private Set<User> juradoses = new HashSet<>();
+    private Set<User> jurados = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -218,95 +218,95 @@ public class ProyectoGrado implements Serializable {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    public Set<Entrega> getEntregases() {
-        return this.entregases;
+    public Set<Entrega> getEntregas() {
+        return this.entregas;
     }
 
-    public void setEntregases(Set<Entrega> entregas) {
-        if (this.entregases != null) {
-            this.entregases.forEach(i -> i.setProyecto(null));
+    public void setEntregas(Set<Entrega> entregas) {
+        if (this.entregas != null) {
+            this.entregas.forEach(i -> i.setProyecto(null));
         }
         if (entregas != null) {
             entregas.forEach(i -> i.setProyecto(this));
         }
-        this.entregases = entregas;
+        this.entregas = entregas;
     }
 
-    public ProyectoGrado entregases(Set<Entrega> entregas) {
-        this.setEntregases(entregas);
+    public ProyectoGrado entregas(Set<Entrega> entregas) {
+        this.setEntregas(entregas);
         return this;
     }
 
-    public ProyectoGrado addEntregas(Entrega entrega) {
-        this.entregases.add(entrega);
+    public ProyectoGrado addEntrega(Entrega entrega) {
+        this.entregas.add(entrega);
         entrega.setProyecto(this);
         return this;
     }
 
-    public ProyectoGrado removeEntregas(Entrega entrega) {
-        this.entregases.remove(entrega);
+    public ProyectoGrado removeEntrega(Entrega entrega) {
+        this.entregas.remove(entrega);
         entrega.setProyecto(null);
         return this;
     }
 
-    public Set<FechaLimiteEtapa> getFechasLimites() {
-        return this.fechasLimites;
+    public Set<FechaLimiteEtapa> getFechaLimites() {
+        return this.fechaLimites;
     }
 
-    public void setFechasLimites(Set<FechaLimiteEtapa> fechaLimiteEtapas) {
-        if (this.fechasLimites != null) {
-            this.fechasLimites.forEach(i -> i.setProyecto(null));
+    public void setFechaLimites(Set<FechaLimiteEtapa> fechaLimiteEtapas) {
+        if (this.fechaLimites != null) {
+            this.fechaLimites.forEach(i -> i.setProyecto(null));
         }
         if (fechaLimiteEtapas != null) {
             fechaLimiteEtapas.forEach(i -> i.setProyecto(this));
         }
-        this.fechasLimites = fechaLimiteEtapas;
+        this.fechaLimites = fechaLimiteEtapas;
     }
 
-    public ProyectoGrado fechasLimites(Set<FechaLimiteEtapa> fechaLimiteEtapas) {
-        this.setFechasLimites(fechaLimiteEtapas);
+    public ProyectoGrado fechaLimites(Set<FechaLimiteEtapa> fechaLimiteEtapas) {
+        this.setFechaLimites(fechaLimiteEtapas);
         return this;
     }
 
-    public ProyectoGrado addFechasLimite(FechaLimiteEtapa fechaLimiteEtapa) {
-        this.fechasLimites.add(fechaLimiteEtapa);
+    public ProyectoGrado addFechaLimite(FechaLimiteEtapa fechaLimiteEtapa) {
+        this.fechaLimites.add(fechaLimiteEtapa);
         fechaLimiteEtapa.setProyecto(this);
         return this;
     }
 
-    public ProyectoGrado removeFechasLimite(FechaLimiteEtapa fechaLimiteEtapa) {
-        this.fechasLimites.remove(fechaLimiteEtapa);
+    public ProyectoGrado removeFechaLimite(FechaLimiteEtapa fechaLimiteEtapa) {
+        this.fechaLimites.remove(fechaLimiteEtapa);
         fechaLimiteEtapa.setProyecto(null);
         return this;
     }
 
-    public Set<Evaluacion> getEvaluacioneses() {
-        return this.evaluacioneses;
+    public Set<Evaluacion> getEvaluacions() {
+        return this.evaluacions;
     }
 
-    public void setEvaluacioneses(Set<Evaluacion> evaluacions) {
-        if (this.evaluacioneses != null) {
-            this.evaluacioneses.forEach(i -> i.setProyecto(null));
+    public void setEvaluacions(Set<Evaluacion> evaluacions) {
+        if (this.evaluacions != null) {
+            this.evaluacions.forEach(i -> i.setProyecto(null));
         }
         if (evaluacions != null) {
             evaluacions.forEach(i -> i.setProyecto(this));
         }
-        this.evaluacioneses = evaluacions;
+        this.evaluacions = evaluacions;
     }
 
-    public ProyectoGrado evaluacioneses(Set<Evaluacion> evaluacions) {
-        this.setEvaluacioneses(evaluacions);
+    public ProyectoGrado evaluacions(Set<Evaluacion> evaluacions) {
+        this.setEvaluacions(evaluacions);
         return this;
     }
 
-    public ProyectoGrado addEvaluaciones(Evaluacion evaluacion) {
-        this.evaluacioneses.add(evaluacion);
+    public ProyectoGrado addEvaluacion(Evaluacion evaluacion) {
+        this.evaluacions.add(evaluacion);
         evaluacion.setProyecto(this);
         return this;
     }
 
-    public ProyectoGrado removeEvaluaciones(Evaluacion evaluacion) {
-        this.evaluacioneses.remove(evaluacion);
+    public ProyectoGrado removeEvaluacion(Evaluacion evaluacion) {
+        this.evaluacions.remove(evaluacion);
         evaluacion.setProyecto(null);
         return this;
     }
@@ -355,49 +355,49 @@ public class ProyectoGrado implements Serializable {
         return this;
     }
 
-    public Set<User> getEstudianteses() {
-        return this.estudianteses;
+    public Set<User> getEstudiantes() {
+        return this.estudiantes;
     }
 
-    public void setEstudianteses(Set<User> users) {
-        this.estudianteses = users;
+    public void setEstudiantes(Set<User> users) {
+        this.estudiantes = users;
     }
 
-    public ProyectoGrado estudianteses(Set<User> users) {
-        this.setEstudianteses(users);
+    public ProyectoGrado estudiantes(Set<User> users) {
+        this.setEstudiantes(users);
         return this;
     }
 
-    public ProyectoGrado addEstudiantes(User user) {
-        this.estudianteses.add(user);
+    public ProyectoGrado addEstudiante(User user) {
+        this.estudiantes.add(user);
         return this;
     }
 
-    public ProyectoGrado removeEstudiantes(User user) {
-        this.estudianteses.remove(user);
+    public ProyectoGrado removeEstudiante(User user) {
+        this.estudiantes.remove(user);
         return this;
     }
 
-    public Set<User> getJuradoses() {
-        return this.juradoses;
+    public Set<User> getJurados() {
+        return this.jurados;
     }
 
-    public void setJuradoses(Set<User> users) {
-        this.juradoses = users;
+    public void setJurados(Set<User> users) {
+        this.jurados = users;
     }
 
-    public ProyectoGrado juradoses(Set<User> users) {
-        this.setJuradoses(users);
+    public ProyectoGrado jurados(Set<User> users) {
+        this.setJurados(users);
         return this;
     }
 
-    public ProyectoGrado addJurados(User user) {
-        this.juradoses.add(user);
+    public ProyectoGrado addJurado(User user) {
+        this.jurados.add(user);
         return this;
     }
 
-    public ProyectoGrado removeJurados(User user) {
-        this.juradoses.remove(user);
+    public ProyectoGrado removeJurado(User user) {
+        this.jurados.remove(user);
         return this;
     }
 

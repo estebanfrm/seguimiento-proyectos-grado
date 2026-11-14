@@ -23,7 +23,7 @@ public class ProyectoGradoRepositoryWithBagRelationshipsImpl implements Proyecto
 
     @Override
     public Optional<ProyectoGrado> fetchBagRelationships(Optional<ProyectoGrado> proyectoGrado) {
-        return proyectoGrado.map(this::fetchEstudianteses).map(this::fetchJuradoses);
+        return proyectoGrado.map(this::fetchEstudiantes).map(this::fetchJurados);
     }
 
     @Override
@@ -37,25 +37,25 @@ public class ProyectoGradoRepositoryWithBagRelationshipsImpl implements Proyecto
 
     @Override
     public List<ProyectoGrado> fetchBagRelationships(List<ProyectoGrado> proyectoGrados) {
-        return Optional.of(proyectoGrados).map(this::fetchEstudianteses).map(this::fetchJuradoses).orElse(List.of());
+        return Optional.of(proyectoGrados).map(this::fetchEstudiantes).map(this::fetchJurados).orElse(List.of());
     }
 
-    ProyectoGrado fetchEstudianteses(ProyectoGrado result) {
+    ProyectoGrado fetchEstudiantes(ProyectoGrado result) {
         return entityManager
             .createQuery(
-                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.estudianteses where proyectoGrado.id = :id",
+                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.estudiantes where proyectoGrado.id = :id",
                 ProyectoGrado.class
             )
             .setParameter(ID_PARAMETER, result.getId())
             .getSingleResult();
     }
 
-    List<ProyectoGrado> fetchEstudianteses(List<ProyectoGrado> proyectoGrados) {
+    List<ProyectoGrado> fetchEstudiantes(List<ProyectoGrado> proyectoGrados) {
         HashMap<Object, Integer> order = new HashMap<>();
         IntStream.range(0, proyectoGrados.size()).forEach(index -> order.put(proyectoGrados.get(index).getId(), index));
         List<ProyectoGrado> result = entityManager
             .createQuery(
-                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.estudianteses where proyectoGrado in :proyectoGrados",
+                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.estudiantes where proyectoGrado in :proyectoGrados",
                 ProyectoGrado.class
             )
             .setParameter(PROYECTOGRADOS_PARAMETER, proyectoGrados)
@@ -64,22 +64,22 @@ public class ProyectoGradoRepositoryWithBagRelationshipsImpl implements Proyecto
         return result;
     }
 
-    ProyectoGrado fetchJuradoses(ProyectoGrado result) {
+    ProyectoGrado fetchJurados(ProyectoGrado result) {
         return entityManager
             .createQuery(
-                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.juradoses where proyectoGrado.id = :id",
+                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.jurados where proyectoGrado.id = :id",
                 ProyectoGrado.class
             )
             .setParameter(ID_PARAMETER, result.getId())
             .getSingleResult();
     }
 
-    List<ProyectoGrado> fetchJuradoses(List<ProyectoGrado> proyectoGrados) {
+    List<ProyectoGrado> fetchJurados(List<ProyectoGrado> proyectoGrados) {
         HashMap<Object, Integer> order = new HashMap<>();
         IntStream.range(0, proyectoGrados.size()).forEach(index -> order.put(proyectoGrados.get(index).getId(), index));
         List<ProyectoGrado> result = entityManager
             .createQuery(
-                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.juradoses where proyectoGrado in :proyectoGrados",
+                "select proyectoGrado from ProyectoGrado proyectoGrado left join fetch proyectoGrado.jurados where proyectoGrado in :proyectoGrados",
                 ProyectoGrado.class
             )
             .setParameter(PROYECTOGRADOS_PARAMETER, proyectoGrados)

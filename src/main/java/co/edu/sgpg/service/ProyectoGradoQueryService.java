@@ -90,23 +90,21 @@ public class ProyectoGradoQueryService extends QueryService<ProyectoGrado> {
                     buildRangeSpecification(criteria.getPorcentajeAvance(), ProyectoGrado_.porcentajeAvance),
                     buildRangeSpecification(criteria.getFechaRegistro(), ProyectoGrado_.fechaRegistro),
                     buildRangeSpecification(criteria.getFechaActualizacion(), ProyectoGrado_.fechaActualizacion),
-                    buildSpecification(criteria.getEntregasId(), root ->
-                        root.join(ProyectoGrado_.entregases, JoinType.LEFT).get(Entrega_.id)
+                    buildSpecification(criteria.getEntregaId(), root -> root.join(ProyectoGrado_.entregas, JoinType.LEFT).get(Entrega_.id)),
+                    buildSpecification(criteria.getFechaLimiteId(), root ->
+                        root.join(ProyectoGrado_.fechaLimites, JoinType.LEFT).get(FechaLimiteEtapa_.id)
                     ),
-                    buildSpecification(criteria.getFechasLimiteId(), root ->
-                        root.join(ProyectoGrado_.fechasLimites, JoinType.LEFT).get(FechaLimiteEtapa_.id)
-                    ),
-                    buildSpecification(criteria.getEvaluacionesId(), root ->
-                        root.join(ProyectoGrado_.evaluacioneses, JoinType.LEFT).get(Evaluacion_.id)
+                    buildSpecification(criteria.getEvaluacionId(), root ->
+                        root.join(ProyectoGrado_.evaluacions, JoinType.LEFT).get(Evaluacion_.id)
                     ),
                     buildSpecification(criteria.getHistorialId(), root ->
                         root.join(ProyectoGrado_.historials, JoinType.LEFT).get(HistorialEtapa_.id)
                     ),
                     buildSpecification(criteria.getTutorId(), root -> root.join(ProyectoGrado_.tutor, JoinType.LEFT).get(User_.id)),
-                    buildSpecification(criteria.getEstudiantesId(), root ->
-                        root.join(ProyectoGrado_.estudianteses, JoinType.LEFT).get(User_.id)
+                    buildSpecification(criteria.getEstudianteId(), root ->
+                        root.join(ProyectoGrado_.estudiantes, JoinType.LEFT).get(User_.id)
                     ),
-                    buildSpecification(criteria.getJuradosId(), root -> root.join(ProyectoGrado_.juradoses, JoinType.LEFT).get(User_.id))
+                    buildSpecification(criteria.getJuradoId(), root -> root.join(ProyectoGrado_.jurados, JoinType.LEFT).get(User_.id))
                 )
             );
         }

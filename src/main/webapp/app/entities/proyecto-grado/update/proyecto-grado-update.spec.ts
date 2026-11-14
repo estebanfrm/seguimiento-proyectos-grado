@@ -51,14 +51,14 @@ describe('ProyectoGrado Management Update Component', () => {
       const proyectoGrado: IProyectoGrado = { id: 28782 };
       const tutor: IUser = { id: 3944 };
       proyectoGrado.tutor = tutor;
-      const estudianteses: IUser[] = [{ id: 3944 }];
-      proyectoGrado.estudianteses = estudianteses;
-      const juradoses: IUser[] = [{ id: 3944 }];
-      proyectoGrado.juradoses = juradoses;
+      const estudiantes: IUser[] = [{ id: 3944 }];
+      proyectoGrado.estudiantes = estudiantes;
+      const jurados: IUser[] = [{ id: 3944 }];
+      proyectoGrado.jurados = jurados;
 
       const userCollection: IUser[] = [{ id: 3944 }];
       vi.spyOn(userService, 'query').mockReturnValue(of(new HttpResponse({ body: userCollection })));
-      const additionalUsers = [tutor, ...estudianteses, ...juradoses];
+      const additionalUsers = [tutor, ...estudiantes, ...jurados];
       const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
       vi.spyOn(userService, 'addUserToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -77,17 +77,17 @@ describe('ProyectoGrado Management Update Component', () => {
       const proyectoGrado: IProyectoGrado = { id: 28782 };
       const tutor: IUser = { id: 3944 };
       proyectoGrado.tutor = tutor;
-      const estudiantes: IUser = { id: 3944 };
-      proyectoGrado.estudianteses = [estudiantes];
-      const jurados: IUser = { id: 3944 };
-      proyectoGrado.juradoses = [jurados];
+      const estudiante: IUser = { id: 3944 };
+      proyectoGrado.estudiantes = [estudiante];
+      const jurado: IUser = { id: 3944 };
+      proyectoGrado.jurados = [jurado];
 
       activatedRoute.data = of({ proyectoGrado });
       comp.ngOnInit();
 
       expect(comp.usersSharedCollection()).toContainEqual(tutor);
-      expect(comp.usersSharedCollection()).toContainEqual(estudiantes);
-      expect(comp.usersSharedCollection()).toContainEqual(jurados);
+      expect(comp.usersSharedCollection()).toContainEqual(estudiante);
+      expect(comp.usersSharedCollection()).toContainEqual(jurado);
       expect(comp.proyectoGrado).toEqual(proyectoGrado);
     });
   });

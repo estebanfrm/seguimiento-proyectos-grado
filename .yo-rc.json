@@ -8,6 +8,7 @@
     "clientFramework": "angular",
     "creationTimestamp": 1701983268847,
     "databaseType": "sql",
+    "defaultCommand": "app",
     "devDatabaseType": "postgresql",
     "enableTranslation": true,
     "entities": ["ProyectoGrado", "FechaLimiteEtapa", "Entrega", "Observacion", "Evaluacion", "HistorialEtapa"],

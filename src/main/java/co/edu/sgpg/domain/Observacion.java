@@ -47,7 +47,7 @@ public class Observacion implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = { "observacioneses", "autor", "proyecto" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "observacions", "autor", "proyecto" }, allowSetters = true)
     private Entrega entrega;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

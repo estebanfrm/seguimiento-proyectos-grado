@@ -113,8 +113,8 @@ export class ProyectoGradoUpdate implements OnInit {
       this.userService.addUserToCollectionIfMissing<IUser>(
         users,
         proyectoGrado.tutor,
-        ...(proyectoGrado.estudianteses ?? []),
-        ...(proyectoGrado.juradoses ?? []),
+        ...(proyectoGrado.estudiantes ?? []),
+        ...(proyectoGrado.jurados ?? []),
       ),
     );
   }
@@ -128,8 +128,8 @@ export class ProyectoGradoUpdate implements OnInit {
           this.userService.addUserToCollectionIfMissing<IUser>(
             users,
             this.proyectoGrado?.tutor,
-            ...(this.proyectoGrado?.estudianteses ?? []),
-            ...(this.proyectoGrado?.juradoses ?? []),
+            ...(this.proyectoGrado?.estudiantes ?? []),
+            ...(this.proyectoGrado?.jurados ?? []),
           ),
         ),
       )

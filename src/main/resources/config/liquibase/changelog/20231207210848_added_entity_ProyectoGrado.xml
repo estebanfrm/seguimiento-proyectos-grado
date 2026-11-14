@@ -49,8 +49,8 @@
 
     <changeSet id="20231207210848-1-relations" author="jhipster">
 
-        <createTable tableName="rel_proyecto_grado__estudiantes">
-            <column name="estudiantes_id" type="bigint">
+        <createTable tableName="rel_proyecto_grado__estudiante">
+            <column name="estudiante_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
             <column name="proyecto_grado_id" type="bigint">
@@ -58,10 +58,10 @@
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="proyecto_grado_id, estudiantes_id" tableName="rel_proyecto_grado__estudiantes"/>
+        <addPrimaryKey columnNames="proyecto_grado_id, estudiante_id" tableName="rel_proyecto_grado__estudiante"/>
 
-        <createTable tableName="rel_proyecto_grado__jurados">
-            <column name="jurados_id" type="bigint">
+        <createTable tableName="rel_proyecto_grado__jurado">
+            <column name="jurado_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
             <column name="proyecto_grado_id" type="bigint">
@@ -69,7 +69,7 @@
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="proyecto_grado_id, jurados_id" tableName="rel_proyecto_grado__jurados"/>
+        <addPrimaryKey columnNames="proyecto_grado_id, jurado_id" tableName="rel_proyecto_grado__jurado"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->

@@ -76,19 +76,19 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
 
     private InstantFilter fechaActualizacion;
 
-    private LongFilter entregasId;
+    private LongFilter entregaId;
 
-    private LongFilter fechasLimiteId;
+    private LongFilter fechaLimiteId;
 
-    private LongFilter evaluacionesId;
+    private LongFilter evaluacionId;
 
     private LongFilter historialId;
 
     private LongFilter tutorId;
 
-    private LongFilter estudiantesId;
+    private LongFilter estudianteId;
 
-    private LongFilter juradosId;
+    private LongFilter juradoId;
 
     private Boolean distinct;
 
@@ -103,13 +103,13 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
         this.porcentajeAvance = other.optionalPorcentajeAvance().map(IntegerFilter::copy).orElse(null);
         this.fechaRegistro = other.optionalFechaRegistro().map(InstantFilter::copy).orElse(null);
         this.fechaActualizacion = other.optionalFechaActualizacion().map(InstantFilter::copy).orElse(null);
-        this.entregasId = other.optionalEntregasId().map(LongFilter::copy).orElse(null);
-        this.fechasLimiteId = other.optionalFechasLimiteId().map(LongFilter::copy).orElse(null);
-        this.evaluacionesId = other.optionalEvaluacionesId().map(LongFilter::copy).orElse(null);
+        this.entregaId = other.optionalEntregaId().map(LongFilter::copy).orElse(null);
+        this.fechaLimiteId = other.optionalFechaLimiteId().map(LongFilter::copy).orElse(null);
+        this.evaluacionId = other.optionalEvaluacionId().map(LongFilter::copy).orElse(null);
         this.historialId = other.optionalHistorialId().map(LongFilter::copy).orElse(null);
         this.tutorId = other.optionalTutorId().map(LongFilter::copy).orElse(null);
-        this.estudiantesId = other.optionalEstudiantesId().map(LongFilter::copy).orElse(null);
-        this.juradosId = other.optionalJuradosId().map(LongFilter::copy).orElse(null);
+        this.estudianteId = other.optionalEstudianteId().map(LongFilter::copy).orElse(null);
+        this.juradoId = other.optionalJuradoId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -270,61 +270,61 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    public LongFilter getEntregasId() {
-        return entregasId;
+    public LongFilter getEntregaId() {
+        return entregaId;
     }
 
-    public Optional<LongFilter> optionalEntregasId() {
-        return Optional.ofNullable(entregasId);
+    public Optional<LongFilter> optionalEntregaId() {
+        return Optional.ofNullable(entregaId);
     }
 
-    public LongFilter entregasId() {
-        if (entregasId == null) {
-            setEntregasId(new LongFilter());
+    public LongFilter entregaId() {
+        if (entregaId == null) {
+            setEntregaId(new LongFilter());
         }
-        return entregasId;
+        return entregaId;
     }
 
-    public void setEntregasId(LongFilter entregasId) {
-        this.entregasId = entregasId;
+    public void setEntregaId(LongFilter entregaId) {
+        this.entregaId = entregaId;
     }
 
-    public LongFilter getFechasLimiteId() {
-        return fechasLimiteId;
+    public LongFilter getFechaLimiteId() {
+        return fechaLimiteId;
     }
 
-    public Optional<LongFilter> optionalFechasLimiteId() {
-        return Optional.ofNullable(fechasLimiteId);
+    public Optional<LongFilter> optionalFechaLimiteId() {
+        return Optional.ofNullable(fechaLimiteId);
     }
 
-    public LongFilter fechasLimiteId() {
-        if (fechasLimiteId == null) {
-            setFechasLimiteId(new LongFilter());
+    public LongFilter fechaLimiteId() {
+        if (fechaLimiteId == null) {
+            setFechaLimiteId(new LongFilter());
         }
-        return fechasLimiteId;
+        return fechaLimiteId;
     }
 
-    public void setFechasLimiteId(LongFilter fechasLimiteId) {
-        this.fechasLimiteId = fechasLimiteId;
+    public void setFechaLimiteId(LongFilter fechaLimiteId) {
+        this.fechaLimiteId = fechaLimiteId;
     }
 
-    public LongFilter getEvaluacionesId() {
-        return evaluacionesId;
+    public LongFilter getEvaluacionId() {
+        return evaluacionId;
     }
 
-    public Optional<LongFilter> optionalEvaluacionesId() {
-        return Optional.ofNullable(evaluacionesId);
+    public Optional<LongFilter> optionalEvaluacionId() {
+        return Optional.ofNullable(evaluacionId);
     }
 
-    public LongFilter evaluacionesId() {
-        if (evaluacionesId == null) {
-            setEvaluacionesId(new LongFilter());
+    public LongFilter evaluacionId() {
+        if (evaluacionId == null) {
+            setEvaluacionId(new LongFilter());
         }
-        return evaluacionesId;
+        return evaluacionId;
     }
 
-    public void setEvaluacionesId(LongFilter evaluacionesId) {
-        this.evaluacionesId = evaluacionesId;
+    public void setEvaluacionId(LongFilter evaluacionId) {
+        this.evaluacionId = evaluacionId;
     }
 
     public LongFilter getHistorialId() {
@@ -365,42 +365,42 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
         this.tutorId = tutorId;
     }
 
-    public LongFilter getEstudiantesId() {
-        return estudiantesId;
+    public LongFilter getEstudianteId() {
+        return estudianteId;
     }
 
-    public Optional<LongFilter> optionalEstudiantesId() {
-        return Optional.ofNullable(estudiantesId);
+    public Optional<LongFilter> optionalEstudianteId() {
+        return Optional.ofNullable(estudianteId);
     }
 
-    public LongFilter estudiantesId() {
-        if (estudiantesId == null) {
-            setEstudiantesId(new LongFilter());
+    public LongFilter estudianteId() {
+        if (estudianteId == null) {
+            setEstudianteId(new LongFilter());
         }
-        return estudiantesId;
+        return estudianteId;
     }
 
-    public void setEstudiantesId(LongFilter estudiantesId) {
-        this.estudiantesId = estudiantesId;
+    public void setEstudianteId(LongFilter estudianteId) {
+        this.estudianteId = estudianteId;
     }
 
-    public LongFilter getJuradosId() {
-        return juradosId;
+    public LongFilter getJuradoId() {
+        return juradoId;
     }
 
-    public Optional<LongFilter> optionalJuradosId() {
-        return Optional.ofNullable(juradosId);
+    public Optional<LongFilter> optionalJuradoId() {
+        return Optional.ofNullable(juradoId);
     }
 
-    public LongFilter juradosId() {
-        if (juradosId == null) {
-            setJuradosId(new LongFilter());
+    public LongFilter juradoId() {
+        if (juradoId == null) {
+            setJuradoId(new LongFilter());
         }
-        return juradosId;
+        return juradoId;
     }
 
-    public void setJuradosId(LongFilter juradosId) {
-        this.juradosId = juradosId;
+    public void setJuradoId(LongFilter juradoId) {
+        this.juradoId = juradoId;
     }
 
     public Boolean getDistinct() {
@@ -440,13 +440,13 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
             Objects.equals(porcentajeAvance, that.porcentajeAvance) &&
             Objects.equals(fechaRegistro, that.fechaRegistro) &&
             Objects.equals(fechaActualizacion, that.fechaActualizacion) &&
-            Objects.equals(entregasId, that.entregasId) &&
-            Objects.equals(fechasLimiteId, that.fechasLimiteId) &&
-            Objects.equals(evaluacionesId, that.evaluacionesId) &&
+            Objects.equals(entregaId, that.entregaId) &&
+            Objects.equals(fechaLimiteId, that.fechaLimiteId) &&
+            Objects.equals(evaluacionId, that.evaluacionId) &&
             Objects.equals(historialId, that.historialId) &&
             Objects.equals(tutorId, that.tutorId) &&
-            Objects.equals(estudiantesId, that.estudiantesId) &&
-            Objects.equals(juradosId, that.juradosId) &&
+            Objects.equals(estudianteId, that.estudianteId) &&
+            Objects.equals(juradoId, that.juradoId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -462,13 +462,13 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
             porcentajeAvance,
             fechaRegistro,
             fechaActualizacion,
-            entregasId,
-            fechasLimiteId,
-            evaluacionesId,
+            entregaId,
+            fechaLimiteId,
+            evaluacionId,
             historialId,
             tutorId,
-            estudiantesId,
-            juradosId,
+            estudianteId,
+            juradoId,
             distinct
         );
     }
@@ -485,13 +485,13 @@ public class ProyectoGradoCriteria implements Serializable, Criteria {
             optionalPorcentajeAvance().map(f -> "porcentajeAvance=" + f + ", ").orElse("") +
             optionalFechaRegistro().map(f -> "fechaRegistro=" + f + ", ").orElse("") +
             optionalFechaActualizacion().map(f -> "fechaActualizacion=" + f + ", ").orElse("") +
-            optionalEntregasId().map(f -> "entregasId=" + f + ", ").orElse("") +
-            optionalFechasLimiteId().map(f -> "fechasLimiteId=" + f + ", ").orElse("") +
-            optionalEvaluacionesId().map(f -> "evaluacionesId=" + f + ", ").orElse("") +
+            optionalEntregaId().map(f -> "entregaId=" + f + ", ").orElse("") +
+            optionalFechaLimiteId().map(f -> "fechaLimiteId=" + f + ", ").orElse("") +
+            optionalEvaluacionId().map(f -> "evaluacionId=" + f + ", ").orElse("") +
             optionalHistorialId().map(f -> "historialId=" + f + ", ").orElse("") +
             optionalTutorId().map(f -> "tutorId=" + f + ", ").orElse("") +
-            optionalEstudiantesId().map(f -> "estudiantesId=" + f + ", ").orElse("") +
-            optionalJuradosId().map(f -> "juradosId=" + f + ", ").orElse("") +
+            optionalEstudianteId().map(f -> "estudianteId=" + f + ", ").orElse("") +
+            optionalJuradoId().map(f -> "juradoId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

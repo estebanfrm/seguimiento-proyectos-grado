@@ -64,16 +64,16 @@
           <dd>
             <span>{{ proyectoGradoRef.tutor?.login }}</span>
           </dd>
-          <dt><span jhiTranslate="sgpgApp.proyectoGrado.estudiantes">Estudiantes</span></dt>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.estudiante">Estudiante</span></dt>
           <dd>
-            @for (estudiantes of proyectoGradoRef.estudianteses; track $index; let last = $last) {
-              <span> {{ estudiantes.login }}{{ last ? '' : ', ' }} </span>
+            @for (estudiante of proyectoGradoRef.estudiantes; track $index; let last = $last) {
+              <span> {{ estudiante.login }}{{ last ? '' : ', ' }} </span>
             }
           </dd>
-          <dt><span jhiTranslate="sgpgApp.proyectoGrado.jurados">Jurados</span></dt>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.jurado">Jurado</span></dt>
           <dd>
-            @for (jurados of proyectoGradoRef.juradoses; track $index; let last = $last) {
-              <span> {{ jurados.login }}{{ last ? '' : ', ' }} </span>
+            @for (jurado of proyectoGradoRef.jurados; track $index; let last = $last) {
+              <span> {{ jurado.login }}{{ last ? '' : ', ' }} </span>
             }
           </dd>
         </dl>

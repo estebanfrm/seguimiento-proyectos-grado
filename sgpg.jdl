@@ -113,8 +113,8 @@ entity HistorialEtapa {
 }
 
 relationship ManyToMany {
-  ProyectoGrado{estudiantes(login)} to User with builtInEntity
-  ProyectoGrado{jurados(login)} to User with builtInEntity
+  ProyectoGrado{estudiante(login)} to User with builtInEntity
+  ProyectoGrado{jurado(login)} to User with builtInEntity
 }
 
 relationship ManyToOne {
@@ -126,11 +126,11 @@ relationship ManyToOne {
 }
 
 relationship OneToMany {
-  ProyectoGrado{entregas} to Entrega{proyecto(titulo) required}
-  ProyectoGrado{fechasLimite} to FechaLimiteEtapa{proyecto(titulo) required}
-  ProyectoGrado{evaluaciones} to Evaluacion{proyecto(titulo) required}
+  ProyectoGrado{entrega} to Entrega{proyecto(titulo) required}
+  ProyectoGrado{fechaLimite} to FechaLimiteEtapa{proyecto(titulo) required}
+  ProyectoGrado{evaluacion} to Evaluacion{proyecto(titulo) required}
   ProyectoGrado{historial} to HistorialEtapa{proyecto(titulo) required}
-  Entrega{observaciones} to Observacion{entrega(titulo) required}
+  Entrega{observacion} to Observacion{entrega(titulo) required}
 }
 
 dto * with mapstruct

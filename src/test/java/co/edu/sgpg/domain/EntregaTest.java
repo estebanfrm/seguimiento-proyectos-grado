@@ -27,24 +27,24 @@ class EntregaTest {
     }
 
     @Test
-    void observacionesTest() {
+    void observacionTest() {
         Entrega entrega = getEntregaRandomSampleGenerator();
         Observacion observacionBack = getObservacionRandomSampleGenerator();
 
-        entrega.addObservaciones(observacionBack);
-        assertThat(entrega.getObservacioneses()).containsOnly(observacionBack);
+        entrega.addObservacion(observacionBack);
+        assertThat(entrega.getObservacions()).containsOnly(observacionBack);
         assertThat(observacionBack.getEntrega()).isEqualTo(entrega);
 
-        entrega.removeObservaciones(observacionBack);
-        assertThat(entrega.getObservacioneses()).doesNotContain(observacionBack);
+        entrega.removeObservacion(observacionBack);
+        assertThat(entrega.getObservacions()).doesNotContain(observacionBack);
         assertThat(observacionBack.getEntrega()).isNull();
 
-        entrega.observacioneses(new HashSet<>(Set.of(observacionBack)));
-        assertThat(entrega.getObservacioneses()).containsOnly(observacionBack);
+        entrega.observacions(new HashSet<>(Set.of(observacionBack)));
+        assertThat(entrega.getObservacions()).containsOnly(observacionBack);
         assertThat(observacionBack.getEntrega()).isEqualTo(entrega);
 
-        entrega.setObservacioneses(new HashSet<>());
-        assertThat(entrega.getObservacioneses()).doesNotContain(observacionBack);
+        entrega.setObservacions(new HashSet<>());
+        assertThat(entrega.getObservacions()).doesNotContain(observacionBack);
         assertThat(observacionBack.getEntrega()).isNull();
     }
 

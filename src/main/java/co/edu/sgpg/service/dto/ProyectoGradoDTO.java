@@ -48,9 +48,9 @@ public class ProyectoGradoDTO implements Serializable {
 
     private UserDTO tutor;
 
-    private Set<UserDTO> estudianteses = new HashSet<>();
+    private Set<UserDTO> estudiantes = new HashSet<>();
 
-    private Set<UserDTO> juradoses = new HashSet<>();
+    private Set<UserDTO> jurados = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -132,20 +132,20 @@ public class ProyectoGradoDTO implements Serializable {
         this.tutor = tutor;
     }
 
-    public Set<UserDTO> getEstudianteses() {
-        return estudianteses;
+    public Set<UserDTO> getEstudiantes() {
+        return estudiantes;
     }
 
-    public void setEstudianteses(Set<UserDTO> estudianteses) {
-        this.estudianteses = estudianteses;
+    public void setEstudiantes(Set<UserDTO> estudiantes) {
+        this.estudiantes = estudiantes;
     }
 
-    public Set<UserDTO> getJuradoses() {
-        return juradoses;
+    public Set<UserDTO> getJurados() {
+        return jurados;
     }
 
-    public void setJuradoses(Set<UserDTO> juradoses) {
-        this.juradoses = juradoses;
+    public void setJurados(Set<UserDTO> jurados) {
+        this.jurados = jurados;
     }
 
     @Override
@@ -183,8 +183,8 @@ public class ProyectoGradoDTO implements Serializable {
             ", fechaRegistro='" + getFechaRegistro() + "'" +
             ", fechaActualizacion='" + getFechaActualizacion() + "'" +
             ", tutor=" + getTutor() +
-            ", estudianteses=" + getEstudianteses() +
-            ", juradoses=" + getJuradoses() +
+            ", estudiantes=" + getEstudiantes() +
+            ", jurados=" + getJurados() +
             "}";
     }
 }

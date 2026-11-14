@@ -14,12 +14,12 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface ProyectoGradoMapper extends EntityMapper<ProyectoGradoDTO, ProyectoGrado> {
     @Mapping(target = "tutor", source = "tutor", qualifiedByName = "userLogin")
-    @Mapping(target = "estudianteses", source = "estudianteses", qualifiedByName = "userLoginSet")
-    @Mapping(target = "juradoses", source = "juradoses", qualifiedByName = "userLoginSet")
+    @Mapping(target = "estudiantes", source = "estudiantes", qualifiedByName = "userLoginSet")
+    @Mapping(target = "jurados", source = "jurados", qualifiedByName = "userLoginSet")
     ProyectoGradoDTO toDto(ProyectoGrado s);
 
-    @Mapping(target = "removeEstudiantes", ignore = true)
-    @Mapping(target = "removeJurados", ignore = true)
+    @Mapping(target = "removeEstudiante", ignore = true)
+    @Mapping(target = "removeJurado", ignore = true)
     ProyectoGrado toEntity(ProyectoGradoDTO proyectoGradoDTO);
 
     @Named("userLogin")

@@ -29,7 +29,7 @@ type ProyectoGradoFormRawValue = FormValueOf<IProyectoGrado>;
 
 type NewProyectoGradoFormRawValue = FormValueOf<NewProyectoGrado>;
 
-type ProyectoGradoFormDefaults = Pick<NewProyectoGrado, 'id' | 'fechaRegistro' | 'fechaActualizacion' | 'estudianteses' | 'juradoses'>;
+type ProyectoGradoFormDefaults = Pick<NewProyectoGrado, 'id' | 'fechaRegistro' | 'fechaActualizacion' | 'estudiantes' | 'jurados'>;
 
 type ProyectoGradoFormGroupContent = {
   id: FormControl<ProyectoGradoFormRawValue['id'] | NewProyectoGrado['id']>;
@@ -42,8 +42,8 @@ type ProyectoGradoFormGroupContent = {
   fechaRegistro: FormControl<ProyectoGradoFormRawValue['fechaRegistro']>;
   fechaActualizacion: FormControl<ProyectoGradoFormRawValue['fechaActualizacion']>;
   tutor: FormControl<ProyectoGradoFormRawValue['tutor']>;
-  estudianteses: FormControl<ProyectoGradoFormRawValue['estudianteses']>;
-  juradoses: FormControl<ProyectoGradoFormRawValue['juradoses']>;
+  estudiantes: FormControl<ProyectoGradoFormRawValue['estudiantes']>;
+  jurados: FormControl<ProyectoGradoFormRawValue['jurados']>;
 };
 
 export type ProyectoGradoFormGroup = FormGroup<ProyectoGradoFormGroupContent>;
@@ -87,8 +87,8 @@ export class ProyectoGradoFormService {
       }),
       fechaActualizacion: new FormControl(proyectoGradoRawValue.fechaActualizacion),
       tutor: new FormControl(proyectoGradoRawValue.tutor),
-      estudianteses: new FormControl(proyectoGradoRawValue.estudianteses ?? []),
-      juradoses: new FormControl(proyectoGradoRawValue.juradoses ?? []),
+      estudiantes: new FormControl(proyectoGradoRawValue.estudiantes ?? []),
+      jurados: new FormControl(proyectoGradoRawValue.jurados ?? []),
     });
   }
 
@@ -111,8 +111,8 @@ export class ProyectoGradoFormService {
       id: null,
       fechaRegistro: currentTime,
       fechaActualizacion: currentTime,
-      estudianteses: [],
-      juradoses: [],
+      estudiantes: [],
+      jurados: [],
     };
   }
 
@@ -133,8 +133,8 @@ export class ProyectoGradoFormService {
       ...proyectoGrado,
       fechaRegistro: proyectoGrado.fechaRegistro ? proyectoGrado.fechaRegistro.format(DATE_TIME_FORMAT) : undefined,
       fechaActualizacion: proyectoGrado.fechaActualizacion ? proyectoGrado.fechaActualizacion.format(DATE_TIME_FORMAT) : undefined,
-      estudianteses: proyectoGrado.estudianteses ?? [],
-      juradoses: proyectoGrado.juradoses ?? [],
+      estudiantes: proyectoGrado.estudiantes ?? [],
+      jurados: proyectoGrado.jurados ?? [],
     };
   }
 }

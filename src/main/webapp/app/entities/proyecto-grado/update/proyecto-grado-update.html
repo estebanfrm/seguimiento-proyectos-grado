@@ -198,14 +198,14 @@
         </div>
 
         <div class="mb-3">
-          <label for="field_estudianteses" jhiTranslate="sgpgApp.proyectoGrado.estudiantes">Estudiantes</label>
+          <label for="field_estudiantes" jhiTranslate="sgpgApp.proyectoGrado.estudiante">Estudiante</label>
           <select
             class="form-select"
-            id="field_estudianteses"
-            data-cy="estudiantes"
+            id="field_estudiantes"
+            data-cy="estudiante"
             multiple
-            name="estudianteses"
-            formControlName="estudianteses"
+            name="estudiantes"
+            formControlName="estudiantes"
             [compareWith]="compareUser"
           >
             @for (userOption of usersSharedCollection(); track $index) {
@@ -215,14 +215,14 @@
         </div>
 
         <div class="mb-3">
-          <label for="field_juradoses" jhiTranslate="sgpgApp.proyectoGrado.jurados">Jurados</label>
+          <label for="field_jurados" jhiTranslate="sgpgApp.proyectoGrado.jurado">Jurado</label>
           <select
             class="form-select"
-            id="field_juradoses"
-            data-cy="jurados"
+            id="field_jurados"
+            data-cy="jurado"
             multiple
-            name="juradoses"
-            formControlName="juradoses"
+            name="jurados"
+            formControlName="jurados"
             [compareWith]="compareUser"
           >
             @for (userOption of usersSharedCollection(); track $index) {

@@ -26,7 +26,7 @@
       "version": "Version",
       "fechaEntrega": "Fecha Entrega",
       "estado": "Estado",
-      "observaciones": "Observaciones",
+      "observacion": "Observacion",
       "autor": "Autor",
       "proyecto": "Proyecto"
     }

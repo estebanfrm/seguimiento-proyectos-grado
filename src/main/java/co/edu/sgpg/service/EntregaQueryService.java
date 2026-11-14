@@ -88,8 +88,8 @@ public class EntregaQueryService extends QueryService<Entrega> {
                     buildRangeSpecification(criteria.getVersion(), Entrega_.version),
                     buildRangeSpecification(criteria.getFechaEntrega(), Entrega_.fechaEntrega),
                     buildSpecification(criteria.getEstado(), Entrega_.estado),
-                    buildSpecification(criteria.getObservacionesId(), root ->
-                        root.join(Entrega_.observacioneses, JoinType.LEFT).get(Observacion_.id)
+                    buildSpecification(criteria.getObservacionId(), root ->
+                        root.join(Entrega_.observacions, JoinType.LEFT).get(Observacion_.id)
                     ),
                     buildSpecification(criteria.getAutorId(), root -> root.join(Entrega_.autor, JoinType.LEFT).get(User_.id)),
                     buildSpecification(criteria.getProyectoId(), root -> root.join(Entrega_.proyecto, JoinType.LEFT).get(ProyectoGrado_.id))

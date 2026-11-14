@@ -200,3 +200,18 @@ Reglas para todos los workers:
 4. Tests: backend `./mvnw -ntp verify` (o al menos los tests tocados); frontend `npm run lint && npm test && npm run webapp:build`.
 5. Commit en tu rama con mensajes claros. No hacer push ni merge.
 6. Al terminar escribe un resumen: qué hiciste, archivos, tests ejecutados y resultado, pendientes.
+
+---
+
+## 7. Entorno de ejecución (obligatorio para los workers)
+
+- JDK 21 portable (no está en el PATH del sistema). Antes de cualquier comando Maven:
+  `export JAVA_HOME="C:/Users/giral/.jdks/jdk-21.0.13+9"; export PATH="$JAVA_HOME/bin:$PATH"` (bash)
+  o `$env:JAVA_HOME="C:\Users\giral\.jdks\jdk-21.0.13+9"; $env:PATH="$env:JAVA_HOME\bin;$env:PATH"` (PowerShell).
+- Docker está disponible: los `*IT` usan Testcontainers (PostgreSQL). No hace falta levantar BD a mano.
+- Backend sin reconstruir el frontend: añadir `-Dskip.npm -Dskip.installnodenpm`.
+- Unit tests: `./mvnw -ntp test -Dskip.npm -Dskip.installnodenpm -Dtest='MiTest*'`
+- Integración: `./mvnw -ntp verify -Dskip.npm -Dskip.installnodenpm -Dtest=NONE -Dsurefire.failIfNoSpecifiedTests=false -Dit.test='MiResourceIT' -Dcheckstyle.skip -Djacoco.skip`
+- Formato: `./mvnw -ntp spotless:apply` (Java) y `npx prettier --write <archivos>` (resto). El commit dispara lint-staged.
+- Nombres reales de relaciones: `proyecto.estudiantes`, `proyecto.jurados`, `proyecto.tutor`, `proyecto.entregas`,
+  `proyecto.fechaLimites`, `proyecto.evaluacions`, `proyecto.historials`, `entrega.observacions`.

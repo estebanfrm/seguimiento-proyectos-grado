@@ -57,7 +57,7 @@ public class Evaluacion implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(
-        value = { "entregases", "fechasLimites", "evaluacioneses", "historials", "tutor", "estudianteses", "juradoses" },
+        value = { "entregas", "fechaLimites", "evaluacions", "historials", "tutor", "estudiantes", "jurados" },
         allowSetters = true
     )
     private ProyectoGrado proyecto;

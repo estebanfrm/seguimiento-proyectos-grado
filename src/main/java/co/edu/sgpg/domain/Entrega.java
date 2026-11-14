@@ -69,7 +69,7 @@ public class Entrega implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "entrega")
     @JsonIgnoreProperties(value = { "autor", "entrega" }, allowSetters = true)
-    private Set<Observacion> observacioneses = new HashSet<>();
+    private Set<Observacion> observacions = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User autor;
@@ -77,7 +77,7 @@ public class Entrega implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(
-        value = { "entregases", "fechasLimites", "evaluacioneses", "historials", "tutor", "estudianteses", "juradoses" },
+        value = { "entregas", "fechaLimites", "evaluacions", "historials", "tutor", "estudiantes", "jurados" },
         allowSetters = true
     )
     private ProyectoGrado proyecto;
@@ -214,33 +214,33 @@ public class Entrega implements Serializable {
         this.estado = estado;
     }
 
-    public Set<Observacion> getObservacioneses() {
-        return this.observacioneses;
+    public Set<Observacion> getObservacions() {
+        return this.observacions;
     }
 
-    public void setObservacioneses(Set<Observacion> observacions) {
-        if (this.observacioneses != null) {
-            this.observacioneses.forEach(i -> i.setEntrega(null));
+    public void setObservacions(Set<Observacion> observacions) {
+        if (this.observacions != null) {
+            this.observacions.forEach(i -> i.setEntrega(null));
         }
         if (observacions != null) {
             observacions.forEach(i -> i.setEntrega(this));
         }
-        this.observacioneses = observacions;
+        this.observacions = observacions;
     }
 
-    public Entrega observacioneses(Set<Observacion> observacions) {
-        this.setObservacioneses(observacions);
+    public Entrega observacions(Set<Observacion> observacions) {
+        this.setObservacions(observacions);
         return this;
     }
 
-    public Entrega addObservaciones(Observacion observacion) {
-        this.observacioneses.add(observacion);
+    public Entrega addObservacion(Observacion observacion) {
+        this.observacions.add(observacion);
         observacion.setEntrega(this);
         return this;
     }
 
-    public Entrega removeObservaciones(Observacion observacion) {
-        this.observacioneses.remove(observacion);
+    public Entrega removeObservacion(Observacion observacion) {
+        this.observacions.remove(observacion);
         observacion.setEntrega(null);
         return this;
     }

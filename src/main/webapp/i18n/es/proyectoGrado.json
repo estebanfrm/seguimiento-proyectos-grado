@@ -26,13 +26,13 @@
       "porcentajeAvance": "Porcentaje Avance",
       "fechaRegistro": "Fecha Registro",
       "fechaActualizacion": "Fecha Actualizacion",
-      "entregas": "Entregas",
-      "fechasLimite": "Fechas Limite",
-      "evaluaciones": "Evaluaciones",
+      "entrega": "Entrega",
+      "fechaLimite": "Fecha Limite",
+      "evaluacion": "Evaluacion",
       "historial": "Historial",
       "tutor": "Tutor",
-      "estudiantes": "Estudiantes",
-      "jurados": "Jurados"
+      "estudiante": "Estudiante",
+      "jurado": "Jurado"
     }
   }
 }

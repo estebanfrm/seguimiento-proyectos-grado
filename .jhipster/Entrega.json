@@ -57,7 +57,7 @@
     {
       "otherEntityName": "observacion",
       "otherEntityRelationshipName": "entrega",
-      "relationshipName": "observaciones",
+      "relationshipName": "observacion",
       "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
@@ -72,7 +72,7 @@
     {
       "otherEntityField": "titulo",
       "otherEntityName": "proyectoGrado",
-      "otherEntityRelationshipName": "entregas",
+      "otherEntityRelationshipName": "entrega",
       "relationshipName": "proyecto",
       "relationshipSide": "right",
       "relationshipType": "many-to-one",

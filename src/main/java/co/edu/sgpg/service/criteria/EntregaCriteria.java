@@ -74,7 +74,7 @@ public class EntregaCriteria implements Serializable, Criteria {
 
     private EstadoEntregaFilter estado;
 
-    private LongFilter observacionesId;
+    private LongFilter observacionId;
 
     private LongFilter autorId;
 
@@ -92,7 +92,7 @@ public class EntregaCriteria implements Serializable, Criteria {
         this.version = other.optionalVersion().map(IntegerFilter::copy).orElse(null);
         this.fechaEntrega = other.optionalFechaEntrega().map(InstantFilter::copy).orElse(null);
         this.estado = other.optionalEstado().map(EstadoEntregaFilter::copy).orElse(null);
-        this.observacionesId = other.optionalObservacionesId().map(LongFilter::copy).orElse(null);
+        this.observacionId = other.optionalObservacionId().map(LongFilter::copy).orElse(null);
         this.autorId = other.optionalAutorId().map(LongFilter::copy).orElse(null);
         this.proyectoId = other.optionalProyectoId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
@@ -236,23 +236,23 @@ public class EntregaCriteria implements Serializable, Criteria {
         this.estado = estado;
     }
 
-    public LongFilter getObservacionesId() {
-        return observacionesId;
+    public LongFilter getObservacionId() {
+        return observacionId;
     }
 
-    public Optional<LongFilter> optionalObservacionesId() {
-        return Optional.ofNullable(observacionesId);
+    public Optional<LongFilter> optionalObservacionId() {
+        return Optional.ofNullable(observacionId);
     }
 
-    public LongFilter observacionesId() {
-        if (observacionesId == null) {
-            setObservacionesId(new LongFilter());
+    public LongFilter observacionId() {
+        if (observacionId == null) {
+            setObservacionId(new LongFilter());
         }
-        return observacionesId;
+        return observacionId;
     }
 
-    public void setObservacionesId(LongFilter observacionesId) {
-        this.observacionesId = observacionesId;
+    public void setObservacionId(LongFilter observacionId) {
+        this.observacionId = observacionId;
     }
 
     public LongFilter getAutorId() {
@@ -329,7 +329,7 @@ public class EntregaCriteria implements Serializable, Criteria {
             Objects.equals(version, that.version) &&
             Objects.equals(fechaEntrega, that.fechaEntrega) &&
             Objects.equals(estado, that.estado) &&
-            Objects.equals(observacionesId, that.observacionesId) &&
+            Objects.equals(observacionId, that.observacionId) &&
             Objects.equals(autorId, that.autorId) &&
             Objects.equals(proyectoId, that.proyectoId) &&
             Objects.equals(distinct, that.distinct)
@@ -338,7 +338,7 @@ public class EntregaCriteria implements Serializable, Criteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, etapa, titulo, urlDocumento, version, fechaEntrega, estado, observacionesId, autorId, proyectoId, distinct);
+        return Objects.hash(id, etapa, titulo, urlDocumento, version, fechaEntrega, estado, observacionId, autorId, proyectoId, distinct);
     }
 
     // prettier-ignore
@@ -352,7 +352,7 @@ public class EntregaCriteria implements Serializable, Criteria {
             optionalVersion().map(f -> "version=" + f + ", ").orElse("") +
             optionalFechaEntrega().map(f -> "fechaEntrega=" + f + ", ").orElse("") +
             optionalEstado().map(f -> "estado=" + f + ", ").orElse("") +
-            optionalObservacionesId().map(f -> "observacionesId=" + f + ", ").orElse("") +
+            optionalObservacionId().map(f -> "observacionId=" + f + ", ").orElse("") +
             optionalAutorId().map(f -> "autorId=" + f + ", ").orElse("") +
             optionalProyectoId().map(f -> "proyectoId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +

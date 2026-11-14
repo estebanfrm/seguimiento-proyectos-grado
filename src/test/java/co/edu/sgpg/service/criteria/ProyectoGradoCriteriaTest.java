@@ -79,13 +79,13 @@ class ProyectoGradoCriteriaTest {
         proyectoGradoCriteria.porcentajeAvance();
         proyectoGradoCriteria.fechaRegistro();
         proyectoGradoCriteria.fechaActualizacion();
-        proyectoGradoCriteria.entregasId();
-        proyectoGradoCriteria.fechasLimiteId();
-        proyectoGradoCriteria.evaluacionesId();
+        proyectoGradoCriteria.entregaId();
+        proyectoGradoCriteria.fechaLimiteId();
+        proyectoGradoCriteria.evaluacionId();
         proyectoGradoCriteria.historialId();
         proyectoGradoCriteria.tutorId();
-        proyectoGradoCriteria.estudiantesId();
-        proyectoGradoCriteria.juradosId();
+        proyectoGradoCriteria.estudianteId();
+        proyectoGradoCriteria.juradoId();
         proyectoGradoCriteria.distinct();
     }
 
@@ -100,13 +100,13 @@ class ProyectoGradoCriteriaTest {
                 condition.apply(criteria.getPorcentajeAvance()) &&
                 condition.apply(criteria.getFechaRegistro()) &&
                 condition.apply(criteria.getFechaActualizacion()) &&
-                condition.apply(criteria.getEntregasId()) &&
-                condition.apply(criteria.getFechasLimiteId()) &&
-                condition.apply(criteria.getEvaluacionesId()) &&
+                condition.apply(criteria.getEntregaId()) &&
+                condition.apply(criteria.getFechaLimiteId()) &&
+                condition.apply(criteria.getEvaluacionId()) &&
                 condition.apply(criteria.getHistorialId()) &&
                 condition.apply(criteria.getTutorId()) &&
-                condition.apply(criteria.getEstudiantesId()) &&
-                condition.apply(criteria.getJuradosId()) &&
+                condition.apply(criteria.getEstudianteId()) &&
+                condition.apply(criteria.getJuradoId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -126,13 +126,13 @@ class ProyectoGradoCriteriaTest {
                 condition.apply(criteria.getPorcentajeAvance(), copy.getPorcentajeAvance()) &&
                 condition.apply(criteria.getFechaRegistro(), copy.getFechaRegistro()) &&
                 condition.apply(criteria.getFechaActualizacion(), copy.getFechaActualizacion()) &&
-                condition.apply(criteria.getEntregasId(), copy.getEntregasId()) &&
-                condition.apply(criteria.getFechasLimiteId(), copy.getFechasLimiteId()) &&
-                condition.apply(criteria.getEvaluacionesId(), copy.getEvaluacionesId()) &&
+                condition.apply(criteria.getEntregaId(), copy.getEntregaId()) &&
+                condition.apply(criteria.getFechaLimiteId(), copy.getFechaLimiteId()) &&
+                condition.apply(criteria.getEvaluacionId(), copy.getEvaluacionId()) &&
                 condition.apply(criteria.getHistorialId(), copy.getHistorialId()) &&
                 condition.apply(criteria.getTutorId(), copy.getTutorId()) &&
-                condition.apply(criteria.getEstudiantesId(), copy.getEstudiantesId()) &&
-                condition.apply(criteria.getJuradosId(), copy.getJuradosId()) &&
+                condition.apply(criteria.getEstudianteId(), copy.getEstudianteId()) &&
+                condition.apply(criteria.getJuradoId(), copy.getJuradoId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

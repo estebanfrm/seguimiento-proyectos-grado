@@ -29,8 +29,8 @@ describe('ProyectoGrado Form Service', () => {
             fechaRegistro: expect.any(Object),
             fechaActualizacion: expect.any(Object),
             tutor: expect.any(Object),
-            estudianteses: expect.any(Object),
-            juradoses: expect.any(Object),
+            estudiantes: expect.any(Object),
+            jurados: expect.any(Object),
           }),
         );
       });
@@ -50,8 +50,8 @@ describe('ProyectoGrado Form Service', () => {
             fechaRegistro: expect.any(Object),
             fechaActualizacion: expect.any(Object),
             tutor: expect.any(Object),
-            estudianteses: expect.any(Object),
-            juradoses: expect.any(Object),
+            estudiantes: expect.any(Object),
+            jurados: expect.any(Object),
           }),
         );
       });

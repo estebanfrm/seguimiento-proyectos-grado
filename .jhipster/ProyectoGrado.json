@@ -60,21 +60,21 @@
     {
       "otherEntityName": "entrega",
       "otherEntityRelationshipName": "proyecto",
-      "relationshipName": "entregas",
+      "relationshipName": "entrega",
       "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "fechaLimiteEtapa",
       "otherEntityRelationshipName": "proyecto",
-      "relationshipName": "fechasLimite",
+      "relationshipName": "fechaLimite",
       "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "evaluacion",
       "otherEntityRelationshipName": "proyecto",
-      "relationshipName": "evaluaciones",
+      "relationshipName": "evaluacion",
       "relationshipSide": "left",
       "relationshipType": "one-to-many"
     },
@@ -96,7 +96,7 @@
     {
       "otherEntityField": "login",
       "otherEntityName": "user",
-      "relationshipName": "estudiantes",
+      "relationshipName": "estudiante",
       "relationshipSide": "left",
       "relationshipType": "many-to-many",
       "relationshipWithBuiltInEntity": true
@@ -104,7 +104,7 @@
     {
       "otherEntityField": "login",
       "otherEntityName": "user",
-      "relationshipName": "jurados",
+      "relationshipName": "jurado",
       "relationshipSide": "left",
       "relationshipType": "many-to-many",
       "relationshipWithBuiltInEntity": true

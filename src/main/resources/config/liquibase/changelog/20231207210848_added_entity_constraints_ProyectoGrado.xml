@@ -18,29 +18,29 @@
                                  />
 
         <addForeignKeyConstraint baseColumnNames="proyecto_grado_id"
-                                 baseTableName="rel_proyecto_grado__estudiantes"
-                                 constraintName="fk_rel_proyecto_grado__estudiantes__proyecto_grado_id"
+                                 baseTableName="rel_proyecto_grado__estudiante"
+                                 constraintName="fk_rel_proyecto_grado__estudiante__proyecto_grado_id"
                                  referencedColumnNames="id"
                                  referencedTableName="proyecto_grado"
                                  />
 
-        <addForeignKeyConstraint baseColumnNames="estudiantes_id"
-                                 baseTableName="rel_proyecto_grado__estudiantes"
-                                 constraintName="fk_rel_proyecto_grado__estudiantes__estudiantes_id"
+        <addForeignKeyConstraint baseColumnNames="estudiante_id"
+                                 baseTableName="rel_proyecto_grado__estudiante"
+                                 constraintName="fk_rel_proyecto_grado__estudiante__estudiante_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"
                                  />
 
         <addForeignKeyConstraint baseColumnNames="proyecto_grado_id"
-                                 baseTableName="rel_proyecto_grado__jurados"
-                                 constraintName="fk_rel_proyecto_grado__jurados__proyecto_grado_id"
+                                 baseTableName="rel_proyecto_grado__jurado"
+                                 constraintName="fk_rel_proyecto_grado__jurado__proyecto_grado_id"
                                  referencedColumnNames="id"
                                  referencedTableName="proyecto_grado"
                                  />
 
-        <addForeignKeyConstraint baseColumnNames="jurados_id"
-                                 baseTableName="rel_proyecto_grado__jurados"
-                                 constraintName="fk_rel_proyecto_grado__jurados__jurados_id"
+        <addForeignKeyConstraint baseColumnNames="jurado_id"
+                                 baseTableName="rel_proyecto_grado__jurado"
+                                 constraintName="fk_rel_proyecto_grado__jurado__jurado_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"
                                  />

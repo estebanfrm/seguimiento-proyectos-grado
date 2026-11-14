@@ -15,8 +15,8 @@ export interface IProyectoGrado {
   fechaRegistro?: dayjs.Dayjs | null;
   fechaActualizacion?: dayjs.Dayjs | null;
   tutor?: Pick<IUser, 'id' | 'login'> | null;
-  estudianteses?: Pick<IUser, 'id' | 'login'>[] | null;
-  juradoses?: Pick<IUser, 'id' | 'login'>[] | null;
+  estudiantes?: Pick<IUser, 'id' | 'login'>[] | null;
+  jurados?: Pick<IUser, 'id' | 'login'>[] | null;
 }
 
 export type NewProyectoGrado = Omit<IProyectoGrado, 'id'> & { id: null };

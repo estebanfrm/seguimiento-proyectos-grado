@@ -29,68 +29,68 @@ class ProyectoGradoTest {
     }
 
     @Test
-    void entregasTest() {
+    void entregaTest() {
         ProyectoGrado proyectoGrado = getProyectoGradoRandomSampleGenerator();
         Entrega entregaBack = getEntregaRandomSampleGenerator();
 
-        proyectoGrado.addEntregas(entregaBack);
-        assertThat(proyectoGrado.getEntregases()).containsOnly(entregaBack);
+        proyectoGrado.addEntrega(entregaBack);
+        assertThat(proyectoGrado.getEntregas()).containsOnly(entregaBack);
         assertThat(entregaBack.getProyecto()).isEqualTo(proyectoGrado);
 
-        proyectoGrado.removeEntregas(entregaBack);
-        assertThat(proyectoGrado.getEntregases()).doesNotContain(entregaBack);
+        proyectoGrado.removeEntrega(entregaBack);
+        assertThat(proyectoGrado.getEntregas()).doesNotContain(entregaBack);
         assertThat(entregaBack.getProyecto()).isNull();
 
-        proyectoGrado.entregases(new HashSet<>(Set.of(entregaBack)));
-        assertThat(proyectoGrado.getEntregases()).containsOnly(entregaBack);
+        proyectoGrado.entregas(new HashSet<>(Set.of(entregaBack)));
+        assertThat(proyectoGrado.getEntregas()).containsOnly(entregaBack);
         assertThat(entregaBack.getProyecto()).isEqualTo(proyectoGrado);
 
-        proyectoGrado.setEntregases(new HashSet<>());
-        assertThat(proyectoGrado.getEntregases()).doesNotContain(entregaBack);
+        proyectoGrado.setEntregas(new HashSet<>());
+        assertThat(proyectoGrado.getEntregas()).doesNotContain(entregaBack);
         assertThat(entregaBack.getProyecto()).isNull();
     }
 
     @Test
-    void fechasLimiteTest() {
+    void fechaLimiteTest() {
         ProyectoGrado proyectoGrado = getProyectoGradoRandomSampleGenerator();
         FechaLimiteEtapa fechaLimiteEtapaBack = getFechaLimiteEtapaRandomSampleGenerator();
 
-        proyectoGrado.addFechasLimite(fechaLimiteEtapaBack);
-        assertThat(proyectoGrado.getFechasLimites()).containsOnly(fechaLimiteEtapaBack);
+        proyectoGrado.addFechaLimite(fechaLimiteEtapaBack);
+        assertThat(proyectoGrado.getFechaLimites()).containsOnly(fechaLimiteEtapaBack);
         assertThat(fechaLimiteEtapaBack.getProyecto()).isEqualTo(proyectoGrado);
 
-        proyectoGrado.removeFechasLimite(fechaLimiteEtapaBack);
-        assertThat(proyectoGrado.getFechasLimites()).doesNotContain(fechaLimiteEtapaBack);
+        proyectoGrado.removeFechaLimite(fechaLimiteEtapaBack);
+        assertThat(proyectoGrado.getFechaLimites()).doesNotContain(fechaLimiteEtapaBack);
         assertThat(fechaLimiteEtapaBack.getProyecto()).isNull();
 
-        proyectoGrado.fechasLimites(new HashSet<>(Set.of(fechaLimiteEtapaBack)));
-        assertThat(proyectoGrado.getFechasLimites()).containsOnly(fechaLimiteEtapaBack);
+        proyectoGrado.fechaLimites(new HashSet<>(Set.of(fechaLimiteEtapaBack)));
+        assertThat(proyectoGrado.getFechaLimites()).containsOnly(fechaLimiteEtapaBack);
         assertThat(fechaLimiteEtapaBack.getProyecto()).isEqualTo(proyectoGrado);
 
-        proyectoGrado.setFechasLimites(new HashSet<>());
-        assertThat(proyectoGrado.getFechasLimites()).doesNotContain(fechaLimiteEtapaBack);
+        proyectoGrado.setFechaLimites(new HashSet<>());
+        assertThat(proyectoGrado.getFechaLimites()).doesNotContain(fechaLimiteEtapaBack);
         assertThat(fechaLimiteEtapaBack.getProyecto()).isNull();
     }
 
     @Test
-    void evaluacionesTest() {
+    void evaluacionTest() {
         ProyectoGrado proyectoGrado = getProyectoGradoRandomSampleGenerator();
         Evaluacion evaluacionBack = getEvaluacionRandomSampleGenerator();
 
-        proyectoGrado.addEvaluaciones(evaluacionBack);
-        assertThat(proyectoGrado.getEvaluacioneses()).containsOnly(evaluacionBack);
+        proyectoGrado.addEvaluacion(evaluacionBack);
+        assertThat(proyectoGrado.getEvaluacions()).containsOnly(evaluacionBack);
         assertThat(evaluacionBack.getProyecto()).isEqualTo(proyectoGrado);
 
-        proyectoGrado.removeEvaluaciones(evaluacionBack);
-        assertThat(proyectoGrado.getEvaluacioneses()).doesNotContain(evaluacionBack);
+        proyectoGrado.removeEvaluacion(evaluacionBack);
+        assertThat(proyectoGrado.getEvaluacions()).doesNotContain(evaluacionBack);
         assertThat(evaluacionBack.getProyecto()).isNull();
 
-        proyectoGrado.evaluacioneses(new HashSet<>(Set.of(evaluacionBack)));
-        assertThat(proyectoGrado.getEvaluacioneses()).containsOnly(evaluacionBack);
+        proyectoGrado.evaluacions(new HashSet<>(Set.of(evaluacionBack)));
+        assertThat(proyectoGrado.getEvaluacions()).containsOnly(evaluacionBack);
         assertThat(evaluacionBack.getProyecto()).isEqualTo(proyectoGrado);
 
-        proyectoGrado.setEvaluacioneses(new HashSet<>());
-        assertThat(proyectoGrado.getEvaluacioneses()).doesNotContain(evaluacionBack);
+        proyectoGrado.setEvaluacions(new HashSet<>());
+        assertThat(proyectoGrado.getEvaluacions()).doesNotContain(evaluacionBack);
         assertThat(evaluacionBack.getProyecto()).isNull();
     }
 

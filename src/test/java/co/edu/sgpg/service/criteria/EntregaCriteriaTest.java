@@ -78,7 +78,7 @@ class EntregaCriteriaTest {
         entregaCriteria.version();
         entregaCriteria.fechaEntrega();
         entregaCriteria.estado();
-        entregaCriteria.observacionesId();
+        entregaCriteria.observacionId();
         entregaCriteria.autorId();
         entregaCriteria.proyectoId();
         entregaCriteria.distinct();
@@ -94,7 +94,7 @@ class EntregaCriteriaTest {
                 condition.apply(criteria.getVersion()) &&
                 condition.apply(criteria.getFechaEntrega()) &&
                 condition.apply(criteria.getEstado()) &&
-                condition.apply(criteria.getObservacionesId()) &&
+                condition.apply(criteria.getObservacionId()) &&
                 condition.apply(criteria.getAutorId()) &&
                 condition.apply(criteria.getProyectoId()) &&
                 condition.apply(criteria.getDistinct()),
@@ -112,7 +112,7 @@ class EntregaCriteriaTest {
                 condition.apply(criteria.getVersion(), copy.getVersion()) &&
                 condition.apply(criteria.getFechaEntrega(), copy.getFechaEntrega()) &&
                 condition.apply(criteria.getEstado(), copy.getEstado()) &&
-                condition.apply(criteria.getObservacionesId(), copy.getObservacionesId()) &&
+                condition.apply(criteria.getObservacionId(), copy.getObservacionId()) &&
                 condition.apply(criteria.getAutorId(), copy.getAutorId()) &&
                 condition.apply(criteria.getProyectoId(), copy.getProyectoId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),

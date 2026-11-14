@@ -48,7 +48,7 @@
     {
       "otherEntityField": "titulo",
       "otherEntityName": "proyectoGrado",
-      "otherEntityRelationshipName": "evaluaciones",
+      "otherEntityRelationshipName": "evaluacion",
       "relationshipName": "proyecto",
       "relationshipSide": "right",
       "relationshipType": "many-to-one",
