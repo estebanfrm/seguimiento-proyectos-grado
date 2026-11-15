@@ -191,6 +191,17 @@ describe('SeguimientoDetail', () => {
     expect(boton('resolver-observacion')).toBeNull();
   });
 
+  it('muestra la alerta de permisos si no puede consultar las observaciones de la entrega', async () => {
+    service.detalleEntrega.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 403 })));
+    await render();
+    comp.expandir(9);
+    fixture.detectChanges();
+    expect(service.detalleEntrega).toHaveBeenCalledWith(9);
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain('No tiene permisos');
+    expect(comp.detalles()[9]).toBeUndefined();
+    expect(comp.cargandoEntregas()).toEqual([]);
+  });
+
   it('abre el modal con el proyecto y la entrega y actualiza tras guardar', async () => {
     const preparar = vi.fn();
     const closed = new Subject<boolean>();

@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 
 import { serverApiUrl } from 'app/config';
 import { EstadoEntrega } from 'app/entities/enumerations/estado-entrega.model';
@@ -78,10 +78,9 @@ export class SeguimientoService {
   }
 
   detalleEntrega(id: number): Observable<IDetalleEntrega> {
-    // Observacion no tiene filtros generados: el servidor filtra por visibilidad y aquí por entrega.
     return forkJoin({
       entrega: this.http.get<RestEntrega>(`${this.apiUrl}/entregas/${id}`),
-      observaciones: this.http.get<RestObservacion[]>(`${this.apiUrl}/observacions`),
-    }).pipe(map(({ entrega, observaciones }) => ({ entrega, observaciones: observaciones.filter(item => item.entrega?.id === id) })));
+      observaciones: this.http.get<RestObservacion[]>(`${this.apiUrl}/entregas/${id}/observacions`),
+    });
   }
 }

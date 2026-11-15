@@ -96,17 +96,29 @@ describe('SeguimientoService: contrato de API', () => {
     http.expectOne({ method: 'GET', url: `${api}/usuarios/por-rol/ROLE_TUTOR` }).flush(usuarios);
   });
 
-  it('expande la entrega y conserva únicamente sus observaciones entre las visibles', () => {
+  it('expande la entrega con sus observaciones y conserva el orden del endpoint específico', () => {
+    const observaciones = [
+      { id: 14, contenido: 'Primera observación', fechaCreacion: '2026-11-01T12:00:00Z', entrega: { id: 9 } },
+      { id: 12, contenido: 'Segunda observación', fechaCreacion: '2026-11-02T12:00:00Z', entrega: { id: 9 } },
+    ];
     service.detalleEntrega(9).subscribe(response => {
       expect(response.entrega.id).toBe(9);
-      expect(response.observaciones.map(item => item.id)).toEqual([12]);
+      expect(response.observaciones).toEqual(observaciones);
     });
+    http.expectNone({ method: 'GET', url: `${api}/observacions` });
     http.expectOne({ method: 'GET', url: `${api}/entregas/9` }).flush({ id: 9, urlDocumento: 'https://example.org/doc' });
-    http.expectOne({ method: 'GET', url: `${api}/observacions` }).flush([
-      { id: 12, entrega: { id: 9 } },
-      { id: 13, entrega: { id: 10 } },
-      { id: 14, entrega: null },
-    ]);
+    http.expectOne({ method: 'GET', url: `${api}/entregas/9/observacions` }).flush(observaciones);
+  });
+
+  it('propaga el 403 cuando el endpoint de observaciones rechaza el acceso', () => {
+    service.detalleEntrega(9).subscribe({
+      next: () => expect.fail('El servidor debe rechazar el acceso'),
+      error: (error: HttpErrorResponse) => expect(error.status).toBe(403),
+    });
+    http.expectOne({ method: 'GET', url: `${api}/entregas/9` }).flush({ id: 9 });
+    http
+      .expectOne({ method: 'GET', url: `${api}/entregas/9/observacions` })
+      .flush({ detail: 'Sin acceso al proyecto' }, { status: 403, statusText: 'Forbidden' });
   });
 
   it('conserva el detail y pendientes del ProblemDetail 409', () => {
