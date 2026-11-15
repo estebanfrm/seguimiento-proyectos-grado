@@ -32,9 +32,12 @@ public class EntregaQueryService extends QueryService<Entrega> {
 
     private final EntregaMapper entregaMapper;
 
-    public EntregaQueryService(EntregaRepository entregaRepository, EntregaMapper entregaMapper) {
+    private final VisibilidadProyectoService visibilidad;
+
+    public EntregaQueryService(EntregaRepository entregaRepository, EntregaMapper entregaMapper, VisibilidadProyectoService visibilidad) {
         this.entregaRepository = entregaRepository;
         this.entregaMapper = entregaMapper;
+        this.visibilidad = visibilidad;
     }
 
     /**
@@ -96,6 +99,6 @@ public class EntregaQueryService extends QueryService<Entrega> {
                 )
             );
         }
-        return specification;
+        return specification.and(visibilidad.para(root -> root.get("proyecto").get("id")));
     }
 }

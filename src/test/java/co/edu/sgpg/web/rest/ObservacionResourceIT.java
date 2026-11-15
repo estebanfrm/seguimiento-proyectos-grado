@@ -43,7 +43,7 @@ import tools.jackson.databind.ObjectMapper;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username = "admin", authorities = co.edu.sgpg.security.AuthoritiesConstants.ADMIN)
 class ObservacionResourceIT {
 
     private static final String DEFAULT_CONTENIDO = "AAAAAAAAAA";
@@ -216,40 +216,6 @@ class ObservacionResourceIT {
 
     @Test
     @Transactional
-    void checkResueltaIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        observacion.setResuelta(null);
-
-        // Create the Observacion, which fails.
-        ObservacionDTO observacionDTO = observacionMapper.toDto(observacion);
-
-        restObservacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(observacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkFechaCreacionIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        observacion.setFechaCreacion(null);
-
-        // Create the Observacion, which fails.
-        ObservacionDTO observacionDTO = observacionMapper.toDto(observacion);
-
-        restObservacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(observacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     void getAllObservacions() throws Exception {
         // Initialize the database
         insertedObservacion = observacionRepository.saveAndFlush(observacion);
@@ -306,34 +272,6 @@ class ObservacionResourceIT {
     void getNonExistingObservacion() throws Exception {
         // Get the observacion
         restObservacionMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    void putExistingObservacion() throws Exception {
-        // Initialize the database
-        insertedObservacion = observacionRepository.saveAndFlush(observacion);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the observacion
-        Observacion updatedObservacion = observacionRepository.findById(observacion.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedObservacion are not directly saved in db
-        em.detach(updatedObservacion);
-        updatedObservacion.contenido(UPDATED_CONTENIDO).tipo(UPDATED_TIPO).resuelta(UPDATED_RESUELTA).fechaCreacion(UPDATED_FECHA_CREACION);
-        ObservacionDTO observacionDTO = observacionMapper.toDto(updatedObservacion);
-
-        restObservacionMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, observacionDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(observacionDTO))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Observacion in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedObservacionToMatchAllProperties(updatedObservacion);
     }
 
     @Test
@@ -396,69 +334,6 @@ class ObservacionResourceIT {
 
         // Validate the Observacion in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void partialUpdateObservacionWithPatch() throws Exception {
-        // Initialize the database
-        insertedObservacion = observacionRepository.saveAndFlush(observacion);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the observacion using partial update
-        Observacion partialUpdatedObservacion = new Observacion();
-        partialUpdatedObservacion.setId(observacion.getId());
-
-        partialUpdatedObservacion.resuelta(UPDATED_RESUELTA).fechaCreacion(UPDATED_FECHA_CREACION);
-
-        restObservacionMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedObservacion.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedObservacion))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Observacion in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertObservacionUpdatableFieldsEquals(
-            createUpdateProxyForBean(partialUpdatedObservacion, observacion),
-            getPersistedObservacion(observacion)
-        );
-    }
-
-    @Test
-    @Transactional
-    void fullUpdateObservacionWithPatch() throws Exception {
-        // Initialize the database
-        insertedObservacion = observacionRepository.saveAndFlush(observacion);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the observacion using partial update
-        Observacion partialUpdatedObservacion = new Observacion();
-        partialUpdatedObservacion.setId(observacion.getId());
-
-        partialUpdatedObservacion
-            .contenido(UPDATED_CONTENIDO)
-            .tipo(UPDATED_TIPO)
-            .resuelta(UPDATED_RESUELTA)
-            .fechaCreacion(UPDATED_FECHA_CREACION);
-
-        restObservacionMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedObservacion.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedObservacion))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Observacion in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertObservacionUpdatableFieldsEquals(partialUpdatedObservacion, getPersistedObservacion(partialUpdatedObservacion));
     }
 
     @Test

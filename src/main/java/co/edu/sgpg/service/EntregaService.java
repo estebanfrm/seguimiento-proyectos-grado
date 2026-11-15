@@ -55,4 +55,6 @@ public interface EntregaService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Optional<EntregaDTO> revisar(Long id, co.edu.sgpg.service.dto.RevisionEntregaDTO revision);
 }

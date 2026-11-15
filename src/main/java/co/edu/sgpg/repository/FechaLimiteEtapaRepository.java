@@ -46,4 +46,9 @@ public interface FechaLimiteEtapaRepository extends JpaRepository<FechaLimiteEta
     Optional<FechaLimiteEtapa> findFirstByProyectoIdAndEtapaOrderByFechaLimiteDesc(Long proyectoId, Etapa etapa);
 
     List<FechaLimiteEtapa> findByProyectoIdOrderByFechaLimiteAsc(Long proyectoId);
+
+    @Query(
+        "select e from FechaLimiteEtapa e where exists (select p.id from ProyectoGrado p left join p.estudiantes estudiante left join p.tutor tutor left join p.jurados jurado where p.id = e.proyecto.id and (estudiante.login = :login or tutor.login = :login or jurado.login = :login))"
+    )
+    List<FechaLimiteEtapa> findVisiblesPorLogin(@Param("login") String login);
 }

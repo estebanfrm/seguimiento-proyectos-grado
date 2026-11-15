@@ -18,7 +18,6 @@ public class EntregaDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     private Etapa etapa;
 
     @NotNull
@@ -36,14 +35,11 @@ public class EntregaDTO implements Serializable {
     @Size(max = 500)
     private String urlDocumento;
 
-    @NotNull
     @Min(value = 1)
     private Integer version;
 
-    @NotNull
     private Instant fechaEntrega;
 
-    @NotNull
     private EstadoEntrega estado;
 
     private UserDTO autor;

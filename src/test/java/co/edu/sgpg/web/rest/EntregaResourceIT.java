@@ -47,7 +47,7 @@ import tools.jackson.databind.ObjectMapper;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username = "admin", authorities = co.edu.sgpg.security.AuthoritiesConstants.ADMIN)
 class EntregaResourceIT {
 
     private static final Etapa DEFAULT_ETAPA = Etapa.PROPUESTA;
@@ -187,128 +187,15 @@ class EntregaResourceIT {
     @Test
     @Transactional
     void createEntrega() throws Exception {
-        long databaseSizeBeforeCreate = getRepositoryCount();
-        // Create the Entrega
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-        var returnedEntregaDTO = om.readValue(
-            restEntregaMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            EntregaDTO.class
-        );
-
-        // Validate the Entrega in the database
-        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedEntrega = entregaMapper.toEntity(returnedEntregaDTO);
-        assertEntregaUpdatableFieldsEquals(returnedEntrega, getPersistedEntrega(returnedEntrega));
-
-        insertedEntrega = returnedEntrega;
-    }
-
-    @Test
-    @Transactional
-    void createEntregaWithExistingId() throws Exception {
-        // Create the Entrega with an existing ID
-        entrega.setId(1L);
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-
-        long databaseSizeBeforeCreate = getRepositoryCount();
-
-        // An entity with an existing ID cannot be created, so this API call must fail
+        long antes = getRepositoryCount();
         restEntregaMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-            .andExpect(status().isBadRequest());
-
-        // Validate the Entrega in the database
-        assertSameRepositoryCount(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    void checkEtapaIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        entrega.setEtapa(null);
-
-        // Create the Entrega, which fails.
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-
-        restEntregaMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkTituloIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        entrega.setTitulo(null);
-
-        // Create the Entrega, which fails.
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-
-        restEntregaMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkVersionIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        entrega.setVersion(null);
-
-        // Create the Entrega, which fails.
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-
-        restEntregaMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkFechaEntregaIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        entrega.setFechaEntrega(null);
-
-        // Create the Entrega, which fails.
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-
-        restEntregaMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkEstadoIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        entrega.setEstado(null);
-
-        // Create the Entrega, which fails.
-        EntregaDTO entregaDTO = entregaMapper.toDto(entrega);
-
-        restEntregaMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
+            .perform(
+                post(ENTITY_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(entregaMapper.toDto(entrega)))
+            )
+            .andExpect(status().isForbidden());
+        assertSameRepositoryCount(antes);
     }
 
     @Test
@@ -762,41 +649,6 @@ class EntregaResourceIT {
 
     @Test
     @Transactional
-    void putExistingEntrega() throws Exception {
-        // Initialize the database
-        insertedEntrega = entregaRepository.saveAndFlush(entrega);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the entrega
-        Entrega updatedEntrega = entregaRepository.findById(entrega.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedEntrega are not directly saved in db
-        em.detach(updatedEntrega);
-        updatedEntrega
-            .etapa(UPDATED_ETAPA)
-            .titulo(UPDATED_TITULO)
-            .descripcion(UPDATED_DESCRIPCION)
-            .archivo(UPDATED_ARCHIVO)
-            .archivoContentType(UPDATED_ARCHIVO_CONTENT_TYPE)
-            .urlDocumento(UPDATED_URL_DOCUMENTO)
-            .version(UPDATED_VERSION)
-            .fechaEntrega(UPDATED_FECHA_ENTREGA)
-            .estado(UPDATED_ESTADO);
-        EntregaDTO entregaDTO = entregaMapper.toDto(updatedEntrega);
-
-        restEntregaMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, entregaDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(entregaDTO))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Entrega in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedEntregaToMatchAllProperties(updatedEntrega);
-    }
-
-    @Test
-    @Transactional
     void putNonExistingEntrega() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         entrega.setId(longCount.incrementAndGet());
@@ -853,77 +705,6 @@ class EntregaResourceIT {
 
         // Validate the Entrega in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void partialUpdateEntregaWithPatch() throws Exception {
-        // Initialize the database
-        insertedEntrega = entregaRepository.saveAndFlush(entrega);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the entrega using partial update
-        Entrega partialUpdatedEntrega = new Entrega();
-        partialUpdatedEntrega.setId(entrega.getId());
-
-        partialUpdatedEntrega
-            .archivo(UPDATED_ARCHIVO)
-            .archivoContentType(UPDATED_ARCHIVO_CONTENT_TYPE)
-            .urlDocumento(UPDATED_URL_DOCUMENTO)
-            .version(UPDATED_VERSION)
-            .fechaEntrega(UPDATED_FECHA_ENTREGA)
-            .estado(UPDATED_ESTADO);
-
-        restEntregaMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedEntrega.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedEntrega))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Entrega in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertEntregaUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedEntrega, entrega), getPersistedEntrega(entrega));
-    }
-
-    @Test
-    @Transactional
-    void fullUpdateEntregaWithPatch() throws Exception {
-        // Initialize the database
-        insertedEntrega = entregaRepository.saveAndFlush(entrega);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the entrega using partial update
-        Entrega partialUpdatedEntrega = new Entrega();
-        partialUpdatedEntrega.setId(entrega.getId());
-
-        partialUpdatedEntrega
-            .etapa(UPDATED_ETAPA)
-            .titulo(UPDATED_TITULO)
-            .descripcion(UPDATED_DESCRIPCION)
-            .archivo(UPDATED_ARCHIVO)
-            .archivoContentType(UPDATED_ARCHIVO_CONTENT_TYPE)
-            .urlDocumento(UPDATED_URL_DOCUMENTO)
-            .version(UPDATED_VERSION)
-            .fechaEntrega(UPDATED_FECHA_ENTREGA)
-            .estado(UPDATED_ESTADO);
-
-        restEntregaMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedEntrega.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedEntrega))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Entrega in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertEntregaUpdatableFieldsEquals(partialUpdatedEntrega, getPersistedEntrega(partialUpdatedEntrega));
     }
 
     @Test

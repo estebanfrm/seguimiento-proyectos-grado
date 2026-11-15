@@ -1,6 +1,7 @@
 package co.edu.sgpg.web.rest;
 
 import co.edu.sgpg.repository.EvaluacionRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.EvaluacionService;
 import co.edu.sgpg.service.dto.EvaluacionDTO;
 import co.edu.sgpg.web.rest.errors.BadRequestAlertException;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -49,6 +51,7 @@ public class EvaluacionResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new evaluacionDTO, or with status {@code 400 (Bad Request)} if the evaluacion already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.JURADO + "')")
     @PostMapping("")
     public ResponseEntity<EvaluacionDTO> createEvaluacion(@Valid @RequestBody EvaluacionDTO evaluacionDTO) throws URISyntaxException {
         LOG.debug("REST request to save Evaluacion : {}", evaluacionDTO);
@@ -71,6 +74,7 @@ public class EvaluacionResource {
      * or with status {@code 500 (Internal Server Error)} if the evaluacionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @PutMapping("/{id}")
     public ResponseEntity<EvaluacionDTO> updateEvaluacion(
         @PathVariable(value = "id", required = false) final Long id,
@@ -105,6 +109,7 @@ public class EvaluacionResource {
      * or with status {@code 500 (Internal Server Error)} if the evaluacionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<EvaluacionDTO> partialUpdateEvaluacion(
         @PathVariable(value = "id", required = false) final Long id,
@@ -167,6 +172,7 @@ public class EvaluacionResource {
      * @param id the id of the evaluacionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvaluacion(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Evaluacion : {}", id);

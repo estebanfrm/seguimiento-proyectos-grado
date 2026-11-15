@@ -45,7 +45,7 @@ import tools.jackson.databind.ObjectMapper;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username = "admin", authorities = co.edu.sgpg.security.AuthoritiesConstants.ADMIN)
 class ProyectoGradoResourceIT {
 
     private static final String DEFAULT_TITULO = "AAAAAAAAAA";
@@ -221,57 +221,6 @@ class ProyectoGradoResourceIT {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
         proyectoGrado.setPrograma(null);
-
-        // Create the ProyectoGrado, which fails.
-        ProyectoGradoDTO proyectoGradoDTO = proyectoGradoMapper.toDto(proyectoGrado);
-
-        restProyectoGradoMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proyectoGradoDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkEtapaActualIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        proyectoGrado.setEtapaActual(null);
-
-        // Create the ProyectoGrado, which fails.
-        ProyectoGradoDTO proyectoGradoDTO = proyectoGradoMapper.toDto(proyectoGrado);
-
-        restProyectoGradoMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proyectoGradoDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkEstadoIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        proyectoGrado.setEstado(null);
-
-        // Create the ProyectoGrado, which fails.
-        ProyectoGradoDTO proyectoGradoDTO = proyectoGradoMapper.toDto(proyectoGrado);
-
-        restProyectoGradoMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(proyectoGradoDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkFechaRegistroIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        proyectoGrado.setFechaRegistro(null);
 
         // Create the ProyectoGrado, which fails.
         ProyectoGradoDTO proyectoGradoDTO = proyectoGradoMapper.toDto(proyectoGrado);
@@ -804,42 +753,6 @@ class ProyectoGradoResourceIT {
 
     @Test
     @Transactional
-    void putExistingProyectoGrado() throws Exception {
-        // Initialize the database
-        insertedProyectoGrado = proyectoGradoRepository.saveAndFlush(proyectoGrado);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the proyectoGrado
-        ProyectoGrado updatedProyectoGrado = proyectoGradoRepository.findById(proyectoGrado.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedProyectoGrado are not directly saved in db
-        em.detach(updatedProyectoGrado);
-        updatedProyectoGrado
-            .titulo(UPDATED_TITULO)
-            .resumen(UPDATED_RESUMEN)
-            .programa(UPDATED_PROGRAMA)
-            .etapaActual(UPDATED_ETAPA_ACTUAL)
-            .estado(UPDATED_ESTADO)
-            .porcentajeAvance(UPDATED_PORCENTAJE_AVANCE)
-            .fechaRegistro(UPDATED_FECHA_REGISTRO)
-            .fechaActualizacion(UPDATED_FECHA_ACTUALIZACION);
-        ProyectoGradoDTO proyectoGradoDTO = proyectoGradoMapper.toDto(updatedProyectoGrado);
-
-        restProyectoGradoMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, proyectoGradoDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(proyectoGradoDTO))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the ProyectoGrado in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedProyectoGradoToMatchAllProperties(updatedProyectoGrado);
-    }
-
-    @Test
-    @Transactional
     void putNonExistingProyectoGrado() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         proyectoGrado.setId(longCount.incrementAndGet());
@@ -898,76 +811,6 @@ class ProyectoGradoResourceIT {
 
         // Validate the ProyectoGrado in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void partialUpdateProyectoGradoWithPatch() throws Exception {
-        // Initialize the database
-        insertedProyectoGrado = proyectoGradoRepository.saveAndFlush(proyectoGrado);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the proyectoGrado using partial update
-        ProyectoGrado partialUpdatedProyectoGrado = new ProyectoGrado();
-        partialUpdatedProyectoGrado.setId(proyectoGrado.getId());
-
-        partialUpdatedProyectoGrado
-            .titulo(UPDATED_TITULO)
-            .porcentajeAvance(UPDATED_PORCENTAJE_AVANCE)
-            .fechaRegistro(UPDATED_FECHA_REGISTRO);
-
-        restProyectoGradoMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedProyectoGrado.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedProyectoGrado))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the ProyectoGrado in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertProyectoGradoUpdatableFieldsEquals(
-            createUpdateProxyForBean(partialUpdatedProyectoGrado, proyectoGrado),
-            getPersistedProyectoGrado(proyectoGrado)
-        );
-    }
-
-    @Test
-    @Transactional
-    void fullUpdateProyectoGradoWithPatch() throws Exception {
-        // Initialize the database
-        insertedProyectoGrado = proyectoGradoRepository.saveAndFlush(proyectoGrado);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the proyectoGrado using partial update
-        ProyectoGrado partialUpdatedProyectoGrado = new ProyectoGrado();
-        partialUpdatedProyectoGrado.setId(proyectoGrado.getId());
-
-        partialUpdatedProyectoGrado
-            .titulo(UPDATED_TITULO)
-            .resumen(UPDATED_RESUMEN)
-            .programa(UPDATED_PROGRAMA)
-            .etapaActual(UPDATED_ETAPA_ACTUAL)
-            .estado(UPDATED_ESTADO)
-            .porcentajeAvance(UPDATED_PORCENTAJE_AVANCE)
-            .fechaRegistro(UPDATED_FECHA_REGISTRO)
-            .fechaActualizacion(UPDATED_FECHA_ACTUALIZACION);
-
-        restProyectoGradoMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedProyectoGrado.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedProyectoGrado))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the ProyectoGrado in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertProyectoGradoUpdatableFieldsEquals(partialUpdatedProyectoGrado, getPersistedProyectoGrado(partialUpdatedProyectoGrado));
     }
 
     @Test

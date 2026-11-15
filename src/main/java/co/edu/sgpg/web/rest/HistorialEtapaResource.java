@@ -1,6 +1,7 @@
 package co.edu.sgpg.web.rest;
 
 import co.edu.sgpg.repository.HistorialEtapaRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.HistorialEtapaService;
 import co.edu.sgpg.service.dto.HistorialEtapaDTO;
 import co.edu.sgpg.web.rest.errors.BadRequestAlertException;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -54,6 +56,7 @@ public class HistorialEtapaResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new historialEtapaDTO, or with status {@code 400 (Bad Request)} if the historialEtapa already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("denyAll()")
     @PostMapping("")
     public ResponseEntity<HistorialEtapaDTO> createHistorialEtapa(@Valid @RequestBody HistorialEtapaDTO historialEtapaDTO)
         throws URISyntaxException {
@@ -77,6 +80,7 @@ public class HistorialEtapaResource {
      * or with status {@code 500 (Internal Server Error)} if the historialEtapaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("denyAll()")
     @PutMapping("/{id}")
     public ResponseEntity<HistorialEtapaDTO> updateHistorialEtapa(
         @PathVariable(value = "id", required = false) final Long id,
@@ -111,6 +115,7 @@ public class HistorialEtapaResource {
      * or with status {@code 500 (Internal Server Error)} if the historialEtapaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("denyAll()")
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<HistorialEtapaDTO> partialUpdateHistorialEtapa(
         @PathVariable(value = "id", required = false) final Long id,
@@ -178,6 +183,7 @@ public class HistorialEtapaResource {
      * @param id the id of the historialEtapaDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("denyAll()")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHistorialEtapa(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete HistorialEtapa : {}", id);

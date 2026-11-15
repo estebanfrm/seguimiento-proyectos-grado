@@ -1,6 +1,7 @@
 package co.edu.sgpg.web.rest;
 
 import co.edu.sgpg.repository.ObservacionRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.ObservacionService;
 import co.edu.sgpg.service.dto.ObservacionDTO;
 import co.edu.sgpg.web.rest.errors.BadRequestAlertException;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -49,6 +51,7 @@ public class ObservacionResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new observacionDTO, or with status {@code 400 (Bad Request)} if the observacion already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.TUTOR + "')")
     @PostMapping("")
     public ResponseEntity<ObservacionDTO> createObservacion(@Valid @RequestBody ObservacionDTO observacionDTO) throws URISyntaxException {
         LOG.debug("REST request to save Observacion : {}", observacionDTO);
@@ -71,6 +74,7 @@ public class ObservacionResource {
      * or with status {@code 500 (Internal Server Error)} if the observacionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.TUTOR + "')")
     @PutMapping("/{id}")
     public ResponseEntity<ObservacionDTO> updateObservacion(
         @PathVariable(value = "id", required = false) final Long id,
@@ -105,6 +109,7 @@ public class ObservacionResource {
      * or with status {@code 500 (Internal Server Error)} if the observacionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.TUTOR + "')")
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ObservacionDTO> partialUpdateObservacion(
         @PathVariable(value = "id", required = false) final Long id,
@@ -167,6 +172,7 @@ public class ObservacionResource {
      * @param id the id of the observacionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteObservacion(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Observacion : {}", id);
@@ -174,5 +180,11 @@ public class ObservacionResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PutMapping("/{id}/resolver")
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.TUTOR + "')")
+    public ResponseEntity<ObservacionDTO> resolver(@PathVariable Long id) {
+        return ResponseUtil.wrapOrNotFound(observacionService.resolver(id));
     }
 }

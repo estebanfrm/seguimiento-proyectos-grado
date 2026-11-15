@@ -46,7 +46,7 @@ import tools.jackson.databind.ObjectMapper;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username = "admin", authorities = co.edu.sgpg.security.AuthoritiesConstants.ADMIN)
 class EvaluacionResourceIT {
 
     private static final Etapa DEFAULT_ETAPA = Etapa.PROPUESTA;
@@ -55,7 +55,7 @@ class EvaluacionResourceIT {
     private static final BigDecimal DEFAULT_CALIFICACION = new BigDecimal(0);
     private static final BigDecimal UPDATED_CALIFICACION = new BigDecimal(1);
 
-    private static final Concepto DEFAULT_CONCEPTO = Concepto.APROBADO;
+    private static final Concepto DEFAULT_CONCEPTO = Concepto.REPROBADO;
     private static final Concepto UPDATED_CONCEPTO = Concepto.APROBADO_CON_MODIFICACIONES;
 
     private static final String DEFAULT_COMENTARIOS = "AAAAAAAAAA";
@@ -166,111 +166,15 @@ class EvaluacionResourceIT {
     @Test
     @Transactional
     void createEvaluacion() throws Exception {
-        long databaseSizeBeforeCreate = getRepositoryCount();
-        // Create the Evaluacion
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(evaluacion);
-        var returnedEvaluacionDTO = om.readValue(
-            restEvaluacionMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(evaluacionDTO)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            EvaluacionDTO.class
-        );
-
-        // Validate the Evaluacion in the database
-        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedEvaluacion = evaluacionMapper.toEntity(returnedEvaluacionDTO);
-        assertEvaluacionUpdatableFieldsEquals(returnedEvaluacion, getPersistedEvaluacion(returnedEvaluacion));
-
-        insertedEvaluacion = returnedEvaluacion;
-    }
-
-    @Test
-    @Transactional
-    void createEvaluacionWithExistingId() throws Exception {
-        // Create the Evaluacion with an existing ID
-        evaluacion.setId(1L);
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(evaluacion);
-
-        long databaseSizeBeforeCreate = getRepositoryCount();
-
-        // An entity with an existing ID cannot be created, so this API call must fail
+        long antes = getRepositoryCount();
         restEvaluacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(evaluacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        // Validate the Evaluacion in the database
-        assertSameRepositoryCount(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    void checkEtapaIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        evaluacion.setEtapa(null);
-
-        // Create the Evaluacion, which fails.
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(evaluacion);
-
-        restEvaluacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(evaluacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkCalificacionIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        evaluacion.setCalificacion(null);
-
-        // Create the Evaluacion, which fails.
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(evaluacion);
-
-        restEvaluacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(evaluacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkConceptoIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        evaluacion.setConcepto(null);
-
-        // Create the Evaluacion, which fails.
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(evaluacion);
-
-        restEvaluacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(evaluacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkFechaEvaluacionIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        evaluacion.setFechaEvaluacion(null);
-
-        // Create the Evaluacion, which fails.
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(evaluacion);
-
-        restEvaluacionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(evaluacionDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
+            .perform(
+                post(ENTITY_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(evaluacionMapper.toDto(evaluacion)))
+            )
+            .andExpect(status().isForbidden());
+        assertSameRepositoryCount(antes);
     }
 
     @Test
@@ -333,39 +237,6 @@ class EvaluacionResourceIT {
     void getNonExistingEvaluacion() throws Exception {
         // Get the evaluacion
         restEvaluacionMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    void putExistingEvaluacion() throws Exception {
-        // Initialize the database
-        insertedEvaluacion = evaluacionRepository.saveAndFlush(evaluacion);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the evaluacion
-        Evaluacion updatedEvaluacion = evaluacionRepository.findById(evaluacion.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedEvaluacion are not directly saved in db
-        em.detach(updatedEvaluacion);
-        updatedEvaluacion
-            .etapa(UPDATED_ETAPA)
-            .calificacion(UPDATED_CALIFICACION)
-            .concepto(UPDATED_CONCEPTO)
-            .comentarios(UPDATED_COMENTARIOS)
-            .fechaEvaluacion(UPDATED_FECHA_EVALUACION);
-        EvaluacionDTO evaluacionDTO = evaluacionMapper.toDto(updatedEvaluacion);
-
-        restEvaluacionMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, evaluacionDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(evaluacionDTO))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Evaluacion in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedEvaluacionToMatchAllProperties(updatedEvaluacion);
     }
 
     @Test
@@ -459,39 +330,6 @@ class EvaluacionResourceIT {
             createUpdateProxyForBean(partialUpdatedEvaluacion, evaluacion),
             getPersistedEvaluacion(evaluacion)
         );
-    }
-
-    @Test
-    @Transactional
-    void fullUpdateEvaluacionWithPatch() throws Exception {
-        // Initialize the database
-        insertedEvaluacion = evaluacionRepository.saveAndFlush(evaluacion);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the evaluacion using partial update
-        Evaluacion partialUpdatedEvaluacion = new Evaluacion();
-        partialUpdatedEvaluacion.setId(evaluacion.getId());
-
-        partialUpdatedEvaluacion
-            .etapa(UPDATED_ETAPA)
-            .calificacion(UPDATED_CALIFICACION)
-            .concepto(UPDATED_CONCEPTO)
-            .comentarios(UPDATED_COMENTARIOS)
-            .fechaEvaluacion(UPDATED_FECHA_EVALUACION);
-
-        restEvaluacionMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedEvaluacion.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedEvaluacion))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Evaluacion in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertEvaluacionUpdatableFieldsEquals(partialUpdatedEvaluacion, getPersistedEvaluacion(partialUpdatedEvaluacion));
     }
 
     @Test

@@ -51,4 +51,9 @@ public interface EvaluacionRepository extends JpaRepository<Evaluacion, Long> {
     List<Evaluacion> findByProyectoIdOrderByFechaEvaluacionAsc(Long proyectoId);
 
     boolean existsByProyectoIdAndEtapaAndJuradoLogin(Long proyectoId, Etapa etapa, String login);
+
+    @Query(
+        "select e from Evaluacion e where exists (select p.id from ProyectoGrado p left join p.estudiantes estudiante left join p.tutor tutor left join p.jurados jurado where p.id = e.proyecto.id and (estudiante.login = :login or tutor.login = :login or jurado.login = :login))"
+    )
+    List<Evaluacion> findVisiblesPorLogin(@Param("login") String login);
 }

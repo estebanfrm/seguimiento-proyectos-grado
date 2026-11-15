@@ -1,6 +1,7 @@
 package co.edu.sgpg.web.rest;
 
 import co.edu.sgpg.repository.FechaLimiteEtapaRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.FechaLimiteEtapaService;
 import co.edu.sgpg.service.dto.FechaLimiteEtapaDTO;
 import co.edu.sgpg.web.rest.errors.BadRequestAlertException;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -52,6 +54,7 @@ public class FechaLimiteEtapaResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fechaLimiteEtapaDTO, or with status {@code 400 (Bad Request)} if the fechaLimiteEtapa already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @PostMapping("")
     public ResponseEntity<FechaLimiteEtapaDTO> createFechaLimiteEtapa(@Valid @RequestBody FechaLimiteEtapaDTO fechaLimiteEtapaDTO)
         throws URISyntaxException {
@@ -75,6 +78,7 @@ public class FechaLimiteEtapaResource {
      * or with status {@code 500 (Internal Server Error)} if the fechaLimiteEtapaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @PutMapping("/{id}")
     public ResponseEntity<FechaLimiteEtapaDTO> updateFechaLimiteEtapa(
         @PathVariable(value = "id", required = false) final Long id,
@@ -109,6 +113,7 @@ public class FechaLimiteEtapaResource {
      * or with status {@code 500 (Internal Server Error)} if the fechaLimiteEtapaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<FechaLimiteEtapaDTO> partialUpdateFechaLimiteEtapa(
         @PathVariable(value = "id", required = false) final Long id,
@@ -171,6 +176,7 @@ public class FechaLimiteEtapaResource {
      * @param id the id of the fechaLimiteEtapaDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFechaLimiteEtapa(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete FechaLimiteEtapa : {}", id);

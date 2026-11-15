@@ -1,6 +1,7 @@
 package co.edu.sgpg.web.rest;
 
 import co.edu.sgpg.repository.ProyectoGradoRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.ProyectoGradoQueryService;
 import co.edu.sgpg.service.ProyectoGradoService;
 import co.edu.sgpg.service.criteria.ProyectoGradoCriteria;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -63,6 +65,7 @@ public class ProyectoGradoResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new proyectoGradoDTO, or with status {@code 400 (Bad Request)} if the proyectoGrado already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.ESTUDIANTE + "')")
     @PostMapping("")
     public ResponseEntity<ProyectoGradoDTO> createProyectoGrado(@Valid @RequestBody ProyectoGradoDTO proyectoGradoDTO)
         throws URISyntaxException {
@@ -86,6 +89,7 @@ public class ProyectoGradoResource {
      * or with status {@code 500 (Internal Server Error)} if the proyectoGradoDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.ESTUDIANTE + "')")
     @PutMapping("/{id}")
     public ResponseEntity<ProyectoGradoDTO> updateProyectoGrado(
         @PathVariable(value = "id", required = false) final Long id,
@@ -120,6 +124,7 @@ public class ProyectoGradoResource {
      * or with status {@code 500 (Internal Server Error)} if the proyectoGradoDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.ESTUDIANTE + "')")
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ProyectoGradoDTO> partialUpdateProyectoGrado(
         @PathVariable(value = "id", required = false) final Long id,
@@ -195,6 +200,7 @@ public class ProyectoGradoResource {
      * @param id the id of the proyectoGradoDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProyectoGrado(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete ProyectoGrado : {}", id);

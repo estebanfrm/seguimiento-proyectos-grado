@@ -23,10 +23,8 @@ public class ObservacionDTO implements Serializable {
     @NotNull
     private TipoObservacion tipo;
 
-    @NotNull
     private Boolean resuelta;
 
-    @NotNull
     private Instant fechaCreacion;
 
     private UserDTO autor;
