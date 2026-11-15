@@ -2,11 +2,11 @@
   "sgpgApp": {
     "EstadoEntrega": {
       "null": "",
-      "ENVIADA": "ENVIADA",
-      "EN_REVISION": "EN_REVISION",
-      "CON_OBSERVACIONES": "CON_OBSERVACIONES",
-      "APROBADA": "APROBADA",
-      "RECHAZADA": "RECHAZADA"
+      "ENVIADA": "Enviada",
+      "EN_REVISION": "En revisión",
+      "CON_OBSERVACIONES": "Con observaciones",
+      "APROBADA": "Aprobada",
+      "RECHAZADA": "Rechazada"
     }
   }
 }

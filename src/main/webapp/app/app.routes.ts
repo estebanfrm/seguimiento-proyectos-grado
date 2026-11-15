@@ -34,6 +34,11 @@ const routes: Routes = [
     title: 'login.title',
   },
   {
+    path: 'seguimiento',
+    canActivate: [userRouteAccessService],
+    loadChildren: () => import('./seguimiento/seguimiento.routes'),
+  },
+  {
     path: '',
     loadChildren: () => import('./entities/entity.routes'),
   },

@@ -15,6 +15,15 @@
             >Está conectado como &quot;{{ accountRef.login }}&quot;.</span
           >
         </div>
+        <section class="card mb-4" aria-labelledby="home-seguimiento-title">
+          <div class="card-body">
+            <h2 class="h4" id="home-seguimiento-title" jhiTranslate="seguimiento.title">Mis proyectos</h2>
+            <p [jhiTranslate]="textoSeguimiento()"></p>
+            <a class="btn btn-primary" routerLink="/seguimiento" data-cy="home-seguimiento" jhiTranslate="seguimiento.home.open">
+              Ir a mis proyectos
+            </a>
+          </div>
+        </section>
       } @else {
         <div class="alert alert-warning">
           <span jhiTranslate="global.messages.info.authenticated.prefix">Si desea </span>

@@ -1,0 +1,43 @@
+.etapas {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  list-style: none;
+}
+
+.etapa {
+  flex: 1 0 9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border-bottom: 4px solid var(--bs-border-color);
+  color: var(--bs-secondary-color);
+
+  &.actual {
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
+    background: var(--bs-primary-bg-subtle);
+  }
+
+  &.completada {
+    border-color: var(--bs-success);
+    color: var(--bs-success);
+  }
+}
+
+.etapa-numero {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+}
+
+.historial {
+  border-left: 3px solid var(--bs-border-color);
+  padding-left: 1.5rem;
+}
