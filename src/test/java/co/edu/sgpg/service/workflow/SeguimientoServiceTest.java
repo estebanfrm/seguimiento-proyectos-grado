@@ -88,7 +88,7 @@ class SeguimientoServiceTest {
             .titulo("Proyecto de prueba")
             .etapaActual(Etapa.DESARROLLO)
             .estado(EstadoProyecto.ACTIVO)
-            .porcentajeAvance(51);
+            .porcentajeAvance(48);
     }
 
     @Test
@@ -145,7 +145,7 @@ class SeguimientoServiceTest {
         var resultado = service.obtener(1L);
 
         assertThat(resultado.proyecto().getId()).isEqualTo(1L);
-        assertThat(resultado.porcentajeAvance()).isEqualTo(51);
+        assertThat(resultado.porcentajeAvance()).isEqualTo(48);
         assertThat(resultado.etapas())
             .extracting(e -> e.etapa())
             .containsExactly(Etapa.values());

@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Calcula y persiste el avance académico a partir de los requisitos de la etapa actual.
+ * Usa {@code base + (baseSiguiente - base) * cumplidos / (totalRequisitos + 1)},
+ * redondeando hacia abajo y reservando un paso para la transición de etapa.
+ * Solo FINALIZADO alcanza el 100 %.
  */
 @Service
 @Transactional
@@ -38,7 +41,7 @@ public class AvanceServiceImpl implements AvanceService {
             int total = transicion.requisitos().size();
             long cumplidos = transicion.requisitos().stream().filter(RequisitoDTO::cumplido).count();
             if (total > 0) {
-                avance += (int) (((base(transicion.etapaSiguiente()) - avance) * cumplidos) / total);
+                avance += (int) (((base(transicion.etapaSiguiente()) - avance) * cumplidos) / (total + 1));
             }
         }
         proyecto.setPorcentajeAvance(avance);

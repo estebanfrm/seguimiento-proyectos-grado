@@ -143,12 +143,12 @@ class ProyectoWorkflowResourceIT {
                     contains("TUTOR_ASIGNADO", "ESTUDIANTES_ASIGNADOS", "ENTREGA_APROBADA", "SIN_CORRECCIONES_PENDIENTES")
                 )
             );
-        avanzarComoTutor("ANTEPROYECTO", 28);
+        avanzarComoTutor("ANTEPROYECTO", 26);
 
         aprobarEntrega(Etapa.ANTEPROYECTO);
         evaluarComoJurado(juradoUno, Etapa.ANTEPROYECTO, "4.0", Concepto.APROBADO);
         evaluarComoJurado(juradoDos, Etapa.ANTEPROYECTO, "3.5", Concepto.APROBADO_CON_MODIFICACIONES);
-        avanzarComoTutor("DESARROLLO", 51);
+        avanzarComoTutor("DESARROLLO", 48);
 
         aprobarEntrega(Etapa.DESARROLLO);
         fechas.saveAndFlush(new FechaLimiteEtapa().proyecto(proyecto).etapa(Etapa.SUSTENTACION).fechaLimite(AHORA.plusSeconds(86400)));
@@ -247,7 +247,7 @@ class ProyectoWorkflowResourceIT {
             .andExpect(jsonPath("$.etapas[0].entregas[0].observacionesPendientes").value(1));
         correccion.setResuelta(true);
         observaciones.saveAndFlush(correccion);
-        avanzarComoTutor("ANTEPROYECTO", 28);
+        avanzarComoTutor("ANTEPROYECTO", 26);
     }
 
     @ParameterizedTest
@@ -310,7 +310,7 @@ class ProyectoWorkflowResourceIT {
         var guardado = proyectos.findById(proyecto.getId()).orElseThrow();
         assertThat(guardado.getEstado()).isEqualTo(EstadoProyecto.CANCELADO);
         assertThat(guardado.getFechaActualizacion()).isEqualTo(AHORA);
-        assertThat(guardado.getPorcentajeAvance()).isEqualTo(15);
+        assertThat(guardado.getPorcentajeAvance()).isEqualTo(12);
         assertThat(historial.findByProyectoIdOrderByFechaAsc(proyecto.getId()))
             .singleElement()
             .satisfies(h -> {

@@ -41,17 +41,18 @@ class AvanceServiceImplTest {
     @ParameterizedTest
     @CsvSource({
         "PROPUESTA,0,4,0",
-        "PROPUESTA,1,4,5",
-        "PROPUESTA,4,4,20",
+        "PROPUESTA,1,4,4",
+        "PROPUESTA,4,4,16",
         "ANTEPROYECTO,0,5,20",
-        "ANTEPROYECTO,3,5,32",
-        "ANTEPROYECTO,5,5,40",
+        "ANTEPROYECTO,3,5,30",
+        "ANTEPROYECTO,4,5,33",
+        "ANTEPROYECTO,5,5,36",
         "DESARROLLO,0,3,40",
-        "DESARROLLO,1,3,51",
-        "DESARROLLO,2,3,63",
-        "DESARROLLO,3,3,75",
+        "DESARROLLO,1,3,48",
+        "DESARROLLO,2,3,57",
+        "DESARROLLO,3,3,66",
         "SUSTENTACION,0,1,75",
-        "SUSTENTACION,1,1,100",
+        "SUSTENTACION,1,1,87",
     })
     void calculaFormulaYRedondeaHaciaAbajo(Etapa etapa, int cumplidos, int total, int esperado) {
         var proyecto = new ProyectoGrado().id(1L).etapaActual(etapa).estado(EstadoProyecto.ACTIVO);

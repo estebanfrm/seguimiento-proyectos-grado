@@ -169,11 +169,12 @@ class MotorEtapasServiceTest {
     @Test
     void cancelaConHistorialEnLaMismaEtapa() {
         cargarProyecto();
-        prepararMutacion(5);
+        prepararMutacion(4);
         when(acceso.esAdmin()).thenReturn(true);
         var dto = service.cancelar(1L, "Retiro voluntario");
         assertThat(dto.getEstado()).isEqualTo(EstadoProyecto.CANCELADO);
         assertThat(dto.getEtapaActual()).isEqualTo(Etapa.PROPUESTA);
+        assertThat(dto.getPorcentajeAvance()).isEqualTo(4);
         assertThat(dto.getFechaActualizacion()).isEqualTo(AHORA);
         verify(historial).save(
             argThat(
