@@ -37,8 +37,8 @@ spring:
       poolName: Hikari
       auto-commit: false
   liquibase:
-    # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev, faker
+    # Datos académicos coherentes; fake-data permanece disponible solo con contexto faker explícito.
+    contexts: dev
   mail:
     host: localhost
     port: 25

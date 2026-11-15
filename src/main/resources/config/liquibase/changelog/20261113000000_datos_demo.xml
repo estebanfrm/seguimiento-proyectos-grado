@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Solo desarrollo: usuarios 1001-1011; entidades 2001-7010. Fechas de CSV expresadas en UTC. -->
+    <changeSet id="20261113000000-datos-demo" author="sgpg" context="dev" dbms="postgresql">
+        <!-- Los TextBlob se cargan como string literal, no como rutas a ficheros CLOB. -->
+        <loadData file="../data/demo/user.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="jhi_user" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="login" type="string"/>
+            <column name="password_hash" type="string"/>
+            <column name="first_name" type="string"/>
+            <column name="last_name" type="string"/>
+            <column name="email" type="string"/>
+            <column name="image_url" type="string"/>
+            <column name="activated" type="boolean"/>
+            <column name="lang_key" type="string"/>
+            <column name="created_by" type="string"/>
+            <column name="last_modified_by" type="string"/>
+        </loadData>
+        <loadData file="../data/demo/user_authority.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="jhi_user_authority" usePreparedStatements="true">
+            <column name="user_id" type="numeric"/>
+            <column name="authority_name" type="string"/>
+        </loadData>
+        <loadData file="../data/demo/proyecto_grado.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="proyecto_grado" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="titulo" type="string"/>
+            <column name="resumen" type="string"/>
+            <column name="programa" type="string"/>
+            <column name="etapa_actual" type="string"/>
+            <column name="estado" type="string"/>
+            <column name="porcentaje_avance" type="numeric"/>
+            <column name="fecha_registro" type="date"/>
+            <column name="fecha_actualizacion" type="date"/>
+            <column name="tutor_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/rel_proyecto_grado__estudiante.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="rel_proyecto_grado__estudiante" usePreparedStatements="true">
+            <column name="estudiante_id" type="numeric"/>
+            <column name="proyecto_grado_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/rel_proyecto_grado__jurado.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="rel_proyecto_grado__jurado" usePreparedStatements="true">
+            <column name="jurado_id" type="numeric"/>
+            <column name="proyecto_grado_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/entrega.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="entrega" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="etapa" type="string"/>
+            <column name="titulo" type="string"/>
+            <column name="descripcion" type="string"/>
+            <column name="archivo" type="blob"/>
+            <column name="archivo_content_type" type="string"/>
+            <column name="url_documento" type="string"/>
+            <column name="version" type="numeric"/>
+            <column name="fecha_entrega" type="date"/>
+            <column name="estado" type="string"/>
+            <column name="autor_id" type="numeric"/>
+            <column name="proyecto_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/observacion.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="observacion" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="contenido" type="string"/>
+            <column name="tipo" type="string"/>
+            <column name="resuelta" type="boolean"/>
+            <column name="fecha_creacion" type="date"/>
+            <column name="autor_id" type="numeric"/>
+            <column name="entrega_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/evaluacion.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="evaluacion" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="etapa" type="string"/>
+            <column name="calificacion" type="numeric"/>
+            <column name="concepto" type="string"/>
+            <column name="comentarios" type="string"/>
+            <column name="fecha_evaluacion" type="date"/>
+            <column name="jurado_id" type="numeric"/>
+            <column name="proyecto_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/fecha_limite_etapa.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="fecha_limite_etapa" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="etapa" type="string"/>
+            <column name="fecha_limite" type="date"/>
+            <column name="descripcion" type="string"/>
+            <column name="proyecto_id" type="numeric"/>
+        </loadData>
+        <loadData file="../data/demo/historial_etapa.csv" relativeToChangelogFile="true"
+                  encoding="UTF-8" separator=";" tableName="historial_etapa" usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="etapa_origen" type="string"/>
+            <column name="etapa_destino" type="string"/>
+            <column name="fecha" type="date"/>
+            <column name="comentario" type="string"/>
+            <column name="usuario_id" type="numeric"/>
+            <column name="proyecto_id" type="numeric"/>
+        </loadData>
+
+        <!-- Hibernate comparte la secuencia (incremento/pool 50). Nunca reducir su valor actual. -->
+        <sql>
+            SELECT setval('sequence_generator', GREATEST(
+                (SELECT last_value FROM sequence_generator),
+                (SELECT MAX(id) + 50 FROM (
+                    SELECT id FROM jhi_user
+                    UNION ALL SELECT id FROM proyecto_grado
+                    UNION ALL SELECT id FROM entrega
+                    UNION ALL SELECT id FROM observacion
+                    UNION ALL SELECT id FROM evaluacion
+                    UNION ALL SELECT id FROM fecha_limite_etapa
+                    UNION ALL SELECT id FROM historial_etapa
+                ) identificadores)
+            ), true);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

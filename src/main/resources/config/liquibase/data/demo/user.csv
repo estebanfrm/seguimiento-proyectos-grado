@@ -1,0 +1,12 @@
+id;login;password_hash;first_name;last_name;email;image_url;activated;lang_key;created_by;last_modified_by
+1001;coordinador;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Clara;Montes;coordinador@sgpg.example;;true;es;system;system
+1002;estudiante1;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Lucía;Ríos;estudiante1@sgpg.example;;true;es;system;system
+1003;estudiante2;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Mateo;Luna;estudiante2@sgpg.example;;true;es;system;system
+1004;estudiante3;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Sara;Vega;estudiante3@sgpg.example;;true;es;system;system
+1005;estudiante4;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Nicolás;Soler;estudiante4@sgpg.example;;true;es;system;system
+1006;estudiante5;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Valeria;Prado;estudiante5@sgpg.example;;true;es;system;system
+1007;tutor1;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Elena;Robles;tutor1@sgpg.example;;true;es;system;system
+1008;tutor2;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Andrés;Castaño;tutor2@sgpg.example;;true;es;system;system
+1009;jurado1;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Paula;Sierra;jurado1@sgpg.example;;true;es;system;system
+1010;jurado2;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Diego;Ferrer;jurado2@sgpg.example;;true;es;system;system
+1011;jurado3;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;Camila;Paz;jurado3@sgpg.example;;true;es;system;system
