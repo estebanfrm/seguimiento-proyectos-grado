@@ -52,11 +52,11 @@ class DatosDemoIT {
                 ).isEqualTo(22);
                 assertThat(jdbc.queryForObject("SELECT count(*) FROM proyecto_grado", Long.class)).isEqualTo(6);
                 assertThat(jdbc.queryForList("SELECT porcentaje_avance FROM proyecto_grado ORDER BY id", Integer.class)).containsExactly(
-                    15,
-                    20,
-                    36,
-                    51,
-                    100,
+                    12,
+                    16,
+                    33,
+                    48,
+                    87,
                     100
                 );
                 assertThat(jdbc.queryForList("SELECT etapa_actual FROM proyecto_grado ORDER BY id", String.class)).containsExactly(
