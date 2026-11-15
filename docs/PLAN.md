@@ -81,7 +81,9 @@ historial con origen=destino=etapa actual y el comentario (obligatorio).
 
 ### Porcentaje de avance
 Base por etapa: PROPUESTA 0, ANTEPROYECTO 20, DESARROLLO 40, SUSTENTACION 75, FINALIZADO 100.
-`avance = base + (baseSiguiente - base) * cumplidos / totalRequisitos` (redondeo hacia abajo).
+`avance = base + (baseSiguiente - base) * cumplidos / (totalRequisitos + 1)` (redondeo hacia abajo):
+cumplir todos los requisitos deja el proyecto justo por debajo de la siguiente etapa; el último tramo se
+completa al avanzar (así ningún proyecto no finalizado llega a 100 %).
 FINALIZADO = 100. Se calcula con `AvanceService.recalcular(proyectoId)` (interfaz en la base) y se
 persiste en `proyecto.porcentajeAvance`.
 
@@ -140,6 +142,7 @@ verificar el nombre exacto en los `*Resource.java` generados) pero filtradas por
 | GET    | `/api/proyecto-grados/{id}/seguimiento`           | quien puede ver       | `SeguimientoProyectoDTO` |
 | PUT    | `/api/entregas/{id}/revision`                     | tutor, admin          | `EntregaDTO` |
 | PUT    | `/api/observacions/{id}/resolver`                 | tutor, admin          | `ObservacionDTO` |
+| GET    | `/api/entregas/{id}/observacions`                 | quien puede ver       | `ObservacionDTO[]` (por fechaCreacion) |
 | GET    | `/api/usuarios/por-rol/{authority}`               | admin                 | `UsuarioResumenDTO[]` |
 
 ```jsonc
