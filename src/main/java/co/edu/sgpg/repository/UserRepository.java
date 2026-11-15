@@ -31,4 +31,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByLogin(String login);
 
     Page<User> findAllByIdNotNullAndActivatedIsTrue(Pageable pageable);
+
+    @org.springframework.data.jpa.repository.Query(
+        "select distinct u from User u join u.authorities a where u.activated = true and a.name = :authority order by u.login"
+    )
+    List<User> findActivosPorAuthority(@org.springframework.data.repository.query.Param("authority") String authority);
 }

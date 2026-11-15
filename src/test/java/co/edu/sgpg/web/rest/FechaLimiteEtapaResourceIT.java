@@ -42,7 +42,7 @@ import tools.jackson.databind.ObjectMapper;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(username = "admin", authorities = co.edu.sgpg.security.AuthoritiesConstants.ADMIN)
 class FechaLimiteEtapaResourceIT {
 
     private static final Etapa DEFAULT_ETAPA = Etapa.PROPUESTA;

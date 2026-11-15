@@ -54,4 +54,9 @@ public interface ObservacionRepository extends JpaRepository<Observacion, Long> 
     long countByEntregaIdAndResueltaFalse(Long entregaId);
 
     List<Observacion> findByEntregaIdOrderByFechaCreacionAsc(Long entregaId);
+
+    @Query(
+        "select e from Observacion e where exists (select p.id from ProyectoGrado p left join p.estudiantes estudiante left join p.tutor tutor left join p.jurados jurado where p.id = e.entrega.proyecto.id and (estudiante.login = :login or tutor.login = :login or jurado.login = :login))"
+    )
+    List<Observacion> findVisiblesPorLogin(@Param("login") String login);
 }

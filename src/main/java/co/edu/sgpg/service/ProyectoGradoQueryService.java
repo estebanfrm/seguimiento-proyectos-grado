@@ -32,9 +32,16 @@ public class ProyectoGradoQueryService extends QueryService<ProyectoGrado> {
 
     private final ProyectoGradoMapper proyectoGradoMapper;
 
-    public ProyectoGradoQueryService(ProyectoGradoRepository proyectoGradoRepository, ProyectoGradoMapper proyectoGradoMapper) {
+    private final VisibilidadProyectoService visibilidad;
+
+    public ProyectoGradoQueryService(
+        ProyectoGradoRepository proyectoGradoRepository,
+        ProyectoGradoMapper proyectoGradoMapper,
+        VisibilidadProyectoService visibilidad
+    ) {
         this.proyectoGradoRepository = proyectoGradoRepository;
         this.proyectoGradoMapper = proyectoGradoMapper;
+        this.visibilidad = visibilidad;
     }
 
     /**
@@ -108,6 +115,6 @@ public class ProyectoGradoQueryService extends QueryService<ProyectoGrado> {
                 )
             );
         }
-        return specification;
+        return specification.and(visibilidad.para(root -> root.get("id")));
     }
 }

@@ -1,10 +1,14 @@
 package co.edu.sgpg.web.rest;
 
 import co.edu.sgpg.repository.EntregaRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.EntregaQueryService;
 import co.edu.sgpg.service.EntregaService;
+import co.edu.sgpg.service.ObservacionService;
 import co.edu.sgpg.service.criteria.EntregaCriteria;
 import co.edu.sgpg.service.dto.EntregaDTO;
+import co.edu.sgpg.service.dto.ObservacionDTO;
+import co.edu.sgpg.service.dto.RevisionEntregaDTO;
 import co.edu.sgpg.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -46,10 +51,18 @@ public class EntregaResource {
 
     private final EntregaQueryService entregaQueryService;
 
-    public EntregaResource(EntregaService entregaService, EntregaRepository entregaRepository, EntregaQueryService entregaQueryService) {
+    private final ObservacionService observacionService;
+
+    public EntregaResource(
+        EntregaService entregaService,
+        EntregaRepository entregaRepository,
+        EntregaQueryService entregaQueryService,
+        ObservacionService observacionService
+    ) {
         this.entregaService = entregaService;
         this.entregaRepository = entregaRepository;
         this.entregaQueryService = entregaQueryService;
+        this.observacionService = observacionService;
     }
 
     /**
@@ -59,6 +72,7 @@ public class EntregaResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new entregaDTO, or with status {@code 400 (Bad Request)} if the entrega already has an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ESTUDIANTE + "')")
     @PostMapping("")
     public ResponseEntity<EntregaDTO> createEntrega(@Valid @RequestBody EntregaDTO entregaDTO) throws URISyntaxException {
         LOG.debug("REST request to save Entrega : {}", entregaDTO);
@@ -81,6 +95,7 @@ public class EntregaResource {
      * or with status {@code 500 (Internal Server Error)} if the entregaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.ESTUDIANTE + "')")
     @PutMapping("/{id}")
     public ResponseEntity<EntregaDTO> updateEntrega(
         @PathVariable(value = "id", required = false) final Long id,
@@ -115,6 +130,7 @@ public class EntregaResource {
      * or with status {@code 500 (Internal Server Error)} if the entregaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.ESTUDIANTE + "')")
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<EntregaDTO> partialUpdateEntrega(
         @PathVariable(value = "id", required = false) final Long id,
@@ -190,6 +206,7 @@ public class EntregaResource {
      * @param id the id of the entregaDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEntrega(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Entrega : {}", id);
@@ -197,5 +214,16 @@ public class EntregaResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/{id}/observacions")
+    public ResponseEntity<List<ObservacionDTO>> getObservacions(@PathVariable Long id) {
+        return ResponseUtil.wrapOrNotFound(observacionService.findByEntrega(id));
+    }
+
+    @PutMapping("/{id}/revision")
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.TUTOR + "')")
+    public ResponseEntity<EntregaDTO> revisar(@PathVariable Long id, @Valid @RequestBody RevisionEntregaDTO revision) {
+        return ResponseUtil.wrapOrNotFound(entregaService.revisar(id, revision));
     }
 }

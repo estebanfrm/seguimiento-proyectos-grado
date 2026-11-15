@@ -48,4 +48,9 @@ public interface HistorialEtapaRepository extends JpaRepository<HistorialEtapa, 
     // --- Consultas de seguimiento (contrato compartido, ver docs/PLAN.md §5) ---
 
     List<HistorialEtapa> findByProyectoIdOrderByFechaAsc(Long proyectoId);
+
+    @Query(
+        "select e from HistorialEtapa e where exists (select p.id from ProyectoGrado p left join p.estudiantes estudiante left join p.tutor tutor left join p.jurados jurado where p.id = e.proyecto.id and (estudiante.login = :login or tutor.login = :login or jurado.login = :login))"
+    )
+    Page<HistorialEtapa> findVisiblesPorLogin(@Param("login") String login, Pageable pageable);
 }

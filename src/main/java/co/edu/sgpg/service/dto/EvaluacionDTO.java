@@ -19,7 +19,6 @@ public class EvaluacionDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     private Etapa etapa;
 
     @NotNull
@@ -33,7 +32,6 @@ public class EvaluacionDTO implements Serializable {
     @Lob
     private String comentarios;
 
-    @NotNull
     private Instant fechaEvaluacion;
 
     private UserDTO jurado;

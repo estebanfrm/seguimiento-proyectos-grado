@@ -60,4 +60,9 @@ public interface ObservacionService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Optional<ObservacionDTO> resolver(Long id);
+
+    /** Observaciones de una entrega visible, ordenadas por fecha; vacío si la entrega no existe. */
+    Optional<List<ObservacionDTO>> findByEntrega(Long entregaId);
 }

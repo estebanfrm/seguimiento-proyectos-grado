@@ -3,6 +3,7 @@ package co.edu.sgpg.service.impl;
 import co.edu.sgpg.domain.HistorialEtapa;
 import co.edu.sgpg.repository.HistorialEtapaRepository;
 import co.edu.sgpg.service.HistorialEtapaService;
+import co.edu.sgpg.service.ProyectoAccessService;
 import co.edu.sgpg.service.dto.HistorialEtapaDTO;
 import co.edu.sgpg.service.mapper.HistorialEtapaMapper;
 import java.util.Optional;
@@ -26,63 +27,62 @@ public class HistorialEtapaServiceImpl implements HistorialEtapaService {
 
     private final HistorialEtapaMapper historialEtapaMapper;
 
-    public HistorialEtapaServiceImpl(HistorialEtapaRepository historialEtapaRepository, HistorialEtapaMapper historialEtapaMapper) {
+    private final ProyectoAccessService acceso;
+
+    public HistorialEtapaServiceImpl(
+        HistorialEtapaRepository historialEtapaRepository,
+        HistorialEtapaMapper historialEtapaMapper,
+        ProyectoAccessService acceso
+    ) {
         this.historialEtapaRepository = historialEtapaRepository;
         this.historialEtapaMapper = historialEtapaMapper;
+        this.acceso = acceso;
     }
 
     @Override
     public HistorialEtapaDTO save(HistorialEtapaDTO historialEtapaDTO) {
-        LOG.debug("Request to save HistorialEtapa : {}", historialEtapaDTO);
-        HistorialEtapa historialEtapa = historialEtapaMapper.toEntity(historialEtapaDTO);
-        historialEtapa = historialEtapaRepository.save(historialEtapa);
-        return historialEtapaMapper.toDto(historialEtapa);
+        throw new org.springframework.security.access.AccessDeniedException("El historial es de solo lectura");
     }
 
     @Override
     public HistorialEtapaDTO update(HistorialEtapaDTO historialEtapaDTO) {
-        LOG.debug("Request to update HistorialEtapa : {}", historialEtapaDTO);
-        HistorialEtapa historialEtapa = historialEtapaMapper.toEntity(historialEtapaDTO);
-        historialEtapa = historialEtapaRepository.save(historialEtapa);
-        return historialEtapaMapper.toDto(historialEtapa);
+        throw new org.springframework.security.access.AccessDeniedException("El historial es de solo lectura");
     }
 
     @Override
     public Optional<HistorialEtapaDTO> partialUpdate(HistorialEtapaDTO historialEtapaDTO) {
-        LOG.debug("Request to partially update HistorialEtapa : {}", historialEtapaDTO);
-
-        return historialEtapaRepository
-            .findById(historialEtapaDTO.getId())
-            .map(existingHistorialEtapa -> {
-                historialEtapaMapper.partialUpdate(existingHistorialEtapa, historialEtapaDTO);
-
-                return existingHistorialEtapa;
-            })
-            .map(historialEtapaRepository::save)
-            .map(historialEtapaMapper::toDto);
+        throw new org.springframework.security.access.AccessDeniedException("El historial es de solo lectura");
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<HistorialEtapaDTO> findAll(Pageable pageable) {
         LOG.debug("Request to get all HistorialEtapas");
-        return historialEtapaRepository.findAll(pageable).map(historialEtapaMapper::toDto);
+        return (
+            acceso.esAdmin()
+                ? historialEtapaRepository.findAllWithEagerRelationships(pageable)
+                : historialEtapaRepository.findVisiblesPorLogin(acceso.loginActual().orElse(""), pageable)
+        ).map(historialEtapaMapper::toDto);
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public Page<HistorialEtapaDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return historialEtapaRepository.findAllWithEagerRelationships(pageable).map(historialEtapaMapper::toDto);
+        return findAll(pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<HistorialEtapaDTO> findOne(Long id) {
         LOG.debug("Request to get HistorialEtapa : {}", id);
-        return historialEtapaRepository.findOneWithEagerRelationships(id).map(historialEtapaMapper::toDto);
+        return historialEtapaRepository.findOneWithEagerRelationships(id).map(e -> {
+            acceso.verificarPuedeVer(e.getProyecto().getId());
+            return historialEtapaMapper.toDto(e);
+        });
     }
 
     @Override
     public void delete(Long id) {
-        LOG.debug("Request to delete HistorialEtapa : {}", id);
-        historialEtapaRepository.deleteById(id);
+        throw new org.springframework.security.access.AccessDeniedException("El historial es de solo lectura");
     }
 }

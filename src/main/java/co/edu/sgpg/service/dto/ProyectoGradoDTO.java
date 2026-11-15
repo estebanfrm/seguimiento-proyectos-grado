@@ -7,7 +7,6 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,26 +30,23 @@ public class ProyectoGradoDTO implements Serializable {
     @Size(max = 120)
     private String programa;
 
-    @NotNull
     private Etapa etapaActual;
 
-    @NotNull
     private EstadoProyecto estado;
 
     @Min(value = 0)
     @Max(value = 100)
     private Integer porcentajeAvance;
 
-    @NotNull
     private Instant fechaRegistro;
 
     private Instant fechaActualizacion;
 
     private UserDTO tutor;
 
-    private Set<UserDTO> estudiantes = new HashSet<>();
+    private Set<UserDTO> estudiantes;
 
-    private Set<UserDTO> jurados = new HashSet<>();
+    private Set<UserDTO> jurados;
 
     public Long getId() {
         return id;
