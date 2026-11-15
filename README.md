@@ -59,10 +59,10 @@ El coordinador puede cancelar con comentario obligatorio: queda CANCELADO y se r
 Bases: PROPUESTA=0, ANTEPROYECTO=20, DESARROLLO=40, SUSTENTACION=75, FINALIZADO=100.
 
 ```text
-avance = base + floor((baseSiguiente - base) * requisitosCumplidos / totalRequisitos)
+avance = base + floor((baseSiguiente - base) * requisitosCumplidos / (totalRequisitos + 1))
 ```
 
-Se recalcula tras entregas, revisiones, observaciones, evaluaciones y cambios de asignación. No se edita por PUT/PATCH. P5 tiene 100% antes de finalizar porque ya cumplió los requisitos; P6 representa el cierre efectivo.
+Se recalcula tras entregas, revisiones, observaciones, evaluaciones y cambios de asignación. No se edita por PUT/PATCH. El `+1` del denominador reserva un tramo para completar la transición. P5 tiene 87% con todos los requisitos cumplidos y pendiente de cierre; solo FINALIZADO alcanza 100%, como P6.
 
 ## Matriz de permisos
 
@@ -155,14 +155,14 @@ Los once usuarios usan la contraseña **`user`**. Se reutiliza el hash BCrypt re
 | `jurado2`     | ROLE_JURADO     | P3, P4 y P6; falta su evaluación de ANTEPROYECTO en P3                  |
 | `jurado3`     | ROLE_JURADO     | P4 y P5; ya evaluó el anteproyecto de P4 y ambas etapas de P5           |
 
-| Caso / ID | Etapa / estado        | Avance     | Evidencia y resultado esperado                                                                                          |
-| --------- | --------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |
-| P1 / 2001 | PROPUESTA / ACTIVO    | 15% (3/4)  | Entrega 3001 ENVIADA; falta `ENTREGA_APROBADA`                                                                          |
-| P2 / 2002 | PROPUESTA / ACTIVO    | 20% (4/4)  | Tutor, entrega 3002 APROBADA, sin observaciones; listo para avanzar                                                     |
-| P3 / 2003 | ANTEPROYECTO / ACTIVO | 36% (4/5)  | Entrega 3004 APROBADA, dos jurados, solo uno evaluó; falta `EVALUACIONES_COMPLETAS`                                     |
-| P4 / 2004 | DESARROLLO / ACTIVO   | 51% (1/3)  | Entrega 3007 CON_OBSERVACIONES, observación 4001 sin resolver; no avanza y otra entrega devuelve `FECHA_LIMITE_VENCIDA` |
-| P5 / 2005 | SUSTENTACION / ACTIVO | 100% (1/1) | Fecha de sustentación y dos evaluaciones aprobatorias (4.20 y 4.50); listo para finalizar APROBADO                      |
-| P6 / 2006 | FINALIZADO / APROBADO | 100%       | Cuatro transiciones, entregas y evaluaciones históricas                                                                 |
+| Caso / ID | Etapa / estado        | Avance (cumplidos/total requisitos) | Evidencia y resultado esperado                                                                                          |
+| --------- | --------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| P1 / 2001 | PROPUESTA / ACTIVO    | 12% (3/4)                           | Entrega 3001 ENVIADA; falta `ENTREGA_APROBADA`                                                                          |
+| P2 / 2002 | PROPUESTA / ACTIVO    | 16% (4/4)                           | Tutor, entrega 3002 APROBADA, sin observaciones; listo para avanzar                                                     |
+| P3 / 2003 | ANTEPROYECTO / ACTIVO | 33% (4/5)                           | Entrega 3004 APROBADA, dos jurados, solo uno evaluó; falta `EVALUACIONES_COMPLETAS`                                     |
+| P4 / 2004 | DESARROLLO / ACTIVO   | 48% (1/3)                           | Entrega 3007 CON_OBSERVACIONES, observación 4001 sin resolver; no avanza y otra entrega devuelve `FECHA_LIMITE_VENCIDA` |
+| P5 / 2005 | SUSTENTACION / ACTIVO | 87% (1/1)                           | Fecha de sustentación y dos evaluaciones aprobatorias (4.20 y 4.50); listo para finalizar APROBADO                      |
+| P6 / 2006 | FINALIZADO / APROBADO | 100%                                | Cuatro transiciones, entregas y evaluaciones históricas                                                                 |
 
 Referencia temporal: **13 de noviembre de 2026**. Límites en 2027 salvo DESARROLLO de P4, vencido desde el 1 de noviembre de 2026 a las 23:59 UTC. Las fechas CSV expresan horas UTC sin sufijo, siguiendo el formato Liquibase; JPA usa UTC. P5 y P6 evaluaron antes de sus fechas límite: la regla exige una fecha existente, no esperar a ella. P1/P2 no tienen transiciones; P3–P6 tienen 1, 2, 3 y 4. `estudiante1` tiene P1 y P6 para cubrir seis proyectos con cinco estudiantes.
 

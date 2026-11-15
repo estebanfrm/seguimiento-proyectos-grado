@@ -202,6 +202,31 @@ class DatosDemoTest {
         assertThat(dev).contains("contexts: dev").doesNotContain("contexts: dev, faker");
     }
 
+    @Test
+    void porcentajesDemoReservanElCienParaProyectosFinalizados() throws Exception {
+        var proyectos = csv(ROOT + "data/demo/proyecto_grado.csv");
+        assertThat(
+            proyectos
+                .stream()
+                .map(proyecto -> proyecto.get("id"))
+                .toList()
+        ).containsExactly("2001", "2002", "2003", "2004", "2005", "2006");
+        assertThat(
+            proyectos
+                .stream()
+                .map(proyecto -> Integer.valueOf(proyecto.get("porcentaje_avance")))
+                .toList()
+        ).containsExactly(12, 16, 33, 48, 87, 100);
+        for (var proyecto : proyectos) {
+            int avance = Integer.parseInt(proyecto.get("porcentaje_avance"));
+            if (proyecto.get("etapa_actual").equals("FINALIZADO")) {
+                assertThat(avance).as(proyecto.get("titulo")).isEqualTo(100);
+            } else {
+                assertThat(avance).as(proyecto.get("titulo")).isLessThan(100);
+            }
+        }
+    }
+
     private static Document xml(String resource) throws Exception {
         var factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);

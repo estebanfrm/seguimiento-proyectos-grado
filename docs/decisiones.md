@@ -36,11 +36,11 @@ Estas decisiones desarrollan la especificación de [PLAN.md](PLAN.md); el modelo
 
 ## ADR 05 — Avance calculado y persistido
 
-**Decisión:** calcular `base + floor((baseSiguiente - base) * cumplidos / totalRequisitos)` en `AvanceService.recalcular`, con bases 0, 20, 40, 75 y 100.
+**Decisión:** calcular `base + floor((baseSiguiente - base) * cumplidos / (totalRequisitos + 1))` en `AvanceService.recalcular`, con bases 0, 20, 40, 75 y 100. FINALIZADO siempre tiene 100%.
 
 **Motivo:** el porcentaje representa evidencia académica verificable, no una estimación editable por el usuario.
 
-**Consecuencia:** PUT/PATCH no modifican el avance directamente. Una sustentación lista para cerrar puede tener 100% y seguir ACTIVA; la etapa y el estado indican si el cierre ya ocurrió. FINALIZADO siempre tiene 100%.
+**Consecuencia:** PUT/PATCH no modifican el avance directamente. El `+1` del denominador reserva un tramo para la transición, de modo que completar requisitos no equivale a haber cerrado la etapa. Una sustentación lista para cerrar, como P5, tiene 87% y sigue ACTIVA; solo FINALIZADO alcanza 100%.
 
 ## ADR 06 — Tiempo mediante Clock inyectable
 
