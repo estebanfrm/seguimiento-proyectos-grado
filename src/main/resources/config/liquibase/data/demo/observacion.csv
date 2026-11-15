@@ -1,0 +1,4 @@
+id;contenido;tipo;resuelta;fecha_creacion;autor_id;entrega_id
+4001;Precisar el método de validación y los criterios de aceptación antes de aprobar el documento final.;CORRECCION_REQUERIDA;false;2026-10-29T16:00:00;1008;3007
+4002;Precisar las fuentes de los datos sintéticos. Corrección verificada antes de aprobar la propuesta.;CORRECCION_REQUERIDA;true;2026-08-11T14:00:00;1008;3003
+4003;La estructura del documento es clara. Preparar la presentación para el comité.;GENERAL;true;2026-10-11T14:00:00;1007;3010
