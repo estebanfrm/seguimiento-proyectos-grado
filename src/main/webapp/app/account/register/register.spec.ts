@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService, provideTranslateService } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 
+import registerTranslations from '../../../i18n/es/register.json';
 import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from 'app/shared/jhipster/error.constants';
 
 import Register from './register';
@@ -29,6 +30,17 @@ describe('Register', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(Register);
     comp = fixture.componentInstance;
+  });
+
+  it('should explain that public registration creates a student account', () => {
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('es', registerTranslations);
+    translate.use('es');
+
+    fixture.detectChanges();
+
+    const message = (fixture.nativeElement as HTMLElement).querySelector('[jhiTranslate="register.studentInfo"]');
+    expect(message?.textContent).toContain('Te registras como estudiante. Si eres tutor o jurado, la coordinación crea tu cuenta.');
   });
 
   it('should ensure the two passwords entered match', () => {

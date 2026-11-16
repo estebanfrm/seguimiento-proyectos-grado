@@ -108,7 +108,11 @@
               <td>
                 @for (authority of userManagement.authorities; track $index; let last = $last) {
                   <span>
-                    <a class="badge bg-info" [routerLink]="['/authority', authority, 'view']">{{ authority }}</a
+                    <a
+                      class="badge bg-info"
+                      [routerLink]="['/authority', authority, 'view']"
+                      [jhiTranslate]="'userManagement.roles.' + authority"
+                      >{{ authority }}</a
                     >{{ last ? '' : ', ' }}
                   </span>
                 }

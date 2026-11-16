@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import co.edu.sgpg.IntegrationTest;
+import co.edu.sgpg.domain.Authority;
 import co.edu.sgpg.domain.User;
 import co.edu.sgpg.repository.UserRepository;
 import co.edu.sgpg.security.AuthoritiesConstants;
@@ -19,6 +20,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -154,6 +157,49 @@ class UserResourceIT {
         assertThat(convertedUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(convertedUser.getImageUrl()).isEqualTo(DEFAULT_IMAGEURL);
         assertThat(convertedUser.getLangKey()).isEqualTo(DEFAULT_LANGKEY);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { AuthoritiesConstants.TUTOR, AuthoritiesConstants.JURADO, AuthoritiesConstants.ESTUDIANTE })
+    @Transactional
+    void createUserWithAcademicAuthority(String authority) throws Exception {
+        AdminUserDTO userDTO = new AdminUserDTO();
+        userDTO.setLogin(DEFAULT_LOGIN);
+        userDTO.setEmail(DEFAULT_EMAIL);
+        userDTO.setLangKey("es");
+        userDTO.setAuthorities(Set.of(AuthoritiesConstants.USER, authority));
+
+        restUserMockMvc
+            .perform(post("/api/admin/users").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
+            .andExpect(status().isCreated());
+
+        User createdUser = userRepository.findOneWithAuthoritiesByLogin(DEFAULT_LOGIN).orElseThrow();
+        assertThat(createdUser.getAuthorities())
+            .extracting(Authority::getName)
+            .containsExactlyInAnyOrder(AuthoritiesConstants.USER, authority);
+        assertThat(createdUser.isActivated()).isTrue();
+        assertThat(createdUser.getResetKey()).isNotBlank();
+        assertThat(createdUser.getResetDate()).isNotNull();
+
+        restUserMockMvc
+            .perform(get("/api/admin/users/{login}", DEFAULT_LOGIN))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.authorities").value(hasItem(authority)));
+    }
+
+    @Test
+    @WithMockUser(authorities = { AuthoritiesConstants.USER, AuthoritiesConstants.ESTUDIANTE })
+    void studentCannotCreateTutor() throws Exception {
+        AdminUserDTO userDTO = new AdminUserDTO();
+        userDTO.setLogin(DEFAULT_LOGIN);
+        userDTO.setEmail(DEFAULT_EMAIL);
+        userDTO.setAuthorities(Set.of(AuthoritiesConstants.USER, AuthoritiesConstants.TUTOR));
+
+        restUserMockMvc
+            .perform(post("/api/admin/users").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
+            .andExpect(status().isForbidden());
+
+        assertThat(userRepository.findOneByLogin(DEFAULT_LOGIN)).isEmpty();
     }
 
     @Test

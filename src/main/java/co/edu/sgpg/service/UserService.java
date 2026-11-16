@@ -109,7 +109,9 @@ public class UserService {
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
+        // El registro público siempre es de estudiante; se ignoran los roles enviados por el cliente.
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        authorityRepository.findById(AuthoritiesConstants.ESTUDIANTE).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
         LOG.debug("Created Information for User: {}", newUser);
