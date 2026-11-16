@@ -204,7 +204,7 @@ docker compose -f src/main/docker/postgresql.yml up -d --wait
 ./mvnw -ntp -Dskip.npm -Dskip.installnodenpm
 ```
 
-En PowerShell usa `./mvnw.cmd` y entrecomilla las propiedades Maven que contienen puntos: `./mvnw.cmd -ntp '-Dskip.npm' '-Dskip.installnodenpm'`. El perfil dev activa también `api-docs,secret-samples`; Liquibase aplica `dev`. Base: `jdbc:postgresql://localhost:5432/sgpg`, usuario `sgpg`, contraseña vacía en los perfiles de muestra. El compose permite conexiones locales de desarrollo con `trust` y publica solo `127.0.0.1:5432`. No hay que importar CSV manualmente.
+En PowerShell usa `./mvnw.cmd` y entrecomilla las propiedades Maven que contienen puntos: `./mvnw.cmd -ntp '-Dskip.npm' '-Dskip.installnodenpm'`. El perfil dev activa también `api-docs,secret-samples`; Liquibase aplica `dev`. Base: `jdbc:postgresql://localhost:5433/sgpg`, usuario `sgpg`, contraseña vacía en los perfiles de muestra. El compose permite conexiones locales de desarrollo con `trust` y publica solo `127.0.0.1:5433` (puerto 5433 en el host para no chocar con un PostgreSQL local instalado en 5432). No hay que importar CSV manualmente.
 
 En otra terminal:
 
@@ -212,7 +212,7 @@ En otra terminal:
 npm start
 ```
 
-Abre `http://localhost:4200`; el proxy dirige `/api` al backend en `http://localhost:8080`. El backend sin reconstruir frontend sirve la API; para servir estáticos también en 8080 ejecuta antes `npm run webapp:build`. Comprueba que otro PostgreSQL no esté usando 5432.
+Abre `http://localhost:4200`; el proxy dirige `/api` al backend en `http://localhost:8080`. El backend sin reconstruir frontend sirve la API; para servir estáticos también en 8080 ejecuta antes `npm run webapp:build`. El PostgreSQL de desarrollo usa el puerto 5433 del host, así que puede convivir con un PostgreSQL local en 5432.
 
 `src/main/docker/app.yml` espera la imagen local `sgpg` y arranca con perfil **prod**, sin datos demo. Esa alternativa requiere:
 

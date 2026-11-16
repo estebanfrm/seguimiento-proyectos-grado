@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Documento entregado por el estudiante en una etapa.
@@ -38,7 +40,8 @@ public class Entrega implements Serializable {
     @Column(name = "titulo", length = 200, nullable = false)
     private String titulo;
 
-    @Lob
+    // Texto plano en PostgreSQL (no large object/OID): ver docs/decisiones.md
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "descripcion")
     private String descripcion;
 

@@ -7,6 +7,8 @@ import jakarta.validation.constraints.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Observación del tutor sobre una entrega.
@@ -25,7 +27,8 @@ public class Observacion implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Lob
+    // Texto plano en PostgreSQL (no large object/OID): ver docs/decisiones.md
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "contenido", nullable = false)
     private String contenido;
 

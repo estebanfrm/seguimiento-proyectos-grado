@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Proyecto de grado: unidad central del seguimiento.
@@ -33,7 +35,8 @@ public class ProyectoGrado implements Serializable {
     @Column(name = "titulo", length = 250, nullable = false)
     private String titulo;
 
-    @Lob
+    // Texto plano en PostgreSQL (no large object/OID): ver docs/decisiones.md
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "resumen", nullable = false)
     private String resumen;
 

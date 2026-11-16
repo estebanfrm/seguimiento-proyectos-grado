@@ -9,6 +9,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Evaluación de un jurado en una etapa evaluable.
@@ -43,7 +45,8 @@ public class Evaluacion implements Serializable {
     @Column(name = "concepto", nullable = false)
     private Concepto concepto;
 
-    @Lob
+    // Texto plano en PostgreSQL (no large object/OID): ver docs/decisiones.md
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "comentarios")
     private String comentarios;
 

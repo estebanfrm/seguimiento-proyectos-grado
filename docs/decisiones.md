@@ -61,3 +61,9 @@ Estas decisiones desarrollan la especificación de [PLAN.md](PLAN.md); el modelo
 P2 no tiene observaciones; P3 contiene una corrección histórica ya resuelta. P5 tiene evaluaciones anticipadas respecto de su fecha límite de sustentación: el contrato exige que esa fecha exista, no que haya transcurrido. P6 también terminó antes de su fecha límite. `estudiante1` participa en P1 y P6 para mostrar un proyecto activo y otro cerrado con cinco estudiantes.
 
 La prueba `DatosDemoIT` ejecuta Liquibase con contexto `dev` en un esquema temporal del PostgreSQL de Testcontainers y lo elimina al terminar. Así se comprueba la migración real sin introducir datos demo en las tablas de los otros tests de integración.
+
+## ADR-08: Texto largo como `text` plano en PostgreSQL
+
+**Contexto:** con `@Lob String`, Hibernate 7 trata la columna como *large object* en PostgreSQL y guarda un OID en lugar del texto. Funcionaba en los tests (Hibernate escribía y leía igual) pero fallaba al leer datos cargados por Liquibase o SQL; se detectó al arrancar la demo.
+
+**Decisión:** los campos `TextBlob` usan `@JdbcTypeCode(SqlTypes.LONGVARCHAR)` sin `@Lob`, así se guardan como `text` legible por cualquier cliente SQL.
