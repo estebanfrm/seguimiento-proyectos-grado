@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import co.edu.sgpg.config.EntregaArchivoConfiguration;
 import co.edu.sgpg.domain.Entrega;
 import co.edu.sgpg.domain.ProyectoGrado;
+import co.edu.sgpg.domain.User;
 import co.edu.sgpg.domain.enumeration.*;
 import co.edu.sgpg.repository.*;
 import co.edu.sgpg.service.dto.EntregaDTO;
@@ -103,6 +104,9 @@ class EntregaArchivoTest {
     private EntregaDTO ejecutar(String operacion, EntregaDTO dto) {
         if (operacion.equals("crear")) {
             when(permisos.proyecto(1L)).thenReturn(proyecto);
+            User autor = new User();
+            autor.setLogin("estudiante1");
+            lenient().when(permisos.usuarioActual()).thenReturn(autor);
             return servicio.save(dto);
         }
         when(entregas.findById(2L)).thenReturn(Optional.of(new Entrega().id(2L).proyecto(proyecto).estado(EstadoEntrega.ENVIADA)));
