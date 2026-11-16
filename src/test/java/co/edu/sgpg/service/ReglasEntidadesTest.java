@@ -10,6 +10,7 @@ import co.edu.sgpg.repository.*;
 import co.edu.sgpg.service.dto.*;
 import co.edu.sgpg.service.impl.*;
 import co.edu.sgpg.service.mapper.*;
+import co.edu.sgpg.service.notificacion.evento.*;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
@@ -26,6 +27,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 
 /** Reglas de dominio sin contexto Spring ni base de datos; el tiempo siempre es determinista. */
@@ -62,6 +64,9 @@ class ReglasEntidadesTest {
     @Mock
     private AvanceService avance;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     private EntregaServiceImpl entregaService;
     private EvaluacionServiceImpl evaluacionService;
     private ObservacionServiceImpl observacionService;
@@ -80,9 +85,18 @@ class ReglasEntidadesTest {
             permisos,
             visibilidad,
             avance,
-            RELOJ
+            RELOJ,
+            eventPublisher
         );
-        evaluacionService = new EvaluacionServiceImpl(evaluaciones, new EvaluacionMapperImpl(), acceso, permisos, avance, RELOJ);
+        evaluacionService = new EvaluacionServiceImpl(
+            evaluaciones,
+            new EvaluacionMapperImpl(),
+            acceso,
+            permisos,
+            avance,
+            RELOJ,
+            eventPublisher
+        );
         observacionService = new ObservacionServiceImpl(
             observaciones,
             entregas,
@@ -90,7 +104,8 @@ class ReglasEntidadesTest {
             acceso,
             permisos,
             avance,
-            RELOJ
+            RELOJ,
+            eventPublisher
         );
         proyectoService = new ProyectoGradoServiceImpl(
             proyectos,
@@ -144,7 +159,7 @@ class ReglasEntidadesTest {
             assertThat(ex.getCodigo()).isEqualTo(codigo);
             assertThat(ex.getStatusCode().value()).isEqualTo(409);
         });
-        verifyNoInteractions(avance);
+        verifyNoInteractions(avance, eventPublisher);
     }
 
     @ParameterizedTest
@@ -209,6 +224,7 @@ class ReglasEntidadesTest {
         assertThat(resultado.getAutor().getId()).isEqualTo(usuario.getId());
         verify(permisos).estudiante(1L);
         verify(avance).recalcular(1L);
+        verify(eventPublisher).publishEvent(new EntregaRegistradaEvent(1L, resultado.getId(), usuario.getLogin()));
     }
 
     @ParameterizedTest
@@ -267,10 +283,12 @@ class ReglasEntidadesTest {
     void permiteLosCuatroEstadosDeRevision(EstadoEntrega estado) {
         Entrega entrega = entregaExistente();
         when(entregas.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(acceso.loginActual()).thenReturn(Optional.of("tutor"));
         entregaService.revisar(2L, new RevisionEntregaDTO(estado));
         assertThat(entrega.getEstado()).isEqualTo(estado);
         verify(permisos).tutorOAdmin(1L);
         verify(avance).recalcular(1L);
+        verify(eventPublisher).publishEvent(new EntregaRevisadaEvent(1L, 2L, estado, "tutor"));
     }
 
     private EvaluacionDTO nuevaEvaluacion() {
@@ -330,6 +348,7 @@ class ReglasEntidadesTest {
         assertThat(resultado.getFechaEvaluacion()).isEqualTo(AHORA);
         verify(permisos).jurado(1L);
         verify(avance).recalcular(1L);
+        verify(eventPublisher).publishEvent(new EvaluacionRegistradaEvent(1L, resultado.getId(), usuario.getLogin()));
     }
 
     @Test
@@ -352,6 +371,7 @@ class ReglasEntidadesTest {
         assertThat(entrega.getEstado()).isEqualTo(EstadoEntrega.CON_OBSERVACIONES);
         verify(permisos).tutorOAdmin(1L);
         verify(avance).recalcular(1L);
+        verify(eventPublisher).publishEvent(new ObservacionRegistradaEvent(1L, resultado.getId(), usuario.getLogin()));
     }
 
     @Test
@@ -370,6 +390,7 @@ class ReglasEntidadesTest {
         assertThat(resultado.getFechaCreacion()).isEqualTo(Instant.EPOCH);
         verify(permisos).tutorOAdmin(1L);
         verify(avance).recalcular(1L);
+        verifyNoInteractions(eventPublisher);
     }
 
     @ParameterizedTest

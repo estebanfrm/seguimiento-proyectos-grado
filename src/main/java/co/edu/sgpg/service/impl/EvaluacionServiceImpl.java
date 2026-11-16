@@ -7,11 +7,13 @@ import co.edu.sgpg.repository.EvaluacionRepository;
 import co.edu.sgpg.service.*;
 import co.edu.sgpg.service.dto.EvaluacionDTO;
 import co.edu.sgpg.service.mapper.EvaluacionMapper;
+import co.edu.sgpg.service.notificacion.evento.EvaluacionRegistradaEvent;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class EvaluacionServiceImpl implements EvaluacionService {
     private final PermisosEntidadService permisos;
     private final AvanceService avance;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
     public EvaluacionServiceImpl(
         EvaluacionRepository repositorio,
@@ -32,7 +35,8 @@ public class EvaluacionServiceImpl implements EvaluacionService {
         ProyectoAccessService acceso,
         PermisosEntidadService permisos,
         AvanceService avance,
-        Clock clock
+        Clock clock,
+        ApplicationEventPublisher eventPublisher
     ) {
         this.repositorio = repositorio;
         this.mapper = mapper;
@@ -40,6 +44,7 @@ public class EvaluacionServiceImpl implements EvaluacionService {
         this.permisos = permisos;
         this.avance = avance;
         this.clock = clock;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -60,7 +65,9 @@ public class EvaluacionServiceImpl implements EvaluacionService {
         evaluacion.setEtapa(etapa);
         evaluacion.setJurado(jurado);
         evaluacion.setFechaEvaluacion(Instant.now(clock));
-        return guardar(evaluacion);
+        EvaluacionDTO guardada = guardar(evaluacion);
+        eventPublisher.publishEvent(new EvaluacionRegistradaEvent(proyectoId, guardada.getId(), jurado.getLogin()));
+        return guardada;
     }
 
     @Override

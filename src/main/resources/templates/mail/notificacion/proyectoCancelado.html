@@ -1,0 +1,15 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{email.notificacion.proyectoCancelado.title(${tituloProyecto})}">Proyecto cancelado</title>
+  </head>
+  <body>
+    <p th:text="#{email.notificacion.saludo(${login})}">Hola.</p>
+    <h1 th:text="${tituloProyecto}">Proyecto de grado</h1>
+    <p th:text="#{email.notificacion.proyectoCancelado.text}">El proyecto ha sido cancelado por el siguiente motivo:</p>
+    <p th:text="${evento.motivo}">Motivo de cancelación.</p>
+    <p><a th:href="${enlaceProyecto}" th:text="#{email.notificacion.enlace}">Ver seguimiento del proyecto</a></p>
+    <p th:text="#{email.notificacion.firma}">Equipo SGPG.</p>
+  </body>
+</html>

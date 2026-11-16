@@ -223,6 +223,27 @@ docker compose -f src/main/docker/app.yml up -d --wait
 
 Ambos compose son de desarrollo y `secret-samples` contiene valores de muestra. Para la demo usa backend dev y el compose PostgreSQL descritos arriba.
 
+## Correos de la demo
+
+Arranca PostgreSQL y Mailpit juntos con `docker compose -f src/main/docker/services.yml up -d --wait`.
+Si ya tienes PostgreSQL, basta con `docker compose -f src/main/docker/mailpit.yml up -d`.
+El backend en perfil dev envía a `localhost:1025`; abre [el buzón de Mailpit](http://localhost:8025)
+para ver los correos sin enviarlos a direcciones externas.
+
+Se avisa al tutor cuando se registra una entrega; a estudiantes cuando se revisa o se añade una
+observación; a estudiantes y tutor cuando se registra una evaluación; y a estudiantes, tutor y
+jurados al avanzar o cancelar. Se excluyen el autor, usuarios inactivos y usuarios sin correo.
+Los mensajes enlazan a `{jhipster.mail.base-url}/seguimiento/{proyectoId}` e incluyen el resultado
+al finalizar o el motivo al cancelar. Se preparan de forma asíncrona después del commit.
+
+`sgpg.notificaciones.habilitadas` permite desactivar estos avisos y recordatorios (por defecto `true`,
+`false` en tests). `sgpg.notificaciones.recordatorio-cron` vale `0 0 7 * * *`: una ejecución diaria
+a las 07:00 de la zona del scheduler. Los recordatorios cuentan días naturales con el `Clock` de
+la aplicación (UTC) y avisan a estudiantes y tutor cuando faltan tres días o un día para la última
+fecha límite de la etapa actual de un proyecto ACTIVO. Ejecutar manualmente el job o configurar
+múltiples ejecuciones al día puede repetir los avisos; no se persiste un registro de envíos ni se
+reintentan correos fallidos.
+
 ## Pruebas y validación
 
 Con JDK 21 configurado, compila y ejecuta unitarios sin Docker:

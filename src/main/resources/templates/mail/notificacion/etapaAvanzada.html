@@ -1,0 +1,17 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{email.notificacion.etapaAvanzada.title(${tituloProyecto})}">Cambio de etapa</title>
+  </head>
+  <body>
+    <p th:text="#{email.notificacion.saludo(${login})}">Hola.</p>
+    <h1 th:text="${tituloProyecto}">Proyecto de grado</h1>
+    <p th:text="#{email.notificacion.etapaAvanzada.text(${evento.origen}, ${evento.destino})}">El proyecto ha avanzado de etapa.</p>
+    <p th:if="${evento.destino.name() == 'FINALIZADO'}" th:text="#{email.notificacion.etapaAvanzada.resultado(${evento.estado})}">
+      Resultado final.
+    </p>
+    <p><a th:href="${enlaceProyecto}" th:text="#{email.notificacion.enlace}">Ver seguimiento del proyecto</a></p>
+    <p th:text="#{email.notificacion.firma}">Equipo SGPG.</p>
+  </body>
+</html>

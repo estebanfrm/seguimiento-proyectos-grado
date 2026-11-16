@@ -64,6 +64,25 @@ La prueba `DatosDemoIT` ejecuta Liquibase con contexto `dev` en un esquema tempo
 
 ## ADR-08: Texto largo como `text` plano en PostgreSQL
 
-**Contexto:** con `@Lob String`, Hibernate 7 trata la columna como *large object* en PostgreSQL y guarda un OID en lugar del texto. Funcionaba en los tests (Hibernate escribía y leía igual) pero fallaba al leer datos cargados por Liquibase o SQL; se detectó al arrancar la demo.
+**Contexto:** con `@Lob String`, Hibernate 7 trata la columna como _large object_ en PostgreSQL y guarda un OID en lugar del texto. Funcionaba en los tests (Hibernate escribía y leía igual) pero fallaba al leer datos cargados por Liquibase o SQL; se detectó al arrancar la demo.
 
 **Decisión:** los campos `TextBlob` usan `@JdbcTypeCode(SqlTypes.LONGVARCHAR)` sin `@Lob`, así se guardan como `text` legible por cualquier cliente SQL.
+
+## ADR 09 — Notificaciones con eventos de dominio después del commit
+
+**Decisión:** publicar records con IDs y datos mínimos de las acciones académicas mediante
+`ApplicationEventPublisher`. `NotificacionService` los escucha con `@TransactionalEventListener(AFTER_COMMIT)`
+y `@Async`, y consulta los destinatarios en una transacción propia de solo lectura (`REQUIRES_NEW`).
+Thymeleaf prepara mensajes en español y `MailService` recibe únicamente el destinatario y el contenido
+ya renderizado. No se trasladan entidades JPA entre hilos.
+
+**Motivo:** un correo nunca debe enviarse si la transacción académica falla, y un fallo de correo
+nunca debe revertir una entrega, revisión, observación, evaluación o cambio de etapa confirmado.
+
+**Consecuencia:** el envío es eventual y se filtran el autor, usuarios inactivos y correos vacíos;
+se elimina la repetición de destinatarios. El evento conserva el estado de revisión, la transición,
+el resultado final y el motivo de cancelación para no confundir acciones sucesivas. Los recordatorios
+usan el `Clock` y la última fecha límite de la etapa actual, solo en proyectos ACTIVO, a tres días
+y un día naturales. Sin cambios de esquema ni registro de envíos, las ventanas presuponen una
+ejecución diaria única; los fallos se registran y no hay reintentos ni garantía de entrega tras una
+caída del proceso. Mailpit permite inspeccionar localmente los mensajes de la demo.

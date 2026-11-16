@@ -53,4 +53,6 @@ public interface ProyectoGradoRepository
     boolean existsByIdAndTutorLogin(Long id, String login);
 
     boolean existsByIdAndJuradosLogin(Long id, String login);
+
+    List<ProyectoGrado> findByEstado(co.edu.sgpg.domain.enumeration.EstadoProyecto estado);
 }
