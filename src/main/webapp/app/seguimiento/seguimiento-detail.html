@@ -303,6 +303,13 @@
         </div>
       </section>
     }
+    @if (esAdmin()) {
+      <section class="my-4" aria-labelledby="admin-proyecto-title" data-cy="administracion-proyecto">
+        <h2 class="h4" id="admin-proyecto-title" jhiTranslate="seguimiento.admin.title">Administración del proyecto</h2>
+        <jhi-asignacion-panel [proyecto]="data.proyecto" (actualizado)="recargar()" />
+        <jhi-fechas-limite-panel [seguimiento]="data" (actualizado)="recargar()" />
+      </section>
+    }
     <section class="mt-4" aria-labelledby="historial-title">
       <h2 class="h4" id="historial-title" jhiTranslate="seguimiento.history">Historial del proyecto</h2>
       <ol class="historial">

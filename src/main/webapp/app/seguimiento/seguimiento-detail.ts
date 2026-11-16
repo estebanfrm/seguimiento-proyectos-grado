@@ -11,6 +11,8 @@ import { EMPTY, Subject, catchError, finalize, map, startWith, switchMap, takeUn
 import { AccountService } from 'app/core/auth';
 import { TranslateDirective } from 'app/shared/language';
 
+import { AsignacionPanel } from './asignacion-panel/asignacion-panel';
+import { FechasLimitePanel } from './fechas-limite-panel/fechas-limite-panel';
 import { SeguimientoAlert } from './seguimiento-alert';
 import { AccionSeguimiento, SeguimientoDialog } from './seguimiento-dialog';
 import { problemaSeguimiento } from './seguimiento-error';
@@ -21,7 +23,7 @@ import { SeguimientoService } from './seguimiento.service';
   selector: 'jhi-seguimiento-detail',
   templateUrl: './seguimiento-detail.html',
   styleUrl: './seguimiento-detail.scss',
-  imports: [RouterLink, DatePipe, TranslatePipe, TranslateDirective, SeguimientoAlert],
+  imports: [RouterLink, DatePipe, TranslatePipe, TranslateDirective, SeguimientoAlert, AsignacionPanel, FechasLimitePanel],
 })
 export default class SeguimientoDetail implements OnInit {
   readonly seguimiento = signal<ISeguimientoProyecto | null>(null);

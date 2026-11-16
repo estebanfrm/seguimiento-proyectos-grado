@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 
 import { TranslateService, provideTranslateService } from '@ngx-translate/core';
@@ -12,6 +13,8 @@ import { AccountService } from 'app/core/auth';
 import etapaEs from '../../i18n/es/etapa.json';
 import seguimientoEs from '../../i18n/es/seguimiento.json';
 
+import { AsignacionPanel } from './asignacion-panel/asignacion-panel';
+import { FechasLimitePanel } from './fechas-limite-panel/fechas-limite-panel';
 import SeguimientoDetail from './seguimiento-detail';
 import { ISeguimientoProyecto } from './seguimiento.model';
 import { cuentaSeguimiento, seguimientoEjemplo } from './seguimiento.test-samples';
@@ -28,6 +31,8 @@ describe('SeguimientoDetail', () => {
     seguimiento: vi.fn<SeguimientoService['seguimiento']>(),
     detalleEntrega: vi.fn<SeguimientoService['detalleEntrega']>(),
     resolver: vi.fn<SeguimientoService['resolver']>(),
+    usuariosPorRol: vi.fn<SeguimientoService['usuariosPorRol']>(),
+    fechasLimite: vi.fn<SeguimientoService['fechasLimite']>(),
   };
   const modal = { open: vi.fn() };
 
@@ -43,6 +48,8 @@ describe('SeguimientoDetail', () => {
       }),
     );
     service.resolver.mockReturnValue(of({ id: 12, resuelta: true }));
+    service.usuariosPorRol.mockReturnValue(of([]));
+    service.fechasLimite.mockReturnValue(of([]));
     TestBed.configureTestingModule({
       imports: [SeguimientoDetail],
       providers: [
@@ -137,6 +144,34 @@ describe('SeguimientoDetail', () => {
     expect(root.querySelector('[data-cy="editar-proyecto"]')?.getAttribute('href')).toBe('/proyecto-grado/7/edit');
     expect(boton('nueva-entrega')).toBeNull();
     expect(boton('evaluar')).toBeNull();
+    expect(root.querySelector('[data-cy="administracion-proyecto"]')).not.toBeNull();
+    expect(root.querySelector('[data-cy="asignacion-panel"]')).not.toBeNull();
+    expect(root.querySelector('[data-cy="fechas-limite-panel"]')).not.toBeNull();
+  });
+
+  it.each(['ROLE_ESTUDIANTE', 'ROLE_TUTOR', 'ROLE_JURADO', 'ROLE_USER'])(
+    'no instancia los paneles ni consulta los directorios administrativos para %s',
+    async rol => {
+      await render(rol);
+      expect(root.querySelector('[data-cy="administracion-proyecto"]')).toBeNull();
+      expect(service.usuariosPorRol).not.toHaveBeenCalled();
+      expect(service.fechasLimite).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['asignacion', 'fechas'])('recarga avance y requisitos después de guardar en el panel de %s', async panel => {
+    await render('ROLE_ADMIN', 'admin');
+    data.porcentajeAvance = 39;
+    data.requisitos.puedeAvanzar = true;
+    if (panel === 'asignacion') {
+      (fixture.debugElement.query(By.directive(AsignacionPanel)).componentInstance as AsignacionPanel).actualizado.emit();
+    } else {
+      (fixture.debugElement.query(By.directive(FechasLimitePanel)).componentInstance as FechasLimitePanel).actualizado.emit();
+    }
+    fixture.detectChanges();
+    expect(service.seguimiento).toHaveBeenCalledTimes(2);
+    expect(root.querySelector('[role="progressbar"]')?.getAttribute('aria-valuenow')).toBe('39');
+    expect(boton('avanzar')?.disabled).toBe(false);
   });
 
   it.each(['ANTEPROYECTO', 'SUSTENTACION'] as const)('solo permite evaluar una vez al jurado asignado en %s', async etapa => {

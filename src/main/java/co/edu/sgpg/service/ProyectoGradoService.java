@@ -1,5 +1,6 @@
 package co.edu.sgpg.service;
 
+import co.edu.sgpg.service.dto.AsignacionesDTO;
 import co.edu.sgpg.service.dto.ProyectoGradoDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -55,4 +56,7 @@ public interface ProyectoGradoService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /** Reemplaza todas las asignaciones del proyecto; solo el coordinador puede modificarlas. */
+    ProyectoGradoDTO actualizarAsignaciones(Long id, AsignacionesDTO asignaciones);
 }

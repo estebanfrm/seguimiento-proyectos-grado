@@ -72,6 +72,34 @@
       "JURADO": "Consulte los proyectos asignados y evalúe sus anteproyectos y sustentaciones.",
       "USER": "Consulte el seguimiento de los proyectos que tiene asignados.",
       "open": "Ir a mis proyectos"
+    },
+    "admin": {
+      "title": "Administración del proyecto",
+      "assignments": "Asignaciones",
+      "tutor": "Tutor",
+      "noTutor": "Sin tutor",
+      "jurados": "Jurados",
+      "students": "Estudiantes",
+      "multipleHint": "Use Ctrl o Cmd para seleccionar o quitar varias personas.",
+      "tutorWarning": "Sin tutor no se cumple el requisito TUTOR_ASIGNADO.",
+      "juradosWarning": "En ANTEPROYECTO se necesitan al menos dos jurados para cumplir JURADOS_ASIGNADOS.",
+      "saveAssignments": "Guardar asignaciones",
+      "deadlines": "Administrar fechas límite",
+      "defenseHint": "La fecha de SUSTENTACION cumple SUSTENTACION_PROGRAMADA, requisito para pasar de DESARROLLO a SUSTENTACION.",
+      "dateHint": "Ingrese la fecha y hora locales; se guardarán como un instante ISO. Si existen varios plazos en una etapa, puede administrar cada registro.",
+      "stage": "Etapa",
+      "currentDeadline": "Fecha límite del seguimiento",
+      "records": "Plazos registrados y acciones",
+      "noDeadline": "Sin fecha límite",
+      "createDeadline": "Crear fecha",
+      "editDeadline": "Editar fecha",
+      "deleteDeadline": "Eliminar fecha",
+      "saveDeadline": "Guardar fecha",
+      "dateTime": "Fecha y hora locales",
+      "description": "Descripción",
+      "invalidDeadline": "Ingrese una fecha válida y una descripción de hasta 250 caracteres.",
+      "deleteConfirmation": "¿Eliminar este plazo? Se recalcularán los requisitos del proyecto.",
+      "cancel": "Cancelar"
     }
   }
 }
