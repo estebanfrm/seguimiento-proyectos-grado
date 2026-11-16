@@ -6,15 +6,15 @@ La especificación es [docs/PLAN.md](docs/PLAN.md), el modelo es [sgpg.jdl](sgpg
 
 ## Stack y arquitectura
 
-| Componente            | Versión/configuración del repositorio                         |
-| --------------------- | ------------------------------------------------------------- |
-| Generador             | JHipster 9.4.0, monolito                                      |
-| Backend               | Java 21, Spring Boot 4.1.1, Maven Wrapper                     |
-| Frontend              | Angular 22.1, TypeScript 6, Bootstrap 5                       |
-| Persistencia          | PostgreSQL 18.6, Spring Data JPA, Liquibase                   |
-| Seguridad             | Spring Security, JWT, roles y relación con el proyecto        |
-| Pruebas               | JUnit 5, Mockito, Testcontainers PostgreSQL, Vitest           |
-| Herramientas frontend | Node.js >= 24.21.0; dependencias fijadas en package-lock.json |
+| Componente            | Versión/configuración del repositorio                           |
+| --------------------- | --------------------------------------------------------------- |
+| Generador             | JHipster 9.4.0, monolito                                        |
+| Backend               | Java 21, Spring Boot 4.1.1, Maven Wrapper                       |
+| Frontend              | Angular 22.1, TypeScript 6, Bootstrap 5                         |
+| Persistencia          | PostgreSQL 18.6, Spring Data JPA, Liquibase                     |
+| Seguridad             | Spring Security, JWT, roles y relación con el proyecto          |
+| Pruebas               | JUnit 5, Mockito, Testcontainers PostgreSQL, Vitest, Playwright |
+| Herramientas frontend | Node.js >= 24.21.0; dependencias fijadas en package-lock.json   |
 
 Aunque la introducción del plan menciona Java 17, `pom.xml` y su §7 requieren JDK 21.
 
@@ -253,6 +253,48 @@ npm run webapp:build
 ./mvnw -ntp -q spotless:apply -Dskip.npm -Dskip.installnodenpm
 npx prettier --write README.md docs/decisiones.md src/main/resources/config/application-dev.yml
 ```
+
+### Pruebas de navegador con Playwright
+
+Los seis specs de `e2e/` recorren la aplicación real con Chromium y los usuarios demo (contraseña `user`): permisos de menú y proyectos, avance de P2, evaluación de P3, bloqueos de P4, cierre de P5 y registro de una propuesta por estudiante2. El login, el cambio de usuario y las mutaciones se hacen por la interfaz, sin simular respuestas del servidor.
+
+Cada ejecución necesita una **base demo recién cargada**, con perfil `dev`: los tests avanzan P2, evalúan P3, finalizan P5 y crean un proyecto. Detén primero la aplicación. Estos comandos eliminan los datos del PostgreSQL de desarrollo; úsalos únicamente sobre la base demo desechable:
+
+```bash
+docker compose -f src/main/docker/services.yml down -v
+docker compose -f src/main/docker/services.yml up -d --wait
+npm ci
+npm run webapp:build
+./mvnw '-Dskip.npm' '-Dskip.installnodenpm'
+```
+
+Configura JDK 21 como se indica en «Ejecución local»; en PowerShell usa `./mvnw.cmd '-Dskip.npm' '-Dskip.installnodenpm'`. Espera a que la app sirva el frontend en `http://localhost:8080`. En otra terminal, desde la raíz del repositorio:
+
+```bash
+npx playwright install chromium
+npm run e2e
+# La misma suite con navegador visible:
+npm run e2e:headed
+```
+
+Ejecuta solo una de las dos variantes por carga limpia. Para repetir la suite o un flujo que ya modificó datos, detén la app y vuelve a preparar la base. Reiniciar Spring Boot no restaura los escenarios: Liquibase carga la demo una sola vez.
+
+`E2E_BASE_URL` permite cambiar el origen (por defecto `http://localhost:8080`). Por ejemplo, en PowerShell: `$env:E2E_BASE_URL='http://localhost:8080'; npm run e2e`; en Bash: `E2E_BASE_URL=http://localhost:8080 npm run e2e`. También se puede ejecutar un spec: `npm run e2e -- e2e/permisos.spec.ts`.
+
+La configuración está en `e2e/playwright.config.ts`: solo Chromium, un worker, sin paralelismo completo ni reintentos automáticos. Cada flujo de escritura está contenido en un único test y actúa sobre un proyecto distinto; las comprobaciones de lectura no dependen de las etapas o del avance que cambian otros specs. El orden de archivos no condiciona el resultado. Cada test recibe una sesión de navegador aislada.
+
+P4 ya se bloquea en la interfaz: el avance está deshabilitado y el checklist muestra los requisitos pendientes; la nueva entrega está deshabilitada junto al aviso de plazo/entrega bloqueada y la fecha VENCIDA. Los tests verifican esa prevención sin forzar botones deshabilitados para provocar un 409.
+
+El reporter de consola es `list`; el informe HTML queda en `target/e2e-report` y las capturas/trazas se conservan únicamente en fallos, bajo `test-results/`. Puedes abrir el informe con `npx playwright show-report target/e2e-report`.
+
+Para verificar tipos y descubrir los tests sin levantar la app ni abrir navegadores:
+
+```bash
+npx tsc --noEmit -p e2e/tsconfig.json
+npx playwright test --config e2e/playwright.config.ts --list
+```
+
+En el sandbox del worker solo se ejecutan estas comprobaciones estáticas. El coordinador ejecuta la suite contra la app y la base demo reales, además de `ng test`, el build y los tests de integración que requieren Docker.
 
 ## Comandos JHipster útiles
 
