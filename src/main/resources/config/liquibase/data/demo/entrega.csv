@@ -1,0 +1,16 @@
+id;etapa;titulo;descripcion;archivo;archivo_content_type;url_documento;version;fecha_entrega;estado;autor_id;proyecto_id
+3001;PROPUESTA;Propuesta - P1;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p1/propuesta.pdf;1;2026-11-10T14:00:00;ENVIADA;1002;2001
+3002;PROPUESTA;Propuesta - P2;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p2/propuesta.pdf;1;2026-11-10T14:00:00;APROBADA;1003;2002
+3003;PROPUESTA;Propuesta - P3;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p3/propuesta.pdf;1;2026-08-10T14:00:00;APROBADA;1004;2003
+3004;ANTEPROYECTO;Anteproyecto - P3;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p3/anteproyecto.pdf;1;2026-11-09T14:00:00;APROBADA;1004;2003
+3005;PROPUESTA;Propuesta - P4;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p4/propuesta.pdf;1;2026-08-10T14:00:00;APROBADA;1005;2004
+3006;ANTEPROYECTO;Anteproyecto - P4;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p4/anteproyecto.pdf;1;2026-09-10T14:00:00;APROBADA;1005;2004
+3007;DESARROLLO;Desarrollo - P4;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p4/desarrollo.pdf;1;2026-10-28T14:00:00;CON_OBSERVACIONES;1005;2004
+3008;PROPUESTA;Propuesta - P5;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p5/propuesta.pdf;1;2026-08-10T14:00:00;APROBADA;1006;2005
+3009;ANTEPROYECTO;Anteproyecto - P5;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p5/anteproyecto.pdf;1;2026-09-10T14:00:00;APROBADA;1006;2005
+3010;DESARROLLO;Desarrollo - P5;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p5/desarrollo.pdf;1;2026-10-10T14:00:00;APROBADA;1006;2005
+3011;SUSTENTACION;Sustentacion - P5;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p5/sustentacion.pdf;1;2026-11-05T14:00:00;APROBADA;1006;2005
+3012;PROPUESTA;Propuesta - P6;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p6/propuesta.pdf;1;2026-08-10T14:00:00;APROBADA;1002;2006
+3013;ANTEPROYECTO;Anteproyecto - P6;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p6/anteproyecto.pdf;1;2026-09-10T14:00:00;APROBADA;1002;2006
+3014;DESARROLLO;Desarrollo - P6;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p6/desarrollo.pdf;1;2026-10-10T14:00:00;APROBADA;1002;2006
+3015;SUSTENTACION;Sustentacion - P6;Documento de demostración con contenido académico ficticio.;NULL;NULL;https://sgpg.example/documentos/p6/sustentacion.pdf;1;2026-10-20T14:00:00;APROBADA;1002;2006

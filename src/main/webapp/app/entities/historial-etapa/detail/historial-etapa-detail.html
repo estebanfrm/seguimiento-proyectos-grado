@@ -1,0 +1,76 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (historialEtapa(); as historialEtapaRef) {
+      <div>
+        <h2 data-cy="historialEtapaDetailsHeading"><span jhiTranslate="sgpgApp.historialEtapa.detail.title">Historial Etapa</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ historialEtapaRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.historialEtapa.etapaOrigen">Etapa Origen</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Etapa.' + (historialEtapaRef.etapaOrigen ?? 'null')">{{
+              {
+                null: '',
+                PROPUESTA: 'PROPUESTA',
+                ANTEPROYECTO: 'ANTEPROYECTO',
+                DESARROLLO: 'DESARROLLO',
+                SUSTENTACION: 'SUSTENTACION',
+                FINALIZADO: 'FINALIZADO',
+              }[historialEtapaRef.etapaOrigen ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.historialEtapa.etapaDestino">Etapa Destino</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Etapa.' + (historialEtapaRef.etapaDestino ?? 'null')">{{
+              {
+                null: '',
+                PROPUESTA: 'PROPUESTA',
+                ANTEPROYECTO: 'ANTEPROYECTO',
+                DESARROLLO: 'DESARROLLO',
+                SUSTENTACION: 'SUSTENTACION',
+                FINALIZADO: 'FINALIZADO',
+              }[historialEtapaRef.etapaDestino ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.historialEtapa.fecha">Fecha</span></dt>
+          <dd>
+            <span>{{ historialEtapaRef.fecha | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.historialEtapa.comentario">Comentario</span></dt>
+          <dd>
+            <span>{{ historialEtapaRef.comentario }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.historialEtapa.usuario">Usuario</span></dt>
+          <dd>
+            <span>{{ historialEtapaRef.usuario?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.historialEtapa.proyecto">Proyecto</span></dt>
+          <dd>
+            @if (historialEtapa()!.proyecto) {
+              <div>
+                <a [routerLink]="['/proyecto-grado', historialEtapa()!.proyecto?.id, 'view']">{{ historialEtapaRef.proyecto?.titulo }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/historial-etapa', historialEtapaRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (fechaLimiteEtapa(); as fechaLimiteEtapaRef) {
+      <div>
+        <h2 data-cy="fechaLimiteEtapaDetailsHeading">
+          <span jhiTranslate="sgpgApp.fechaLimiteEtapa.detail.title">Fecha Limite Etapa</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ fechaLimiteEtapaRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.fechaLimiteEtapa.etapa">Etapa</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Etapa.' + (fechaLimiteEtapaRef.etapa ?? 'null')">{{
+              {
+                null: '',
+                PROPUESTA: 'PROPUESTA',
+                ANTEPROYECTO: 'ANTEPROYECTO',
+                DESARROLLO: 'DESARROLLO',
+                SUSTENTACION: 'SUSTENTACION',
+                FINALIZADO: 'FINALIZADO',
+              }[fechaLimiteEtapaRef.etapa ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.fechaLimiteEtapa.fechaLimite">Fecha Limite</span></dt>
+          <dd>
+            <span>{{ fechaLimiteEtapaRef.fechaLimite | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.fechaLimiteEtapa.descripcion">Descripcion</span></dt>
+          <dd>
+            <span>{{ fechaLimiteEtapaRef.descripcion }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.fechaLimiteEtapa.proyecto">Proyecto</span></dt>
+          <dd>
+            @if (fechaLimiteEtapa()!.proyecto) {
+              <div>
+                <a [routerLink]="['/proyecto-grado', fechaLimiteEtapa()!.proyecto?.id, 'view']">{{
+                  fechaLimiteEtapaRef.proyecto?.titulo
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/fecha-limite-etapa', fechaLimiteEtapaRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

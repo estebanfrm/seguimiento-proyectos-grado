@@ -1,0 +1,127 @@
+<div>
+  <h2 id="page-heading" data-cy="ObservacionHeading">
+    <span jhiTranslate="sgpgApp.observacion.home.title">Observacions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="sgpgApp.observacion.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-observacion"
+        [routerLink]="['/observacion/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="sgpgApp.observacion.home.createLabel">Crear nuevo Observacion</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (observacions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="sgpgApp.observacion.home.notFound">Ningún Observacions encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contenido">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.observacion.contenido">Contenido</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tipo">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.observacion.tipo">Tipo</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="resuelta">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.observacion.resuelta">Resuelta</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaCreacion">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.observacion.fechaCreacion">Fecha Creacion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="autor.login">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.observacion.autor">Autor</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="entrega.titulo">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.observacion.entrega">Entrega</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (observacion of observacions(); track trackId(observacion)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/observacion', observacion.id, 'view']">{{ observacion.id }}</a>
+              </td>
+              <td>{{ observacion.contenido }}</td>
+              <td [jhiTranslate]="'sgpgApp.TipoObservacion.' + (observacion.tipo ?? 'null')">
+                {{ { null: '', GENERAL: 'GENERAL', CORRECCION_REQUERIDA: 'CORRECCION_REQUERIDA' }[observacion.tipo ?? 'null'] }}
+              </td>
+              <td>{{ observacion.resuelta }}</td>
+              <td>{{ observacion.fechaCreacion | formatMediumDatetime }}</td>
+              <td>
+                {{ observacion.autor?.login }}
+              </td>
+              <td>
+                @if (observacion.entrega) {
+                  <div>
+                    <a [routerLink]="['/entrega', observacion.entrega.id, 'view']">{{ observacion.entrega.titulo }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/observacion', observacion.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a [routerLink]="['/observacion', observacion.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(observacion)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

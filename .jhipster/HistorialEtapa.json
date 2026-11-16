@@ -1,0 +1,55 @@
+{
+  "annotations": {
+    "changelogDate": "20231207211348"
+  },
+  "applications": ["sgpg"],
+  "documentation": "Bitácora de transiciones de etapa.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "etapaOrigen",
+      "fieldType": "Etapa",
+      "fieldValues": "PROPUESTA,ANTEPROYECTO,DESARROLLO,SUSTENTACION,FINALIZADO"
+    },
+    {
+      "fieldName": "etapaDestino",
+      "fieldType": "Etapa",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PROPUESTA,ANTEPROYECTO,DESARROLLO,SUSTENTACION,FINALIZADO"
+    },
+    {
+      "fieldName": "fecha",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "comentario",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    }
+  ],
+  "name": "HistorialEtapa",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "usuario",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "titulo",
+      "otherEntityName": "proyectoGrado",
+      "otherEntityRelationshipName": "historial",
+      "relationshipName": "proyecto",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

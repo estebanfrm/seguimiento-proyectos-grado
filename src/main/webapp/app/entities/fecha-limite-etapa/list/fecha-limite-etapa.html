@@ -1,0 +1,128 @@
+<div>
+  <h2 id="page-heading" data-cy="FechaLimiteEtapaHeading">
+    <span jhiTranslate="sgpgApp.fechaLimiteEtapa.home.title">Fecha Limite Etapas</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="sgpgApp.fechaLimiteEtapa.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-fecha-limite-etapa"
+        [routerLink]="['/fecha-limite-etapa/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="sgpgApp.fechaLimiteEtapa.home.createLabel">Crear nuevo Fecha Limite Etapa</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (fechaLimiteEtapas().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="sgpgApp.fechaLimiteEtapa.home.notFound">Ningún Fecha Limite Etapas encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="etapa">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.fechaLimiteEtapa.etapa">Etapa</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fechaLimite">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.fechaLimiteEtapa.fechaLimite">Fecha Limite</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="descripcion">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.fechaLimiteEtapa.descripcion">Descripcion</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="proyecto.titulo">
+              <div class="d-flex">
+                <span jhiTranslate="sgpgApp.fechaLimiteEtapa.proyecto">Proyecto</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (fechaLimiteEtapa of fechaLimiteEtapas(); track trackId(fechaLimiteEtapa)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/fecha-limite-etapa', fechaLimiteEtapa.id, 'view']">{{ fechaLimiteEtapa.id }}</a>
+              </td>
+              <td [jhiTranslate]="'sgpgApp.Etapa.' + (fechaLimiteEtapa.etapa ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    PROPUESTA: 'PROPUESTA',
+                    ANTEPROYECTO: 'ANTEPROYECTO',
+                    DESARROLLO: 'DESARROLLO',
+                    SUSTENTACION: 'SUSTENTACION',
+                    FINALIZADO: 'FINALIZADO',
+                  }[fechaLimiteEtapa.etapa ?? 'null']
+                }}
+              </td>
+              <td>{{ fechaLimiteEtapa.fechaLimite | formatMediumDatetime }}</td>
+              <td>{{ fechaLimiteEtapa.descripcion }}</td>
+              <td>
+                @if (fechaLimiteEtapa.proyecto) {
+                  <div>
+                    <a [routerLink]="['/proyecto-grado', fechaLimiteEtapa.proyecto.id, 'view']">{{ fechaLimiteEtapa.proyecto.titulo }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/fecha-limite-etapa', fechaLimiteEtapa.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/fecha-limite-etapa', fechaLimiteEtapa.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="button" (click)="delete(fechaLimiteEtapa)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

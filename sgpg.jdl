@@ -1,0 +1,140 @@
+/*
+ * SGPG - Sistema de Seguimiento de Proyectos de Grado
+ * Fuente de verdad del modelo de dominio generado con JHipster.
+ */
+application {
+  config {
+    baseName sgpg
+    applicationType monolith
+    packageName co.edu.sgpg
+    authenticationType jwt
+    databaseType sql
+    prodDatabaseType postgresql
+    devDatabaseType postgresql
+    buildTool maven
+    clientFramework angular
+    cacheProvider no
+    enableTranslation true
+    nativeLanguage es
+    languages [es]
+    serverPort 8080
+  }
+  entities *
+}
+
+enum Etapa {
+  PROPUESTA,
+  ANTEPROYECTO,
+  DESARROLLO,
+  SUSTENTACION,
+  FINALIZADO
+}
+
+enum EstadoProyecto {
+  ACTIVO,
+  APROBADO,
+  REPROBADO,
+  CANCELADO
+}
+
+enum EstadoEntrega {
+  ENVIADA,
+  EN_REVISION,
+  CON_OBSERVACIONES,
+  APROBADA,
+  RECHAZADA
+}
+
+enum TipoObservacion {
+  GENERAL,
+  CORRECCION_REQUERIDA
+}
+
+enum Concepto {
+  APROBADO,
+  APROBADO_CON_MODIFICACIONES,
+  REPROBADO
+}
+
+/** Proyecto de grado: unidad central del seguimiento. */
+entity ProyectoGrado {
+  titulo String required minlength(10) maxlength(250)
+  resumen TextBlob required
+  programa String required maxlength(120)
+  etapaActual Etapa required
+  estado EstadoProyecto required
+  porcentajeAvance Integer min(0) max(100)
+  fechaRegistro Instant required
+  fechaActualizacion Instant
+}
+
+/** Fecha límite de una etapa para un proyecto. */
+entity FechaLimiteEtapa {
+  etapa Etapa required
+  fechaLimite Instant required
+  descripcion String maxlength(250)
+}
+
+/** Documento entregado por el estudiante en una etapa. */
+entity Entrega {
+  etapa Etapa required
+  titulo String required maxlength(200)
+  descripcion TextBlob
+  archivo AnyBlob
+  archivoNombre String maxlength(255)
+  urlDocumento String maxlength(500)
+  version Integer required min(1)
+  fechaEntrega Instant required
+  estado EstadoEntrega required
+}
+
+/** Observación del tutor sobre una entrega. */
+entity Observacion {
+  contenido TextBlob required
+  tipo TipoObservacion required
+  resuelta Boolean required
+  fechaCreacion Instant required
+}
+
+/** Evaluación de un jurado en una etapa evaluable. */
+entity Evaluacion {
+  etapa Etapa required
+  calificacion BigDecimal required min(0) max(5)
+  concepto Concepto required
+  comentarios TextBlob
+  fechaEvaluacion Instant required
+}
+
+/** Bitácora de transiciones de etapa. */
+entity HistorialEtapa {
+  etapaOrigen Etapa
+  etapaDestino Etapa required
+  fecha Instant required
+  comentario String maxlength(500)
+}
+
+relationship ManyToMany {
+  ProyectoGrado{estudiante(login)} to User with builtInEntity
+  ProyectoGrado{jurado(login)} to User with builtInEntity
+}
+
+relationship ManyToOne {
+  ProyectoGrado{tutor(login)} to User with builtInEntity
+  Entrega{autor(login)} to User with builtInEntity
+  Observacion{autor(login)} to User with builtInEntity
+  Evaluacion{jurado(login)} to User with builtInEntity
+  HistorialEtapa{usuario(login)} to User with builtInEntity
+}
+
+relationship OneToMany {
+  ProyectoGrado{entrega} to Entrega{proyecto(titulo) required}
+  ProyectoGrado{fechaLimite} to FechaLimiteEtapa{proyecto(titulo) required}
+  ProyectoGrado{evaluacion} to Evaluacion{proyecto(titulo) required}
+  ProyectoGrado{historial} to HistorialEtapa{proyecto(titulo) required}
+  Entrega{observacion} to Observacion{entrega(titulo) required}
+}
+
+dto * with mapstruct
+service * with serviceImpl
+paginate ProyectoGrado, Entrega, HistorialEtapa with pagination
+filter ProyectoGrado, Entrega

@@ -1,0 +1,97 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (entrega(); as entregaRef) {
+      <div>
+        <h2 data-cy="entregaDetailsHeading"><span jhiTranslate="sgpgApp.entrega.detail.title">Entrega</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ entregaRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.etapa">Etapa</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Etapa.' + (entregaRef.etapa ?? 'null')">{{
+              {
+                null: '',
+                PROPUESTA: 'PROPUESTA',
+                ANTEPROYECTO: 'ANTEPROYECTO',
+                DESARROLLO: 'DESARROLLO',
+                SUSTENTACION: 'SUSTENTACION',
+                FINALIZADO: 'FINALIZADO',
+              }[entregaRef.etapa ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.titulo">Titulo</span></dt>
+          <dd>
+            <span>{{ entregaRef.titulo }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.descripcion">Descripcion</span></dt>
+          <dd>
+            <span>{{ entregaRef.descripcion }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.archivo">Archivo</span></dt>
+          <dd>
+            @if (entregaRef.archivo) {
+              <div>
+                <a (click)="openFile(entregaRef.archivo, entregaRef.archivoContentType)" jhiTranslate="entity.action.open">Abrir</a>
+                {{ entregaRef.archivoContentType }}, {{ byteSize(entregaRef.archivo) }}
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.urlDocumento">Url Documento</span></dt>
+          <dd>
+            <span>{{ entregaRef.urlDocumento }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.version">Version</span></dt>
+          <dd>
+            <span>{{ entregaRef.version }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.fechaEntrega">Fecha Entrega</span></dt>
+          <dd>
+            <span>{{ entregaRef.fechaEntrega | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.estado">Estado</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.EstadoEntrega.' + (entregaRef.estado ?? 'null')">{{
+              {
+                null: '',
+                ENVIADA: 'ENVIADA',
+                EN_REVISION: 'EN_REVISION',
+                CON_OBSERVACIONES: 'CON_OBSERVACIONES',
+                APROBADA: 'APROBADA',
+                RECHAZADA: 'RECHAZADA',
+              }[entregaRef.estado ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.autor">Autor</span></dt>
+          <dd>
+            <span>{{ entregaRef.autor?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.entrega.proyecto">Proyecto</span></dt>
+          <dd>
+            @if (entrega()!.proyecto) {
+              <div>
+                <a [routerLink]="['/proyecto-grado', entrega()!.proyecto?.id, 'view']">{{ entregaRef.proyecto?.titulo }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/entrega', entregaRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

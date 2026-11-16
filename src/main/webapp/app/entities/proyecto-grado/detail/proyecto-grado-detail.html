@@ -1,0 +1,91 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (proyectoGrado(); as proyectoGradoRef) {
+      <div>
+        <h2 data-cy="proyectoGradoDetailsHeading"><span jhiTranslate="sgpgApp.proyectoGrado.detail.title">Proyecto Grado</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.titulo">Titulo</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.titulo }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.resumen">Resumen</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.resumen }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.programa">Programa</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.programa }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.etapaActual">Etapa Actual</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Etapa.' + (proyectoGradoRef.etapaActual ?? 'null')">{{
+              {
+                null: '',
+                PROPUESTA: 'PROPUESTA',
+                ANTEPROYECTO: 'ANTEPROYECTO',
+                DESARROLLO: 'DESARROLLO',
+                SUSTENTACION: 'SUSTENTACION',
+                FINALIZADO: 'FINALIZADO',
+              }[proyectoGradoRef.etapaActual ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.estado">Estado</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.EstadoProyecto.' + (proyectoGradoRef.estado ?? 'null')">{{
+              { null: '', ACTIVO: 'ACTIVO', APROBADO: 'APROBADO', REPROBADO: 'REPROBADO', CANCELADO: 'CANCELADO' }[
+                proyectoGradoRef.estado ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.porcentajeAvance">Porcentaje Avance</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.porcentajeAvance }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.fechaRegistro">Fecha Registro</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.fechaRegistro | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.fechaActualizacion">Fecha Actualizacion</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.fechaActualizacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.tutor">Tutor</span></dt>
+          <dd>
+            <span>{{ proyectoGradoRef.tutor?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.estudiante">Estudiante</span></dt>
+          <dd>
+            @for (estudiante of proyectoGradoRef.estudiantes; track $index; let last = $last) {
+              <span> {{ estudiante.login }}{{ last ? '' : ', ' }} </span>
+            }
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.proyectoGrado.jurado">Jurado</span></dt>
+          <dd>
+            @for (jurado of proyectoGradoRef.jurados; track $index; let last = $last) {
+              <span> {{ jurado.login }}{{ last ? '' : ', ' }} </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/proyecto-grado', proyectoGradoRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

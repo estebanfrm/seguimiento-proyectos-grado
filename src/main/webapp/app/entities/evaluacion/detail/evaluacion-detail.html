@@ -1,0 +1,75 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (evaluacion(); as evaluacionRef) {
+      <div>
+        <h2 data-cy="evaluacionDetailsHeading"><span jhiTranslate="sgpgApp.evaluacion.detail.title">Evaluacion</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ evaluacionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.etapa">Etapa</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Etapa.' + (evaluacionRef.etapa ?? 'null')">{{
+              {
+                null: '',
+                PROPUESTA: 'PROPUESTA',
+                ANTEPROYECTO: 'ANTEPROYECTO',
+                DESARROLLO: 'DESARROLLO',
+                SUSTENTACION: 'SUSTENTACION',
+                FINALIZADO: 'FINALIZADO',
+              }[evaluacionRef.etapa ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.calificacion">Calificacion</span></dt>
+          <dd>
+            <span>{{ evaluacionRef.calificacion }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.concepto">Concepto</span></dt>
+          <dd>
+            <span [jhiTranslate]="'sgpgApp.Concepto.' + (evaluacionRef.concepto ?? 'null')">{{
+              { null: '', APROBADO: 'APROBADO', APROBADO_CON_MODIFICACIONES: 'APROBADO_CON_MODIFICACIONES', REPROBADO: 'REPROBADO' }[
+                evaluacionRef.concepto ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.comentarios">Comentarios</span></dt>
+          <dd>
+            <span>{{ evaluacionRef.comentarios }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.fechaEvaluacion">Fecha Evaluacion</span></dt>
+          <dd>
+            <span>{{ evaluacionRef.fechaEvaluacion | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.jurado">Jurado</span></dt>
+          <dd>
+            <span>{{ evaluacionRef.jurado?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="sgpgApp.evaluacion.proyecto">Proyecto</span></dt>
+          <dd>
+            @if (evaluacion()!.proyecto) {
+              <div>
+                <a [routerLink]="['/proyecto-grado', evaluacion()!.proyecto?.id, 'view']">{{ evaluacionRef.proyecto?.titulo }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="button" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/evaluacion', evaluacionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

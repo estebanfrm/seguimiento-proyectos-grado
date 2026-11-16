@@ -1,0 +1,12 @@
+{
+  "sgpgApp": {
+    "Etapa": {
+      "null": "",
+      "PROPUESTA": "Propuesta",
+      "ANTEPROYECTO": "Anteproyecto",
+      "DESARROLLO": "Desarrollo",
+      "SUSTENTACION": "Sustentación",
+      "FINALIZADO": "Finalizado"
+    }
+  }
+}
