@@ -7,10 +7,12 @@ import co.edu.sgpg.repository.*;
 import co.edu.sgpg.service.*;
 import co.edu.sgpg.service.dto.ObservacionDTO;
 import co.edu.sgpg.service.mapper.ObservacionMapper;
+import co.edu.sgpg.service.notificacion.evento.ObservacionRegistradaEvent;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class ObservacionServiceImpl implements ObservacionService {
     private final PermisosEntidadService permisos;
     private final AvanceService avance;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ObservacionServiceImpl(
         ObservacionRepository repositorio,
@@ -35,7 +38,8 @@ public class ObservacionServiceImpl implements ObservacionService {
         ProyectoAccessService acceso,
         PermisosEntidadService permisos,
         AvanceService avance,
-        Clock clock
+        Clock clock,
+        ApplicationEventPublisher eventPublisher
     ) {
         this.repositorio = repositorio;
         this.entregas = entregas;
@@ -44,6 +48,7 @@ public class ObservacionServiceImpl implements ObservacionService {
         this.permisos = permisos;
         this.avance = avance;
         this.clock = clock;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -60,7 +65,11 @@ public class ObservacionServiceImpl implements ObservacionService {
         observacion.setAutor(permisos.usuarioActual());
         observacion.setFechaCreacion(Instant.now(clock));
         observacion.setResuelta(false);
-        return guardar(observacion);
+        ObservacionDTO guardada = guardar(observacion);
+        eventPublisher.publishEvent(
+            new ObservacionRegistradaEvent(entrega.getProyecto().getId(), guardada.getId(), observacion.getAutor().getLogin())
+        );
+        return guardada;
     }
 
     @Override

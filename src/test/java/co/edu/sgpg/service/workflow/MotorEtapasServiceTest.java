@@ -15,6 +15,8 @@ import co.edu.sgpg.service.ReglaNegocioException;
 import co.edu.sgpg.service.dto.workflow.RequisitoDTO;
 import co.edu.sgpg.service.dto.workflow.RequisitosTransicionDTO;
 import co.edu.sgpg.service.mapper.ProyectoGradoMapper;
+import co.edu.sgpg.service.notificacion.evento.EtapaAvanzadaEvent;
+import co.edu.sgpg.service.notificacion.evento.ProyectoCanceladoEvent;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
@@ -32,6 +34,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -70,6 +73,9 @@ class MotorEtapasServiceTest {
     @Mock
     private FechaLimiteEtapaRepository fechas;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     private MotorEtapasService service;
     private ProyectoGrado proyecto;
     private User usuario;
@@ -85,7 +91,8 @@ class MotorEtapasServiceTest {
             historial,
             usuarios,
             Mappers.getMapper(ProyectoGradoMapper.class),
-            Clock.fixed(AHORA, ZoneOffset.UTC)
+            Clock.fixed(AHORA, ZoneOffset.UTC),
+            eventPublisher
         );
         proyecto = new ProyectoGrado().id(1L).etapaActual(Etapa.PROPUESTA).estado(EstadoProyecto.ACTIVO).porcentajeAvance(0);
         usuario = new User();
@@ -130,6 +137,9 @@ class MotorEtapasServiceTest {
         verify(acceso).verificarTutorOAdmin(1L);
         verify(proyectos).save(proyecto);
         verify(avance).recalcular(1L);
+        verify(eventPublisher).publishEvent(
+            new EtapaAvanzadaEvent(1L, Etapa.PROPUESTA, Etapa.ANTEPROYECTO, EstadoProyecto.ACTIVO, "tutor")
+        );
     }
 
     @Test
@@ -147,7 +157,7 @@ class MotorEtapasServiceTest {
         });
         assertThat(proyecto.getEtapaActual()).isEqualTo(Etapa.PROPUESTA);
         verify(proyectos, never()).save(any());
-        verifyNoInteractions(historial, avance, usuarios);
+        verifyNoInteractions(historial, avance, usuarios, eventPublisher);
     }
 
     @ParameterizedTest
@@ -164,6 +174,7 @@ class MotorEtapasServiceTest {
         assertThat(dto.getEstado()).isEqualTo(esperado);
         assertThat(dto.getEtapaActual()).isEqualTo(Etapa.FINALIZADO);
         assertThat(dto.getPorcentajeAvance()).isEqualTo(100);
+        verify(eventPublisher).publishEvent(new EtapaAvanzadaEvent(1L, Etapa.SUSTENTACION, Etapa.FINALIZADO, esperado, "tutor"));
     }
 
     @Test
@@ -176,6 +187,7 @@ class MotorEtapasServiceTest {
         assertThat(dto.getEtapaActual()).isEqualTo(Etapa.PROPUESTA);
         assertThat(dto.getPorcentajeAvance()).isEqualTo(4);
         assertThat(dto.getFechaActualizacion()).isEqualTo(AHORA);
+        verify(eventPublisher).publishEvent(new ProyectoCanceladoEvent(1L, "Retiro voluntario", "tutor"));
         verify(historial).save(
             argThat(
                 h ->

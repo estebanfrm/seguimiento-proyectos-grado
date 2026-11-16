@@ -15,9 +15,12 @@ import co.edu.sgpg.service.dto.ProyectoGradoDTO;
 import co.edu.sgpg.service.dto.workflow.RequisitoDTO;
 import co.edu.sgpg.service.dto.workflow.RequisitosTransicionDTO;
 import co.edu.sgpg.service.mapper.ProyectoGradoMapper;
+import co.edu.sgpg.service.notificacion.evento.EtapaAvanzadaEvent;
+import co.edu.sgpg.service.notificacion.evento.ProyectoCanceladoEvent;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class MotorEtapasService {
     private final UserRepository usuarios;
     private final ProyectoGradoMapper mapper;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
     public MotorEtapasService(
         ProyectoGradoRepository proyectos,
@@ -48,7 +52,8 @@ public class MotorEtapasService {
         HistorialEtapaRepository historial,
         UserRepository usuarios,
         ProyectoGradoMapper mapper,
-        Clock clock
+        Clock clock,
+        ApplicationEventPublisher eventPublisher
     ) {
         this.proyectos = proyectos;
         this.acceso = acceso;
@@ -59,6 +64,7 @@ public class MotorEtapasService {
         this.usuarios = usuarios;
         this.mapper = mapper;
         this.clock = clock;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -94,6 +100,9 @@ public class MotorEtapasService {
         }
         proyecto.setEtapaActual(transicion.etapaSiguiente());
         registrarCambio(proyecto, origen, usuario, comentario);
+        eventPublisher.publishEvent(
+            new EtapaAvanzadaEvent(proyectoId, origen, proyecto.getEtapaActual(), proyecto.getEstado(), usuario.getLogin())
+        );
         return mapper.toDto(proyecto);
     }
 
@@ -108,6 +117,7 @@ public class MotorEtapasService {
         User usuario = usuarioActual();
         proyecto.setEstado(EstadoProyecto.CANCELADO);
         registrarCambio(proyecto, proyecto.getEtapaActual(), usuario, comentario);
+        eventPublisher.publishEvent(new ProyectoCanceladoEvent(proyectoId, comentario, usuario.getLogin()));
         return mapper.toDto(proyecto);
     }
 

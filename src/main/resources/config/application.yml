@@ -227,3 +227,7 @@ jhipster:
 # ===================================================================
 
 # application:
+sgpg:
+  notificaciones:
+    habilitadas: true
+    recordatorio-cron: '0 0 7 * * *'

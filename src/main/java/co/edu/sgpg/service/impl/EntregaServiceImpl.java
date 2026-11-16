@@ -8,10 +8,13 @@ import co.edu.sgpg.service.*;
 import co.edu.sgpg.service.dto.EntregaDTO;
 import co.edu.sgpg.service.dto.RevisionEntregaDTO;
 import co.edu.sgpg.service.mapper.EntregaMapper;
+import co.edu.sgpg.service.notificacion.evento.EntregaRegistradaEvent;
+import co.edu.sgpg.service.notificacion.evento.EntregaRevisadaEvent;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,7 @@ public class EntregaServiceImpl implements EntregaService {
     private final VisibilidadProyectoService visibilidad;
     private final AvanceService avance;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
     public EntregaServiceImpl(
         EntregaRepository repositorio,
@@ -43,7 +47,8 @@ public class EntregaServiceImpl implements EntregaService {
         PermisosEntidadService permisos,
         VisibilidadProyectoService visibilidad,
         AvanceService avance,
-        Clock clock
+        Clock clock,
+        ApplicationEventPublisher eventPublisher
     ) {
         this.repositorio = repositorio;
         this.mapper = mapper;
@@ -54,6 +59,7 @@ public class EntregaServiceImpl implements EntregaService {
         this.visibilidad = visibilidad;
         this.avance = avance;
         this.clock = clock;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -89,6 +95,7 @@ public class EntregaServiceImpl implements EntregaService {
         entrega.setFechaEntrega(ahora);
         entrega = repositorio.save(entrega);
         avance.recalcular(proyectoId);
+        eventPublisher.publishEvent(new EntregaRegistradaEvent(proyectoId, entrega.getId(), entrega.getAutor().getLogin()));
         return mapper.toDto(entrega);
     }
 
@@ -142,6 +149,7 @@ public class EntregaServiceImpl implements EntregaService {
             entrega.setEstado(estado);
             entrega = repositorio.save(entrega);
             avance.recalcular(proyectoId);
+            eventPublisher.publishEvent(new EntregaRevisadaEvent(proyectoId, entrega.getId(), estado, acceso.loginActual().orElse(null)));
             return mapper.toDto(entrega);
         });
     }

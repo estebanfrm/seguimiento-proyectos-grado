@@ -95,3 +95,7 @@ management:
   health:
     mail:
       enabled: false
+
+sgpg:
+  notificaciones:
+    habilitadas: false
