@@ -45,12 +45,17 @@ public class Entrega implements Serializable {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Lob
+    // La migración de PDF convierte el blob/OID original a bytea.
+    @JdbcTypeCode(SqlTypes.VARBINARY)
     @Column(name = "archivo")
     private byte[] archivo;
 
     @Column(name = "archivo_content_type")
     private String archivoContentType;
+
+    @Size(max = 255)
+    @Column(name = "archivo_nombre", length = 255)
+    private String archivoNombre;
 
     @Size(max = 500)
     @Column(name = "url_documento", length = 500)
@@ -86,6 +91,19 @@ public class Entrega implements Serializable {
     private ProyectoGrado proyecto;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public String getArchivoNombre() {
+        return archivoNombre;
+    }
+
+    public void setArchivoNombre(String archivoNombre) {
+        this.archivoNombre = archivoNombre;
+    }
+
+    public Entrega archivoNombre(String archivoNombre) {
+        this.setArchivoNombre(archivoNombre);
+        return this;
+    }
 
     public Long getId() {
         return this.id;

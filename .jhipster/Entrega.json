@@ -27,6 +27,12 @@
       "fieldType": "AnyBlob"
     },
     {
+      "fieldName": "archivoNombre",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
       "fieldName": "urlDocumento",
       "fieldType": "String",
       "fieldValidateRules": ["maxlength"],

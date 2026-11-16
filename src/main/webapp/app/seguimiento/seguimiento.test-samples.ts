@@ -41,6 +41,7 @@ export function seguimientoEjemplo(): ISeguimientoProyecto {
                 estado: 'CON_OBSERVACIONES',
                 fechaEntrega: '2026-11-10T15:00:00Z',
                 observacionesPendientes: 1,
+                tieneArchivo: false,
               },
             ]
           : [],

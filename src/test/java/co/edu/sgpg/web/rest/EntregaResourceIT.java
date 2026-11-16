@@ -22,7 +22,6 @@ import co.edu.sgpg.service.mapper.EntregaMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -214,7 +213,8 @@ class EntregaResourceIT {
             .andExpect(jsonPath("$.[*].titulo").value(hasItem(DEFAULT_TITULO)))
             .andExpect(jsonPath("$.[*].descripcion").value(hasItem(DEFAULT_DESCRIPCION)))
             .andExpect(jsonPath("$.[*].archivoContentType").value(hasItem(DEFAULT_ARCHIVO_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].archivo").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_ARCHIVO))))
+            .andExpect(jsonPath("$.[*].archivo").doesNotExist())
+            .andExpect(jsonPath("$.[*].tieneArchivo").value(hasItem(true)))
             .andExpect(jsonPath("$.[*].urlDocumento").value(hasItem(DEFAULT_URL_DOCUMENTO)))
             .andExpect(jsonPath("$.[*].version").value(hasItem(DEFAULT_VERSION)))
             .andExpect(jsonPath("$.[*].fechaEntrega").value(hasItem(DEFAULT_FECHA_ENTREGA.toString())))
@@ -254,7 +254,8 @@ class EntregaResourceIT {
             .andExpect(jsonPath("$.titulo").value(DEFAULT_TITULO))
             .andExpect(jsonPath("$.descripcion").value(DEFAULT_DESCRIPCION))
             .andExpect(jsonPath("$.archivoContentType").value(DEFAULT_ARCHIVO_CONTENT_TYPE))
-            .andExpect(jsonPath("$.archivo").value(Base64.getEncoder().encodeToString(DEFAULT_ARCHIVO)))
+            .andExpect(jsonPath("$.archivo").doesNotExist())
+            .andExpect(jsonPath("$.tieneArchivo").value(true))
             .andExpect(jsonPath("$.urlDocumento").value(DEFAULT_URL_DOCUMENTO))
             .andExpect(jsonPath("$.version").value(DEFAULT_VERSION))
             .andExpect(jsonPath("$.fechaEntrega").value(DEFAULT_FECHA_ENTREGA.toString()))
@@ -607,7 +608,8 @@ class EntregaResourceIT {
             .andExpect(jsonPath("$.[*].titulo").value(hasItem(DEFAULT_TITULO)))
             .andExpect(jsonPath("$.[*].descripcion").value(hasItem(DEFAULT_DESCRIPCION)))
             .andExpect(jsonPath("$.[*].archivoContentType").value(hasItem(DEFAULT_ARCHIVO_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].archivo").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_ARCHIVO))))
+            .andExpect(jsonPath("$.[*].archivo").doesNotExist())
+            .andExpect(jsonPath("$.[*].tieneArchivo").value(hasItem(true)))
             .andExpect(jsonPath("$.[*].urlDocumento").value(hasItem(DEFAULT_URL_DOCUMENTO)))
             .andExpect(jsonPath("$.[*].version").value(hasItem(DEFAULT_VERSION)))
             .andExpect(jsonPath("$.[*].fechaEntrega").value(hasItem(DEFAULT_FECHA_ENTREGA.toString())))

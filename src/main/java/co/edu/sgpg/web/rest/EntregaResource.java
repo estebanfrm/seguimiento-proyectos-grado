@@ -14,6 +14,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -219,6 +222,22 @@ public class EntregaResource {
     @GetMapping("/{id}/observacions")
     public ResponseEntity<List<ObservacionDTO>> getObservacions(@PathVariable Long id) {
         return ResponseUtil.wrapOrNotFound(observacionService.findByEntrega(id));
+    }
+
+    @GetMapping("/{id}/archivo")
+    public ResponseEntity<byte[]> descargarArchivo(@PathVariable Long id) {
+        return entregaService
+            .obtenerArchivo(id)
+            .map(archivo ->
+                ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename*=UTF-8''" + URLEncoder.encode(archivo.nombre(), StandardCharsets.UTF_8).replace("+", "%20")
+                    )
+                    .body(archivo.contenido())
+            )
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/revision")

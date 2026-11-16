@@ -83,4 +83,9 @@ export class SeguimientoService {
       observaciones: this.http.get<RestObservacion[]>(`${this.apiUrl}/entregas/${id}/observacions`),
     });
   }
+
+  // --- Archivos PDF ---
+  descargarArchivo(id: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.apiUrl}/entregas/${id}/archivo`, { responseType: 'blob', observe: 'response' });
+  }
 }

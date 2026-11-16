@@ -193,8 +193,12 @@ class DatosDemoTest {
     @Test
     void demoSoloSeIncluyeEnDevYFakerNoSeActivaPorDefecto() throws Exception {
         var includes = elements(xml(ROOT + "master.xml"), "include");
-        assertThat(includes.getLast().getAttribute("file")).isEqualTo(DEMO);
-        assertThat(includes.getLast().getAttribute("context")).isEqualTo("dev");
+        var demo = includes
+            .stream()
+            .filter(include -> include.getAttribute("file").equals(DEMO))
+            .toList();
+        assertThat(demo).hasSize(1);
+        assertThat(demo.getFirst().getAttribute("context")).isEqualTo("dev");
         var change = elements(xml(DEMO), "changeSet").getFirst();
         assertThat(change.getAttribute("context")).isEqualTo("dev");
         assertThat(change.getAttribute("dbms")).isEqualTo("postgresql");

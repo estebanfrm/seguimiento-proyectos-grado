@@ -28,6 +28,7 @@ describe('SeguimientoDetail', () => {
     seguimiento: vi.fn<SeguimientoService['seguimiento']>(),
     detalleEntrega: vi.fn<SeguimientoService['detalleEntrega']>(),
     resolver: vi.fn<SeguimientoService['resolver']>(),
+    descargarArchivo: vi.fn<SeguimientoService['descargarArchivo']>(),
   };
   const modal = { open: vi.fn() };
 
@@ -189,6 +190,21 @@ describe('SeguimientoDetail', () => {
     fixture.detectChanges();
     expect(root.textContent).toContain('Ajustar objetivos');
     expect(boton('resolver-observacion')).toBeNull();
+  });
+
+  it('solo muestra Descargar PDF cuando el resumen indica que hay archivo y gestiona un 403', async () => {
+    await render();
+    expect(root.textContent).not.toContain('Descargar PDF');
+    data.etapas[1].entregas[0].tieneArchivo = true;
+    comp.seguimiento.set({ ...data });
+    fixture.detectChanges();
+    const descargar = Array.from(root.querySelectorAll('button')).find(button => button.textContent.includes('Descargar PDF'));
+    expect(descargar).toBeDefined();
+    service.descargarArchivo.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 403 })));
+    descargar!.click();
+    fixture.detectChanges();
+    expect(service.descargarArchivo).toHaveBeenCalledWith(9);
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain('No tiene permisos');
   });
 
   it('muestra la alerta de permisos si no puede consultar las observaciones de la entrega', async () => {

@@ -9,5 +9,6 @@ public record EntregaResumenDTO(
     Integer version,
     EstadoEntrega estado,
     Instant fechaEntrega,
-    long observacionesPendientes
+    long observacionesPendientes,
+    boolean tieneArchivo
 ) {}

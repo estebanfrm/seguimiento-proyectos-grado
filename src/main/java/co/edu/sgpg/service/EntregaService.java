@@ -49,6 +49,8 @@ public interface EntregaService {
      */
     Optional<EntregaDTO> findOne(Long id);
 
+    Optional<co.edu.sgpg.service.dto.ArchivoEntregaDTO> obtenerArchivo(Long id);
+
     /**
      * Delete the "id" entrega.
      *

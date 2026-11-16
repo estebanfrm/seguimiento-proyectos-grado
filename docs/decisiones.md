@@ -64,6 +64,12 @@ La prueba `DatosDemoIT` ejecuta Liquibase con contexto `dev` en un esquema tempo
 
 ## ADR-08: Texto largo como `text` plano en PostgreSQL
 
-**Contexto:** con `@Lob String`, Hibernate 7 trata la columna como *large object* en PostgreSQL y guarda un OID en lugar del texto. Funcionaba en los tests (Hibernate escribía y leía igual) pero fallaba al leer datos cargados por Liquibase o SQL; se detectó al arrancar la demo.
+**Contexto:** con `@Lob String`, Hibernate 7 trata la columna como _large object_ en PostgreSQL y guarda un OID en lugar del texto. Funcionaba en los tests (Hibernate escribía y leía igual) pero fallaba al leer datos cargados por Liquibase o SQL; se detectó al arrancar la demo.
 
 **Decisión:** los campos `TextBlob` usan `@JdbcTypeCode(SqlTypes.LONGVARCHAR)` sin `@Lob`, así se guardan como `text` legible por cualquier cliente SQL.
+
+## ADR-09: PDF como `bytea` y bytes solo de escritura en JSON
+
+**Decisión:** `Entrega.archivo` usa `@JdbcTypeCode(SqlTypes.VARBINARY)` sin `@Lob`. Liquibase 5.0.3 traduce el tipo `blob` del changelog existente a `OID` en PostgreSQL; `EntregaArchivoTest` lo comprueba sin base de datos. La migración nueva convierte la columna a `bytea` mediante `lo_get(archivo)` si todavía es `oid` y añade `archivo_nombre`. Conserva los bytes de los large objects y los nulos; si la columna ya es `bytea`, omite la conversión. No elimina large objects que puedan tener otras referencias. `EntregaArchivoIT` verifica la columna y la lectura después de limpiar el contexto JPA.
+
+**Consecuencia:** se valida el tipo `application/pdf`, la firma inicial `%PDF-` y el tamaño binario configurable (10 MB por defecto). Las respuestas JSON contienen metadatos e indicador `tieneArchivo`; los bytes se aceptan solo al escribir y se obtienen por un endpoint binario protegido por la visibilidad del proyecto. Omitir los bytes al editar conserva el PDF existente. La firma es una comprobación de formato inicial, sin interpretar la estructura completa del documento.

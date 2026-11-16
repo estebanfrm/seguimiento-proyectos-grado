@@ -15,6 +15,8 @@ import org.mapstruct.*;
 public interface EntregaMapper extends EntityMapper<EntregaDTO, Entrega> {
     @Mapping(target = "autor", source = "autor", qualifiedByName = "userLogin")
     @Mapping(target = "proyecto", source = "proyecto", qualifiedByName = "proyectoGradoTitulo")
+    @Mapping(target = "archivo", ignore = true)
+    @Mapping(target = "tieneArchivo", expression = "java(s.getArchivo() != null && s.getArchivo().length > 0)")
     EntregaDTO toDto(Entrega s);
 
     @Named("userLogin")

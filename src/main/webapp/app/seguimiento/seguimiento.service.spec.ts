@@ -1,10 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { serverApiUrl } from 'app/config';
 import { EstadoEntrega } from 'app/entities/enumerations/estado-entrega.model';
+import { StateStorageService } from 'app/core/auth';
+import { authInterceptor } from 'app/core/interceptor/auth.interceptor';
 
 import { problemaSeguimiento } from './seguimiento-error';
 import { seguimientoEjemplo } from './seguimiento.test-samples';
@@ -16,7 +18,13 @@ describe('SeguimientoService: contrato de API', () => {
   const api = `${serverApiUrl}api`;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClientTesting(),
+        { provide: StateStorageService, useValue: { getAuthenticationToken: () => 'pdf-token-prueba' } },
+      ],
+    });
     service = TestBed.inject(SeguimientoService);
     http = TestBed.inject(HttpTestingController);
   });
@@ -137,6 +145,27 @@ describe('SeguimientoService: contrato de API', () => {
       },
       { status: 409, statusText: 'Conflict' },
     );
+  });
+
+  it('descarga el PDF como blob por HttpClient con JWT y conserva el encabezado UTF-8', () => {
+    const pdf = new Blob(['%PDF-1.7\n'], { type: 'application/pdf' });
+    const disposition = "attachment; filename*=UTF-8''Propuesta%20acad%C3%A9mica.pdf";
+    service.descargarArchivo(9).subscribe(response => {
+      expect(response.body).toBe(pdf);
+      expect(response.headers.get('Content-Disposition')).toBe(disposition);
+    });
+    const req = http.expectOne({ method: 'GET', url: `${api}/entregas/9/archivo` });
+    expect(req.request.responseType).toBe('blob');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer pdf-token-prueba');
+    req.flush(pdf, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': disposition } });
+  });
+
+  it.each([403, 404])('propaga el error %s al descargar el PDF', status => {
+    service.descargarArchivo(9).subscribe({
+      next: () => expect.fail('No debe descargar sin acceso o sin archivo'),
+      error: (error: HttpErrorResponse) => expect(error.status).toBe(status),
+    });
+    http.expectOne({ method: 'GET', url: `${api}/entregas/9/archivo` }).flush(new Blob(), { status, statusText: 'Error' });
   });
 
   it('traduce el 403 a un mensaje de permisos y admite errores sin body', () => {

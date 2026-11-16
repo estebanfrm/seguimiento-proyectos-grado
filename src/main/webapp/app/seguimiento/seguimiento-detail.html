@@ -197,6 +197,16 @@
                   </p>
                 </div>
                 <div class="d-flex flex-wrap align-items-start gap-2">
+                  @if (entrega.tieneArchivo) {
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="descargarPdf(entrega.id)"
+                      jhiTranslate="seguimiento.pdf.descargar"
+                    >
+                      Descargar PDF
+                    </button>
+                  }
                   <button
                     type="button"
                     class="btn btn-outline-secondary btn-sm"

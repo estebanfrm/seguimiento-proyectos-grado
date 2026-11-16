@@ -176,4 +176,33 @@ export default class SeguimientoDetail implements OnInit {
         error: (error: HttpErrorResponse) => this.problema.set(problemaSeguimiento(error)),
       });
   }
+
+  descargarPdf(id: number): void {
+    this.service
+      .descargarArchivo(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next(response) {
+          if (!response.body) return;
+          const nombreCodificado = /filename\*=UTF-8''([^;]+)/i.exec(response.headers.get('Content-Disposition') ?? '')?.[1];
+          let nombre = `entrega-${id}.pdf`;
+          if (nombreCodificado) {
+            try {
+              nombre = decodeURIComponent(nombreCodificado);
+            } catch {
+              // Se conserva el nombre de respaldo si el encabezado está mal codificado.
+            }
+          }
+          const url = URL.createObjectURL(response.body);
+          const enlace = document.createElement('a');
+          enlace.href = url;
+          enlace.download = nombre;
+          document.body.append(enlace);
+          enlace.click();
+          enlace.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 0);
+        },
+        error: (error: HttpErrorResponse) => this.problema.set(problemaSeguimiento(error)),
+      });
+  }
 }
