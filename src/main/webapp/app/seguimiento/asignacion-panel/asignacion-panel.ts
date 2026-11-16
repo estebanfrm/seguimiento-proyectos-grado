@@ -91,20 +91,13 @@ export class AsignacionPanel implements OnChanges {
       return;
     }
     const { tutorId, juradoIds, estudianteIds } = this.form.getRawValue();
-    const relacion = (usuario: IUsuarioResumen): { id: number; login: string } => ({ id: usuario.id, login: usuario.login });
-    const tutor = this.opcionesTutores().find(usuario => usuario.id === tutorId);
     this.guardando.set(true);
     this.problema.set(null);
     this.service
-      .asignarProyecto({
-        id: this.proyecto().id,
-        tutor: tutor ? relacion(tutor) : null,
-        jurados: this.opcionesJurados()
-          .filter(usuario => juradoIds?.includes(usuario.id))
-          .map(relacion),
-        estudiantes: this.opcionesEstudiantes()
-          .filter(usuario => estudianteIds?.includes(usuario.id))
-          .map(relacion),
+      .asignarProyecto(this.proyecto().id, {
+        tutorId,
+        juradoIds: juradoIds ?? [],
+        estudianteIds: estudianteIds ?? [],
       })
       .pipe(
         takeUntil(this.cambioProyecto),

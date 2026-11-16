@@ -5,6 +5,7 @@ import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.ProyectoGradoQueryService;
 import co.edu.sgpg.service.ProyectoGradoService;
 import co.edu.sgpg.service.criteria.ProyectoGradoCriteria;
+import co.edu.sgpg.service.dto.AsignacionesDTO;
 import co.edu.sgpg.service.dto.ProyectoGradoDTO;
 import co.edu.sgpg.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -208,5 +209,18 @@ public class ProyectoGradoResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /** Reemplaza las asignaciones completas, permitiendo retirar el tutor con un valor nulo. */
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
+    @PutMapping("/{id}/asignaciones")
+    public ResponseEntity<ProyectoGradoDTO> actualizarAsignaciones(
+        @PathVariable("id") Long id,
+        @Valid @RequestBody AsignacionesDTO asignaciones
+    ) {
+        ProyectoGradoDTO proyecto = proyectoGradoService.actualizarAsignaciones(id, asignaciones);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(proyecto);
     }
 }

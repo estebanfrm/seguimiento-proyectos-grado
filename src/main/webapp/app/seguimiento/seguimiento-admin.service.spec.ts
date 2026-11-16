@@ -27,27 +27,23 @@ describe('SeguimientoService: administración del proyecto', () => {
 
   afterEach(() => http.verify());
 
-  it('asigna relaciones por PATCH sin enviar etapa, estado ni avance', () => {
+  it('reemplaza asignaciones por PUT sin enviar relaciones, etapa, estado ni avance', () => {
     const asignacion: IAsignacionProyecto = {
-      id: 7,
-      tutor: { id: 2, login: 'tutor' },
-      jurados: [
-        { id: 3, login: 'jurado' },
-        { id: 4, login: 'jurado2' },
-      ],
-      estudiantes: [{ id: 1, login: 'ana' }],
+      tutorId: 2,
+      juradoIds: [3, 4],
+      estudianteIds: [1],
     };
-    service.asignarProyecto(asignacion).subscribe(response => expect(response.id).toBe(7));
-    const req = http.expectOne({ method: 'PATCH', url: `${api}/proyecto-grados/7` });
+    service.asignarProyecto(7, asignacion).subscribe(response => expect(response.id).toBe(7));
+    const req = http.expectOne({ method: 'PUT', url: `${api}/proyecto-grados/7/asignaciones` });
     expect(req.request.body).toEqual(asignacion);
-    expect(Object.keys(req.request.body)).toEqual(['id', 'tutor', 'jurados', 'estudiantes']);
+    expect(Object.keys(req.request.body)).toEqual(['tutorId', 'juradoIds', 'estudianteIds']);
     req.flush({ id: 7 });
   });
 
-  it('envía tutor null y colecciones vacías explícitamente', () => {
-    const asignacion: IAsignacionProyecto = { id: 7, tutor: null, jurados: [], estudiantes: [] };
-    service.asignarProyecto(asignacion).subscribe();
-    const req = http.expectOne({ method: 'PATCH', url: `${api}/proyecto-grados/7` });
+  it('envía tutorId null y listas vacías explícitamente', () => {
+    const asignacion: IAsignacionProyecto = { tutorId: null, juradoIds: [], estudianteIds: [] };
+    service.asignarProyecto(7, asignacion).subscribe();
+    const req = http.expectOne({ method: 'PUT', url: `${api}/proyecto-grados/7/asignaciones` });
     expect(req.request.body).toEqual(asignacion);
     req.flush({ id: 7 });
   });
@@ -81,8 +77,8 @@ describe('SeguimientoService: administración del proyecto', () => {
     expect(completado).toBe(true);
   });
 
-  it.each([403, 409])('propaga el error HTTP %s del PATCH para mostrarlo en la alerta existente', status => {
-    service.asignarProyecto({ id: 7, tutor: null, jurados: [], estudiantes: [] }).subscribe({
+  it.each([403, 409])('propaga el error HTTP %s del PUT para mostrarlo en la alerta existente', status => {
+    service.asignarProyecto(7, { tutorId: null, juradoIds: [], estudianteIds: [] }).subscribe({
       next: () => expect.fail('No debe anunciar éxito'),
       error(error: HttpErrorResponse) {
         expect(error.status).toBe(status);
@@ -90,7 +86,7 @@ describe('SeguimientoService: administración del proyecto', () => {
       },
     });
     http
-      .expectOne(`${api}/proyecto-grados/7`)
+      .expectOne(`${api}/proyecto-grados/7/asignaciones`)
       .flush({ detail: 'No se pudo asignar' }, { status, statusText: status === 403 ? 'Forbidden' : 'Conflict' });
   });
 });

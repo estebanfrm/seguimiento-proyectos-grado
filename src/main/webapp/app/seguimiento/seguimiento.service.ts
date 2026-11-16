@@ -86,8 +86,8 @@ export class SeguimientoService {
     });
   }
 
-  asignarProyecto(asignacion: IAsignacionProyecto): Observable<RestProyectoGrado> {
-    return this.http.patch<RestProyectoGrado>(`${this.apiUrl}/proyecto-grados/${asignacion.id}`, asignacion);
+  asignarProyecto(id: number, asignacion: IAsignacionProyecto): Observable<RestProyectoGrado> {
+    return this.http.put<RestProyectoGrado>(`${this.apiUrl}/proyecto-grados/${id}/asignaciones`, asignacion);
   }
 
   fechasLimite(proyectoId: number): Observable<RestFechaLimiteEtapa[]> {

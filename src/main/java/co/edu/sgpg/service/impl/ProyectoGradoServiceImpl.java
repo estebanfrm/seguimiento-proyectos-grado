@@ -1,9 +1,13 @@
 package co.edu.sgpg.service.impl;
 
 import co.edu.sgpg.domain.ProyectoGrado;
+import co.edu.sgpg.domain.User;
 import co.edu.sgpg.domain.enumeration.*;
 import co.edu.sgpg.repository.ProyectoGradoRepository;
+import co.edu.sgpg.repository.UserRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.*;
+import co.edu.sgpg.service.dto.AsignacionesDTO;
 import co.edu.sgpg.service.dto.ProyectoGradoDTO;
 import co.edu.sgpg.service.mapper.ProyectoGradoMapper;
 import java.time.Clock;
@@ -11,11 +15,14 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -28,6 +35,7 @@ public class ProyectoGradoServiceImpl implements ProyectoGradoService {
     private final VisibilidadProyectoService visibilidad;
     private final AvanceService avance;
     private final Clock clock;
+    private final UserRepository usuarios;
 
     public ProyectoGradoServiceImpl(
         ProyectoGradoRepository repositorio,
@@ -36,7 +44,8 @@ public class ProyectoGradoServiceImpl implements ProyectoGradoService {
         PermisosEntidadService permisos,
         VisibilidadProyectoService visibilidad,
         AvanceService avance,
-        Clock clock
+        Clock clock,
+        UserRepository usuarios
     ) {
         this.repositorio = repositorio;
         this.mapper = mapper;
@@ -45,6 +54,7 @@ public class ProyectoGradoServiceImpl implements ProyectoGradoService {
         this.visibilidad = visibilidad;
         this.avance = avance;
         this.clock = clock;
+        this.usuarios = usuarios;
     }
 
     @Override
@@ -127,5 +137,46 @@ public class ProyectoGradoServiceImpl implements ProyectoGradoService {
     public void delete(Long id) {
         permisos.admin();
         repositorio.deleteById(id);
+    }
+
+    @Override
+    public ProyectoGradoDTO actualizarAsignaciones(Long id, AsignacionesDTO asignaciones) {
+        permisos.admin();
+        ProyectoGrado proyecto = repositorio
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El proyecto no existe"));
+        User tutor = asignaciones.tutorId() == null ? null : usuarioConRol(asignaciones.tutorId(), AuthoritiesConstants.TUTOR);
+        Set<User> jurados = asignaciones
+            .juradoIds()
+            .stream()
+            .map(usuarioId -> usuarioConRol(usuarioId, AuthoritiesConstants.JURADO))
+            .collect(Collectors.toCollection(HashSet::new));
+        Set<User> estudiantes = asignaciones
+            .estudianteIds()
+            .stream()
+            .map(usuarioId -> usuarioConRol(usuarioId, AuthoritiesConstants.ESTUDIANTE))
+            .collect(Collectors.toCollection(HashSet::new));
+        proyecto.setTutor(tutor);
+        proyecto.setJurados(jurados);
+        proyecto.setEstudiantes(estudiantes);
+        proyecto.setFechaActualizacion(Instant.now(clock));
+        proyecto = repositorio.save(proyecto);
+        avance.recalcular(proyecto.getId());
+        return mapper.toDto(proyecto);
+    }
+
+    private User usuarioConRol(Long id, String rol) {
+        return Optional.ofNullable(id)
+            .flatMap(usuarios::findById)
+            .filter(User::isActivated)
+            .filter(usuario ->
+                usuario
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(authority -> rol.equals(authority.getName()))
+            )
+            .orElseThrow(() ->
+                new ReglaNegocioException("USUARIO_ROL_INVALIDO", "El usuario " + id + " debe existir, estar activo y tener el rol " + rol)
+            );
     }
 }

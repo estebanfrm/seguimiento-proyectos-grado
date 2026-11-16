@@ -80,17 +80,16 @@ describe('AsignacionPanel', () => {
     expect(root.querySelector('[data-cy="aviso-jurados"]')).toBeNull();
   });
 
-  it('envía únicamente id, tutor, jurados y estudiantes y notifica el refresco', async () => {
+  it('envía los ids de las asignaciones completas y notifica el refresco', async () => {
     await render();
     const actualizado = vi.fn();
     comp.actualizado.subscribe(actualizado);
     comp.form.setValue({ tutorId: 2, juradoIds: [4], estudianteIds: [1] });
     root.querySelector<HTMLButtonElement>('[data-cy="guardar-asignacion"]')!.click();
-    expect(service.asignarProyecto).toHaveBeenCalledWith({
-      id: 7,
-      tutor: { id: 2, login: 'tutor' },
-      jurados: [{ id: 4, login: 'jurado2' }],
-      estudiantes: [{ id: 1, login: 'ana' }],
+    expect(service.asignarProyecto).toHaveBeenCalledWith(7, {
+      tutorId: 2,
+      juradoIds: [4],
+      estudianteIds: [1],
     });
     expect(actualizado).toHaveBeenCalledOnce();
   });
@@ -99,7 +98,7 @@ describe('AsignacionPanel', () => {
     await render();
     comp.form.setValue({ tutorId: null, juradoIds: [], estudianteIds: [] });
     comp.guardar();
-    expect(service.asignarProyecto).toHaveBeenCalledWith({ id: 7, tutor: null, jurados: [], estudiantes: [] });
+    expect(service.asignarProyecto).toHaveBeenCalledWith(7, { tutorId: null, juradoIds: [], estudianteIds: [] });
   });
 
   it('actualiza los avisos del tutor y del mínimo de jurados al cambiar la selección', async () => {
@@ -120,7 +119,7 @@ describe('AsignacionPanel', () => {
     await render();
     expect(root.querySelector('#asignacion-jurados')?.textContent).toContain('jurado-anterior');
     comp.guardar();
-    expect(service.asignarProyecto.mock.calls[0][0].jurados).toEqual([{ id: 99, login: 'jurado-anterior' }]);
+    expect(service.asignarProyecto.mock.calls[0][1].juradoIds).toEqual([99]);
   });
 
   it.each(['ROLE_ESTUDIANTE', 'ROLE_TUTOR', 'ROLE_JURADO', 'ROLE_USER'])('oculta el panel y no consulta ni guarda para %s', async rol => {

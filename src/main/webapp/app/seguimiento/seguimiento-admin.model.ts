@@ -1,15 +1,9 @@
 import { Etapa } from 'app/entities/enumerations/etapa.model';
 
-export interface IUsuarioAsignacion {
-  id: number;
-  login: string;
-}
-
 export interface IAsignacionProyecto {
-  id: number;
-  tutor: IUsuarioAsignacion | null;
-  jurados: IUsuarioAsignacion[];
-  estudiantes: IUsuarioAsignacion[];
+  tutorId: number | null;
+  juradoIds: number[];
+  estudianteIds: number[];
 }
 
 export interface IGuardarFechaLimite {

@@ -48,6 +48,9 @@ class ReglasEntidadesTest {
     private ProyectoGradoRepository proyectos;
 
     @Mock
+    private UserRepository usuarios;
+
+    @Mock
     private FechaLimiteEtapaRepository fechas;
 
     @Mock
@@ -99,7 +102,8 @@ class ReglasEntidadesTest {
             permisos,
             visibilidad,
             avance,
-            RELOJ
+            RELOJ,
+            usuarios
         );
         proyecto = new ProyectoGrado()
             .id(1L)
