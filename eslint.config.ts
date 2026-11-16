@@ -16,7 +16,7 @@ export default defineConfig(
     },
   },
   { ignores: ['src/main/docker/'] },
-  { ignores: ['target/classes/static/', 'target/', 'src/main/webapp/swagger-ui/', 'dist/'] },
+  { ignores: ['target/classes/static/', 'target/', 'src/main/webapp/swagger-ui/', 'dist/', 'test-results/'] },
   eslint.configs.recommended,
   {
     files: ['**/*.{js,cjs,mjs}'],
@@ -110,6 +110,15 @@ export default defineConfig(
       'object-shorthand': ['error', 'always', { avoidExplicitReturnArrows: true }],
       radix: 'error',
       'spaced-comment': ['warn', 'always'],
+    },
+  },
+  {
+    files: ['e2e/**/*.ts'],
+    extends: [...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylistic],
+    languageOptions: {
+      parserOptions: {
+        project: ['./e2e/tsconfig.json'],
+      },
     },
   },
   {

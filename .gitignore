@@ -151,3 +151,6 @@ Desktop.ini
 ######################
 coverage/
 .nyc_output/
+
+# Playwright (el informe HTML queda bajo /target/, ya ignorado)
+/test-results/
