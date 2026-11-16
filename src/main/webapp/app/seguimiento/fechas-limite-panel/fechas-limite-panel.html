@@ -1,0 +1,165 @@
+@if (esAdmin()) {
+  <section class="card" aria-labelledby="admin-fechas-title" data-cy="fechas-limite-panel">
+    <div class="card-body">
+      <h3 class="h5" id="admin-fechas-title" jhiTranslate="seguimiento.admin.deadlines">Administrar fechas límite</h3>
+      <p class="alert alert-info" jhiTranslate="seguimiento.admin.defenseHint">
+        La fecha de SUSTENTACION cumple SUSTENTACION_PROGRAMADA, requisito para pasar de DESARROLLO a SUSTENTACION.
+      </p>
+      <p class="text-muted" jhiTranslate="seguimiento.admin.dateHint">
+        Ingrese la fecha y hora locales; se guardarán como un instante ISO. Si existen varios plazos en una etapa, puede administrar cada
+        registro.
+      </p>
+      <jhi-seguimiento-alert [problema]="problema()" />
+      @if (cargando()) {
+        <p role="status" jhiTranslate="seguimiento.loading">Cargando…</p>
+      }
+      @if (!cargadas() && !cargando()) {
+        <button type="button" class="btn btn-outline-primary mb-3" (click)="cargarFechas()" jhiTranslate="seguimiento.retry">
+          Reintentar
+        </button>
+      }
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <caption class="visually-hidden" jhiTranslate="seguimiento.admin.deadlines">
+            Administrar fechas límite
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col" jhiTranslate="seguimiento.admin.stage">Etapa</th>
+              <th scope="col" jhiTranslate="seguimiento.admin.currentDeadline">Fecha límite del seguimiento</th>
+              <th scope="col" jhiTranslate="seguimiento.admin.records">Plazos registrados y acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (etapa of seguimiento().etapas; track etapa.etapa) {
+              <tr [attr.data-etapa]="etapa.etapa">
+                <th scope="row">{{ 'sgpgApp.Etapa.' + etapa.etapa | translate }}</th>
+                <td>
+                  @if (etapa.fechaLimite) {
+                    <time [attr.datetime]="etapa.fechaLimite">{{ etapa.fechaLimite | date: 'dd/MM/yyyy HH:mm' }}</time>
+                  } @else {
+                    <span jhiTranslate="seguimiento.admin.noDeadline">Sin fecha límite</span>
+                  }
+                </td>
+                <td>
+                  @for (fecha of fechasPorEtapa(etapa.etapa); track fecha.id) {
+                    <div class="mb-2" [attr.data-fecha-id]="fecha.id">
+                      <time [attr.datetime]="fecha.fechaLimite">{{ fecha.fechaLimite | date: 'dd/MM/yyyy HH:mm' }}</time>
+                      <span class="text-break"> · {{ fecha.descripcion }}</span>
+                      <div class="d-flex flex-wrap gap-2 mt-1">
+                        <button
+                          type="button"
+                          class="btn btn-outline-primary btn-sm"
+                          [disabled]="guardando()"
+                          (click)="editar(etapa.etapa, fecha)"
+                          data-cy="editar-fecha"
+                          jhiTranslate="seguimiento.admin.editDeadline"
+                        >
+                          Editar fecha
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger btn-sm"
+                          [disabled]="guardando()"
+                          (click)="eliminar(fecha)"
+                          data-cy="eliminar-fecha"
+                          jhiTranslate="seguimiento.admin.deleteDeadline"
+                        >
+                          Eliminar fecha
+                        </button>
+                      </div>
+                    </div>
+                  } @empty {
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      [disabled]="!cargadas() || guardando()"
+                      (click)="editar(etapa.etapa)"
+                      data-cy="crear-fecha"
+                      jhiTranslate="seguimiento.admin.createDeadline"
+                    >
+                      Crear fecha
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (etapaEditada(); as etapa) {
+        <form [formGroup]="form" (ngSubmit)="guardar()" class="border-top pt-3" aria-labelledby="fecha-editor-title">
+          <h4 class="h6" id="fecha-editor-title">
+            {{ (idEditado() === null ? 'seguimiento.admin.createDeadline' : 'seguimiento.admin.editDeadline') | translate }} ·
+            {{ 'sgpgApp.Etapa.' + etapa | translate }}
+          </h4>
+          <fieldset [disabled]="guardando()">
+            <div class="mb-3">
+              <label class="form-label" for="admin-fecha-limite" jhiTranslate="seguimiento.admin.dateTime">Fecha y hora locales</label>
+              <input
+                id="admin-fecha-limite"
+                class="form-control"
+                type="datetime-local"
+                step="0.001"
+                formControlName="fechaLimite"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="admin-fecha-descripcion" jhiTranslate="seguimiento.admin.description">Descripción</label>
+              <input id="admin-fecha-descripcion" class="form-control" type="text" formControlName="descripcion" maxlength="250" />
+            </div>
+            @if (form.invalid && form.touched) {
+              <p class="text-danger" jhiTranslate="seguimiento.admin.invalidDeadline">
+                Ingrese una fecha válida y una descripción de hasta 250 caracteres.
+              </p>
+            }
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="form.invalid"
+                data-cy="guardar-fecha"
+                jhiTranslate="seguimiento.admin.saveDeadline"
+              >
+                Guardar fecha
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelarEdicion()" jhiTranslate="seguimiento.admin.cancel">
+                Cancelar
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      }
+      @if (porEliminar(); as fecha) {
+        <div class="alert alert-warning mt-3" role="alert">
+          <p jhiTranslate="seguimiento.admin.deleteConfirmation">¿Eliminar este plazo? Se recalcularán los requisitos del proyecto.</p>
+          <p>
+            {{ 'sgpgApp.Etapa.' + fecha.etapa | translate }} · {{ fecha.fechaLimite | date: 'dd/MM/yyyy HH:mm' }} · {{ fecha.descripcion }}
+          </p>
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-danger"
+              [disabled]="guardando()"
+              (click)="confirmarEliminacion()"
+              data-cy="confirmar-eliminar-fecha"
+              jhiTranslate="seguimiento.admin.deleteDeadline"
+            >
+              Eliminar fecha
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              [disabled]="guardando()"
+              (click)="porEliminar.set(null)"
+              jhiTranslate="seguimiento.admin.cancel"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+}
