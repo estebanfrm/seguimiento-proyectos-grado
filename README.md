@@ -181,10 +181,10 @@ El guion modifica datos. Para repetirlo usa una base de desarrollo nueva y desec
 
 ## Ejecución local
 
-Necesitas JDK 21, Node.js compatible y Docker activo para PostgreSQL. Configura el JDK antes de Maven; en este entorno Windows:
+Necesitas JDK 21, Node.js compatible y Docker activo para PostgreSQL. Si JDK 21 no es tu Java por defecto, apunta `JAVA_HOME` a él antes de usar Maven. En PowerShell:
 
 ```powershell
-$env:JAVA_HOME="C:\Users\giral\.jdks\jdk-21.0.13+9"
+$env:JAVA_HOME="C:\ruta\a\jdk-21"
 $env:PATH="$env:JAVA_HOME\bin;$env:PATH"
 java -version
 ```
@@ -192,7 +192,7 @@ java -version
 En Bash, ajusta la ruta a tu JDK:
 
 ```bash
-export JAVA_HOME="C:/Users/giral/.jdks/jdk-21.0.13+9"
+export JAVA_HOME="/ruta/a/jdk-21"
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
 

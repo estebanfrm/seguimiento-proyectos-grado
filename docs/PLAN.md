@@ -209,9 +209,9 @@ Reglas para todos los workers:
 
 ## 7. Entorno de ejecución (obligatorio para los workers)
 
-- JDK 21 portable (no está en el PATH del sistema). Antes de cualquier comando Maven:
-  `export JAVA_HOME="C:/Users/giral/.jdks/jdk-21.0.13+9"; export PATH="$JAVA_HOME/bin:$PATH"` (bash)
-  o `$env:JAVA_HOME="C:\Users\giral\.jdks\jdk-21.0.13+9"; $env:PATH="$env:JAVA_HOME\bin;$env:PATH"` (PowerShell).
+- JDK 21 (si no es tu Java por defecto). Antes de cualquier comando Maven:
+  `export JAVA_HOME="/ruta/a/jdk-21"; export PATH="$JAVA_HOME/bin:$PATH"` (bash)
+  o `$env:JAVA_HOME="C:\ruta\a\jdk-21"; $env:PATH="$env:JAVA_HOME\bin;$env:PATH"` (PowerShell).
 - Docker está disponible: los `*IT` usan Testcontainers (PostgreSQL). No hace falta levantar BD a mano.
 - Backend sin reconstruir el frontend: añadir `-Dskip.npm -Dskip.installnodenpm`.
 - Unit tests: `./mvnw -ntp test -Dskip.npm -Dskip.installnodenpm -Dtest='MiTest*'`
