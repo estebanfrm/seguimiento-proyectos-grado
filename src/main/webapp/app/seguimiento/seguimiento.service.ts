@@ -108,4 +108,9 @@ export class SeguimientoService {
   eliminarFechaLimite(id: number): Observable<undefined> {
     return this.http.delete<undefined>(`${this.apiUrl}/fecha-limite-etapas/${id}`);
   }
+
+  // --- Archivos PDF ---
+  descargarArchivo(id: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.apiUrl}/entregas/${id}/archivo`, { responseType: 'blob', observe: 'response' });
+  }
 }

@@ -2,6 +2,7 @@ package co.edu.sgpg.service.dto;
 
 import co.edu.sgpg.domain.enumeration.EstadoEntrega;
 import co.edu.sgpg.domain.enumeration.Etapa;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
@@ -27,10 +28,17 @@ public class EntregaDTO implements Serializable {
     @Lob
     private String descripcion;
 
-    @Lob
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
     private byte[] archivo;
 
     private String archivoContentType;
+
+    @Size(max = 255)
+    private String archivoNombre;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean tieneArchivo;
 
     @Size(max = 500)
     private String urlDocumento;
@@ -97,6 +105,22 @@ public class EntregaDTO implements Serializable {
 
     public String getUrlDocumento() {
         return urlDocumento;
+    }
+
+    public String getArchivoNombre() {
+        return archivoNombre;
+    }
+
+    public void setArchivoNombre(String archivoNombre) {
+        this.archivoNombre = archivoNombre;
+    }
+
+    public boolean isTieneArchivo() {
+        return tieneArchivo;
+    }
+
+    public void setTieneArchivo(boolean tieneArchivo) {
+        this.tieneArchivo = tieneArchivo;
     }
 
     public void setUrlDocumento(String urlDocumento) {

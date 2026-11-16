@@ -231,3 +231,6 @@ sgpg:
   notificaciones:
     habilitadas: true
     recordatorio-cron: '0 0 7 * * *'
+  entregas:
+    # Tamaño binario, antes de codificar en base64. No es una petición multipart/form-data.
+    tamano-maximo-archivo: 10MB

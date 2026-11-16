@@ -27,5 +27,6 @@
     <include file="config/liquibase/changelog/20231207211348_added_entity_constraints_HistorialEtapa.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="config/liquibase/changelog/20261113000000_datos_demo.xml" relativeToChangelogFile="false" context="dev"/>
+    <include file="config/liquibase/changelog/20261115010000_entrega_archivo_nombre.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

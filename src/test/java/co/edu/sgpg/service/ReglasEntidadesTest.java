@@ -89,7 +89,8 @@ class ReglasEntidadesTest {
             visibilidad,
             avance,
             RELOJ,
-            eventPublisher
+            eventPublisher,
+            org.springframework.util.unit.DataSize.ofMegabytes(10)
         );
         evaluacionService = new EvaluacionServiceImpl(
             evaluaciones,
@@ -138,6 +139,7 @@ class ReglasEntidadesTest {
         when(permisos.proyecto(1L)).thenReturn(proyecto);
         EntregaDTO dto = new EntregaDTO();
         dto.setTitulo("Documento");
+        dto.setUrlDocumento("https://example.org/documento.pdf");
         ProyectoGradoDTO relacion = new ProyectoGradoDTO();
         relacion.setId(1L);
         dto.setProyecto(relacion);

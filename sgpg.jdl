@@ -81,6 +81,7 @@ entity Entrega {
   titulo String required maxlength(200)
   descripcion TextBlob
   archivo AnyBlob
+  archivoNombre String maxlength(255)
   urlDocumento String maxlength(500)
   version Integer required min(1)
   fechaEntrega Instant required

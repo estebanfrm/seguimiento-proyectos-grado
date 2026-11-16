@@ -7,6 +7,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { Subject, of, throwError } from 'rxjs';
 
 import { Concepto } from 'app/entities/enumerations/concepto.model';
+import { DataUtils } from 'app/core/util/data-util.service';
 
 import { SeguimientoDialog } from './seguimiento-dialog';
 import { SeguimientoService } from './seguimiento.service';
@@ -24,6 +25,7 @@ describe('SeguimientoDialog', () => {
     cancelar: vi.fn<SeguimientoService['cancelar']>(),
   };
   const modal = { close: vi.fn(), dismiss: vi.fn() };
+  const dataUtils = { loadFileToForm: vi.fn<DataUtils['loadFileToForm']>() };
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -34,12 +36,17 @@ describe('SeguimientoDialog', () => {
     service.revisar.mockReturnValue(of({ id: 9 }));
     service.avanzar.mockReturnValue(of({ id: 7 }));
     service.cancelar.mockReturnValue(of({ id: 7 }));
+    dataUtils.loadFileToForm.mockImplementation((_event, form) => {
+      form.patchValue({ archivo: 'JVBERi0xLjcK', archivoContentType: 'application/pdf' });
+      return of(undefined);
+    });
     TestBed.configureTestingModule({
       imports: [SeguimientoDialog],
       providers: [
         provideTranslateService(),
         { provide: SeguimientoService, useValue: service },
         { provide: NgbActiveModal, useValue: modal },
+        { provide: DataUtils, useValue: dataUtils },
       ],
     });
     fixture = TestBed.createComponent(SeguimientoDialog);
@@ -80,6 +87,86 @@ describe('SeguimientoDialog', () => {
     comp.form.controls.comentario.setValue('Retiro solicitado');
     comp.guardar();
     expect(service.cancelar).toHaveBeenCalledWith(7, 'Retiro solicitado');
+  });
+
+  function seleccionar(archivo: File): void {
+    comp.seleccionarArchivo({ target: { files: [archivo], value: archivo.name } } as unknown as Event);
+  }
+
+  it('exige PDF o URL y permite PDF sin URL enviando base64 y nombre original', () => {
+    comp.preparar('entrega', 7);
+    comp.form.controls.titulo.setValue('Propuesta');
+    comp.guardar();
+    expect(service.crearEntrega).not.toHaveBeenCalled();
+    expect(comp.form.hasError('documentoRequerido')).toBe(true);
+    seleccionar(new File(['%PDF-1.7\n'], 'Propuesta académica.pdf', { type: 'application/pdf' }));
+    expect(dataUtils.loadFileToForm).toHaveBeenCalledWith(expect.anything(), comp.form, 'archivo', false);
+    expect(comp.form.valid).toBe(true);
+    comp.guardar();
+    expect(service.crearEntrega).toHaveBeenCalledWith({
+      titulo: 'Propuesta',
+      descripcion: '',
+      urlDocumento: '',
+      proyecto: { id: 7 },
+      archivo: 'JVBERi0xLjcK',
+      archivoContentType: 'application/pdf',
+      archivoNombre: 'Propuesta académica.pdf',
+    });
+  });
+
+  it.each(['text/plain', 'image/png', ''])('rechaza el tipo %s aunque tenga extensión .pdf', tipo => {
+    comp.preparar('entrega', 7);
+    comp.form.patchValue({ titulo: 'Propuesta', urlDocumento: 'https://example.org/doc' });
+    seleccionar(new File(['texto'], 'falso.pdf', { type: tipo }));
+    expect(comp.errorArchivo()).toBe('seguimiento.pdf.tipoInvalido');
+    expect(dataUtils.loadFileToForm).not.toHaveBeenCalled();
+    comp.guardar();
+    expect(service.crearEntrega).not.toHaveBeenCalled();
+  });
+
+  it('admite exactamente 10 MB y rechaza un byte de más antes de leer el archivo', () => {
+    comp.preparar('entrega', 7);
+    const archivo = new File(['%PDF-'], 'grande.pdf', { type: 'application/pdf' });
+    Object.defineProperty(archivo, 'size', { value: comp.tamanoMaximoArchivo, configurable: true });
+    seleccionar(archivo);
+    expect(comp.errorArchivo()).toBeNull();
+    expect(dataUtils.loadFileToForm).toHaveBeenCalledTimes(1);
+    Object.defineProperty(archivo, 'size', { value: comp.tamanoMaximoArchivo + 1 });
+    seleccionar(archivo);
+    expect(comp.errorArchivo()).toBe('seguimiento.pdf.tamanoExcedido');
+    expect(comp.form.controls.archivo.value).toBe('');
+    expect(dataUtils.loadFileToForm).toHaveBeenCalledTimes(1);
+  });
+
+  it('limita el nombre original a 255 caracteres', () => {
+    comp.preparar('entrega', 7);
+    seleccionar(new File(['%PDF-'], `${'x'.repeat(252)}.pdf`, { type: 'application/pdf' }));
+    expect(comp.errorArchivo()).toBe('seguimiento.pdf.nombreLargo');
+    expect(dataUtils.loadFileToForm).not.toHaveBeenCalled();
+  });
+
+  it('quitar el PDF vuelve a exigir URL o archivo', () => {
+    comp.preparar('entrega', 7);
+    comp.form.controls.titulo.setValue('Propuesta');
+    seleccionar(new File(['%PDF-'], 'propuesta.pdf', { type: 'application/pdf' }));
+    comp.eliminarArchivo();
+    expect(comp.form.hasError('documentoRequerido')).toBe(true);
+    expect(comp.form.controls.archivoNombre.value).toBe('');
+    comp.form.controls.urlDocumento.setValue('https://example.org/propuesta.pdf');
+    expect(comp.form.valid).toBe(true);
+  });
+
+  it('bloquea el envío mientras DataUtils lee el PDF', () => {
+    const lectura = new Subject<void>();
+    dataUtils.loadFileToForm.mockReturnValue(lectura);
+    comp.preparar('entrega', 7);
+    comp.form.patchValue({ titulo: 'Propuesta', urlDocumento: 'https://example.org/propuesta.pdf' });
+    seleccionar(new File(['%PDF-'], 'propuesta.pdf', { type: 'application/pdf' }));
+    comp.guardar();
+    expect(service.crearEntrega).not.toHaveBeenCalled();
+    expect(comp.cargandoArchivo()).toBe(true);
+    lectura.complete();
+    expect(comp.cargandoArchivo()).toBe(false);
   });
 
   it('permite avanzar con un comentario opcional', () => {

@@ -5,15 +5,18 @@ import co.edu.sgpg.domain.ProyectoGrado;
 import co.edu.sgpg.domain.enumeration.*;
 import co.edu.sgpg.repository.*;
 import co.edu.sgpg.service.*;
+import co.edu.sgpg.service.dto.ArchivoEntregaDTO;
 import co.edu.sgpg.service.dto.EntregaDTO;
 import co.edu.sgpg.service.dto.RevisionEntregaDTO;
 import co.edu.sgpg.service.mapper.EntregaMapper;
 import co.edu.sgpg.service.notificacion.evento.EntregaRegistradaEvent;
 import co.edu.sgpg.service.notificacion.evento.EntregaRevisadaEvent;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -37,6 +41,7 @@ public class EntregaServiceImpl implements EntregaService {
     private final AvanceService avance;
     private final Clock clock;
     private final ApplicationEventPublisher eventPublisher;
+    private final long tamanoMaximoArchivo;
 
     public EntregaServiceImpl(
         EntregaRepository repositorio,
@@ -48,7 +53,8 @@ public class EntregaServiceImpl implements EntregaService {
         VisibilidadProyectoService visibilidad,
         AvanceService avance,
         Clock clock,
-        ApplicationEventPublisher eventPublisher
+        ApplicationEventPublisher eventPublisher,
+        @Value("${sgpg.entregas.tamano-maximo-archivo:10MB}") DataSize tamanoMaximoArchivo
     ) {
         this.repositorio = repositorio;
         this.mapper = mapper;
@@ -60,6 +66,7 @@ public class EntregaServiceImpl implements EntregaService {
         this.avance = avance;
         this.clock = clock;
         this.eventPublisher = eventPublisher;
+        this.tamanoMaximoArchivo = tamanoMaximoArchivo.toBytes();
     }
 
     @Override
@@ -86,7 +93,15 @@ public class EntregaServiceImpl implements EntregaService {
         if (repositorio.existsByProyectoIdAndEtapaAndEstado(proyectoId, etapa, EstadoEntrega.APROBADA)) {
             throw new ReglaNegocioException("ETAPA_YA_APROBADA", "La etapa ya tiene una entrega aprobada");
         }
+        validarArchivo(dto);
+        if (dto.getArchivo() == null && (dto.getUrlDocumento() == null || dto.getUrlDocumento().isBlank())) {
+            throw new ReglaNegocioException("DOCUMENTO_REQUERIDO", "Adjunte un PDF o indique la URL del documento");
+        }
         Entrega entrega = mapper.toEntity(dto);
+        if (entrega.getArchivo() == null) {
+            entrega.setArchivoContentType(null);
+            entrega.setArchivoNombre(null);
+        }
         entrega.setProyecto(proyecto);
         entrega.setEtapa(etapa);
         entrega.setVersion(repositorio.findMaxVersion(proyectoId, etapa) + 1);
@@ -117,14 +132,46 @@ public class EntregaServiceImpl implements EntregaService {
                     "Solo se editan entregas en estado ENVIADA"
                 );
             }
+            validarArchivo(dto);
             if (!parcial || dto.getTitulo() != null) entrega.setTitulo(dto.getTitulo());
             if (!parcial || dto.getDescripcion() != null) entrega.setDescripcion(dto.getDescripcion());
-            if (!parcial || dto.getArchivo() != null) {
+            // Los bytes son solo de escritura: omitirlos al editar conserva el PDF existente.
+            if (dto.getArchivo() != null) {
                 entrega.setArchivo(dto.getArchivo());
                 entrega.setArchivoContentType(dto.getArchivoContentType());
+                entrega.setArchivoNombre(dto.getArchivoNombre());
             }
             if (!parcial || dto.getUrlDocumento() != null) entrega.setUrlDocumento(dto.getUrlDocumento());
             return mapper.toDto(repositorio.save(entrega));
+        });
+    }
+
+    private void validarArchivo(EntregaDTO dto) {
+        byte[] archivo = dto.getArchivo();
+        if (archivo == null) return;
+        if (archivo.length > tamanoMaximoArchivo) {
+            throw new ReglaNegocioException("ARCHIVO_DEMASIADO_GRANDE", "El PDF supera el tamaño máximo permitido");
+        }
+        byte[] firma = "%PDF-".getBytes(StandardCharsets.US_ASCII);
+        if (!"application/pdf".equals(dto.getArchivoContentType()) || archivo.length < firma.length) {
+            throw new ReglaNegocioException("ARCHIVO_NO_PDF", "El archivo debe ser un PDF válido");
+        }
+        for (int i = 0; i < firma.length; i++) {
+            if (archivo[i] != firma[i]) throw new ReglaNegocioException("ARCHIVO_NO_PDF", "El archivo debe comenzar con %PDF-");
+        }
+        if (dto.getArchivoNombre() != null && dto.getArchivoNombre().length() > 255) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre del archivo admite hasta 255 caracteres");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<ArchivoEntregaDTO> obtenerArchivo(Long id) {
+        return repositorio.findById(id).flatMap(entrega -> {
+            acceso.verificarPuedeVer(entrega.getProyecto().getId());
+            if (entrega.getArchivo() == null || entrega.getArchivo().length == 0) return Optional.empty();
+            String nombre = entrega.getArchivoNombre();
+            return Optional.of(new ArchivoEntregaDTO(entrega.getArchivo(), nombre == null || nombre.isBlank() ? "entrega.pdf" : nombre));
         });
     }
 

@@ -26,6 +26,18 @@
     "pendingObservations": "{{cantidad}} observaciones pendientes",
     "details": "Documento y observaciones",
     "openDocument": "Abrir documento",
+    "pdf": {
+      "adjuntar": "Adjuntar PDF",
+      "ayuda": "Adjunte un PDF de hasta 10 MB o indique una URL. Puede enviar ambos.",
+      "descargar": "Descargar PDF",
+      "quitar": "Quitar archivo",
+      "leyendo": "Leyendo PDF…",
+      "tipoInvalido": "Seleccione un archivo de tipo application/pdf con extensión .pdf.",
+      "tamanoExcedido": "El PDF supera el tamaño máximo de 10 MB.",
+      "nombreLargo": "El nombre del archivo admite hasta 255 caracteres.",
+      "lecturaFallida": "No se pudo leer el PDF. Vuelva a seleccionarlo.",
+      "documentoRequerido": "Adjunte un PDF o indique la URL del documento."
+    },
     "resolved": "Resuelta",
     "resolve": "Marcar resuelta",
     "noObservations": "Sin observaciones.",

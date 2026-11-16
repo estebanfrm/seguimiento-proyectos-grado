@@ -103,6 +103,9 @@ El historial es una excepción al borrado: solo lo escribe el workflow. Falta de
 | Crear entrega                     | Si `ahora > fechaLimite` de la etapa: `FECHA_LIMITE_VENCIDA`; en el instante exacto todavía se admite |
 | Crear entrega                     | Otra ENVIADA o EN_REVISION: `ENTREGA_EN_CURSO`                                                        |
 | Crear entrega                     | Ya existe APROBADA en la etapa: `ETAPA_YA_APROBADA`                                                   |
+| Crear entrega                     | Sin PDF ni URL con contenido: `DOCUMENTO_REQUERIDO`                                                   |
+| Crear/editar entrega              | Tipo distinto de `application/pdf` o sin firma inicial `%PDF-`: `ARCHIVO_NO_PDF`                      |
+| Crear/editar entrega              | Supera `sgpg.entregas.tamano-maximo-archivo` (por defecto 10 MB): `ARCHIVO_DEMASIADO_GRANDE`          |
 | Aprobar entrega                   | Corrección requerida sin resolver en esa entrega: `CORRECCIONES_PENDIENTES`                           |
 | Crear evaluación                  | Etapa distinta de ANTEPROYECTO o SUSTENTACION: `ETAPA_NO_EVALUABLE`                                   |
 | Crear evaluación                  | Ya evaluó el mismo jurado en esa etapa: `EVALUACION_DUPLICADA`                                        |
@@ -117,27 +120,34 @@ Los conflictos se expresan como ProblemDetail con `status: 409`, `codigo` y `mes
 
 ## Contrato de API
 
-| Método                    | Ruta                                          | Acceso / resultado                                                                                        |
-| ------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| POST                      | `/api/authenticate`                           | Credenciales → JWT                                                                                        |
-| GET/POST/PUT/PATCH/DELETE | `/api/proyecto-grados[/{id}]`                 | CRUD según la matriz; sin cambiar workflow directamente                                                   |
-| PUT                       | `/api/proyecto-grados/{id}/asignaciones`      | Solo admin; reemplaza asignaciones → `ProyectoGradoDTO`; 404 si no existe, 409 si un usuario no es válido |
-| GET/POST/PUT/PATCH/DELETE | `/api/entregas[/{id}]`                        | Entregas según la matriz                                                                                  |
-| GET/POST/PUT/PATCH/DELETE | `/api/observacions[/{id}]`                    | Observaciones según la matriz                                                                             |
-| GET/POST/PUT/PATCH/DELETE | `/api/evaluacions[/{id}]`                     | Evaluaciones según la matriz                                                                              |
-| GET/POST/PUT/PATCH/DELETE | `/api/fecha-limite-etapas[/{id}]`             | Lectura visible; escritura del administrador                                                              |
-| GET                       | `/api/historial-etapas[/{id}]`                | Solo lectura visible; mutaciones prohibidas                                                               |
-| GET                       | `/api/proyecto-grados/{id}/workflow`          | Quien puede ver → `RequisitosTransicionDTO`                                                               |
-| POST                      | `/api/proyecto-grados/{id}/workflow/avanzar`  | Tutor del proyecto/admin → `ProyectoGradoDTO` o 409                                                       |
-| POST                      | `/api/proyecto-grados/{id}/workflow/cancelar` | Admin → `ProyectoGradoDTO`                                                                                |
-| GET                       | `/api/proyecto-grados/{id}/seguimiento`       | Quien puede ver → `SeguimientoProyectoDTO`                                                                |
-| PUT                       | `/api/entregas/{id}/revision`                 | Tutor/admin; cuerpo `{ "estado": "EN_REVISION                                                             | CON_OBSERVACIONES | APROBADA | RECHAZADA" }`→`EntregaDTO` |
-| PUT                       | `/api/observacions/{id}/resolver`             | Tutor/admin → `ObservacionDTO` resuelta                                                                   |
-| GET                       | `/api/usuarios/por-rol/{authority}`           | Admin → `UsuarioResumenDTO[]`                                                                             |
+| Método                    | Ruta                                          | Acceso / resultado                                                                                             |
+| ------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| POST                      | `/api/authenticate`                           | Credenciales → JWT                                                                                             |
+| GET/POST/PUT/PATCH/DELETE | `/api/proyecto-grados[/{id}]`                 | CRUD según la matriz; sin cambiar workflow directamente                                                        |
+| PUT                       | `/api/proyecto-grados/{id}/asignaciones`      | Solo admin; reemplaza asignaciones → `ProyectoGradoDTO`; 404 si no existe, 409 si un usuario no es válido      |
+| GET/POST/PUT/PATCH/DELETE | `/api/entregas[/{id}]`                        | Entregas según la matriz                                                                                       |
+| GET                       | `/api/entregas/{id}/archivo`                  | Quien puede ver el proyecto; PDF adjunto con nombre UTF-8; 403 sin permiso, 404 si no existe entrega o archivo |
+| GET/POST/PUT/PATCH/DELETE | `/api/observacions[/{id}]`                    | Observaciones según la matriz                                                                                  |
+| GET/POST/PUT/PATCH/DELETE | `/api/evaluacions[/{id}]`                     | Evaluaciones según la matriz                                                                                   |
+| GET/POST/PUT/PATCH/DELETE | `/api/fecha-limite-etapas[/{id}]`             | Lectura visible; escritura del administrador                                                                   |
+| GET                       | `/api/historial-etapas[/{id}]`                | Solo lectura visible; mutaciones prohibidas                                                                    |
+| GET                       | `/api/proyecto-grados/{id}/workflow`          | Quien puede ver → `RequisitosTransicionDTO`                                                                    |
+| POST                      | `/api/proyecto-grados/{id}/workflow/avanzar`  | Tutor del proyecto/admin → `ProyectoGradoDTO` o 409                                                            |
+| POST                      | `/api/proyecto-grados/{id}/workflow/cancelar` | Admin → `ProyectoGradoDTO`                                                                                     |
+| GET                       | `/api/proyecto-grados/{id}/seguimiento`       | Quien puede ver → `SeguimientoProyectoDTO`                                                                     |
+| PUT                       | `/api/entregas/{id}/revision`                 | Tutor/admin; cuerpo `{ "estado": "EN_REVISION                                                                  | CON_OBSERVACIONES | APROBADA | RECHAZADA" }`→`EntregaDTO` |
+| PUT                       | `/api/observacions/{id}/resolver`             | Tutor/admin → `ObservacionDTO` resuelta                                                                        |
+| GET                       | `/api/usuarios/por-rol/{authority}`           | Admin → `UsuarioResumenDTO[]`                                                                                  |
 
 `[/{id}]` resume colección e ítem; crear usa colección y editar/borrar el ítem. Se conservan los plurales generados `observacions` y `evaluacions`.
 
 Asignaciones recibe `{ "tutorId": 2, "juradoIds": [3, 4], "estudianteIds": [1] }`. `tutorId: null` retira el tutor; ambas listas son obligatorias y `[]` elimina sus asignaciones. Los roles exigidos son `ROLE_TUTOR`, `ROLE_JURADO` y `ROLE_ESTUDIANTE`, respectivamente; un usuario inexistente, inactivo o sin ese rol produce 409 `USUARIO_ROL_INVALIDO`. Una lista omitida o nula produce 400. Se actualiza la fecha con el reloj del servidor y se recalcula el avance. El contrato del PATCH genérico se conserva.
+
+Una entrega nueva requiere una URL o un PDF (se admiten ambos). Para adjuntar se envían `archivo` en base64, `archivoContentType: "application/pdf"` y `archivoNombre` (hasta 255 caracteres). El límite se mide en bytes binarios: `10MB` equivale a 10 × 1024 × 1024 bytes. El cliente ofrece hasta 10 MB; el servidor permite configurarlo mediante `SGPG_ENTREGAS_TAMANO_MAXIMO_ARCHIVO`.
+
+Las respuestas de entregas nunca serializan `archivo`: devuelven `archivoContentType`, `archivoNombre` y `tieneArchivo`. Los resúmenes de seguimiento incluyen `tieneArchivo`. PUT/PATCH conservan el PDF si se omiten los bytes; para reemplazarlo se envía el nuevo archivo con sus metadatos. La descarga usa JWT y devuelve `application/pdf` con `Content-Disposition: attachment; filename*=UTF-8''<nombre>`; archivos anteriores sin nombre usan `entrega.pdf`.
+
+El PDF viaja como JSON, con aproximadamente 4/3 del tamaño binario en base64. El límite de cadenas de Jackson se ajusta al tamaño configurado con margen, para que la validación de negocio pueda devolver 409. Los límites multipart y de formularios de Tomcat no aplican a este cuerpo JSON. Si se despliega detrás de un proxy, su límite de cuerpo también debe admitir ese tamaño y el resto del JSON.
 
 Avanzar/cancelar reciben `{ "comentario": "texto" }` (opcional para avanzar, obligatorio para cancelar). Requisitos contiene `proyectoId`, `etapaActual`, `etapaSiguiente` (null al finalizar), `puedeAvanzar` y una lista `{codigo, descripcion, cumplido}`. Seguimiento incluye `proyecto`, `porcentajeAvance`, `etapas`, `historial` y `requisitos`. Cada etapa indica COMPLETADA/ACTUAL/PENDIENTE, fecha límite, vencimiento, días restantes, entregas y evaluaciones. El resumen de usuario contiene `id`, `login`, `firstName`, `lastName`.
 

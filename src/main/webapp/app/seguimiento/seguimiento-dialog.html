@@ -37,6 +37,45 @@
     }
     @if (accion === 'entrega') {
       <div class="mb-3">
+        <label for="seguimiento-pdf" class="form-label" jhiTranslate="seguimiento.pdf.adjuntar">Adjuntar PDF</label>
+        <input
+          #pdfInput
+          id="seguimiento-pdf"
+          class="form-control"
+          type="file"
+          accept="application/pdf,.pdf"
+          [disabled]="guardando() || cargandoArchivo()"
+          (change)="seleccionarArchivo($event)"
+          aria-describedby="seguimiento-pdf-hint"
+        />
+        <p id="seguimiento-pdf-hint" class="form-text" jhiTranslate="seguimiento.pdf.ayuda">
+          Adjunte un PDF de hasta 10 MB o indique una URL.
+        </p>
+        @if (form.controls.archivoNombre.value) {
+          <p class="text-break">{{ form.controls.archivoNombre.value }}</p>
+        }
+        @if (form.controls.archivo.value || errorArchivo()) {
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            [disabled]="guardando() || cargandoArchivo()"
+            (click)="eliminarArchivo(); pdfInput.value = ''"
+            jhiTranslate="seguimiento.pdf.quitar"
+          >
+            Quitar archivo
+          </button>
+        }
+        @if (cargandoArchivo()) {
+          <p role="status" jhiTranslate="seguimiento.pdf.leyendo">Leyendo PDF…</p>
+        }
+        @if (errorArchivo(); as error) {
+          <p class="text-danger" role="alert">{{ error | translate }}</p>
+        }
+        @if (form.hasError('documentoRequerido') && form.touched) {
+          <p class="text-danger" role="alert" jhiTranslate="seguimiento.pdf.documentoRequerido">Adjunte un PDF o indique una URL.</p>
+        }
+      </div>
+      <div class="mb-3">
         <label for="seguimiento-descripcion" class="form-label" jhiTranslate="seguimiento.fields.descripcion">Descripción</label>
         <textarea id="seguimiento-descripcion" class="form-control" rows="3" formControlName="descripcion"></textarea>
       </div>
@@ -114,7 +153,7 @@
       class="btn"
       [class.btn-danger]="accion === 'cancelar'"
       [class.btn-primary]="accion !== 'cancelar'"
-      [disabled]="form.invalid || evaluacionIncoherente || guardando()"
+      [disabled]="form.invalid || evaluacionIncoherente || guardando() || cargandoArchivo() || !!errorArchivo()"
       jhiTranslate="entity.action.save"
     >
       Guardar

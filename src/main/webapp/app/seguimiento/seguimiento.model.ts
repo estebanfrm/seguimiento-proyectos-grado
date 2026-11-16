@@ -39,6 +39,7 @@ export interface IEntregaResumen {
   estado: keyof typeof EstadoEntrega;
   fechaEntrega: string;
   observacionesPendientes: number;
+  tieneArchivo: boolean;
 }
 
 export interface IEtapaSeguimiento {
@@ -75,7 +76,10 @@ export interface INuevaPropuesta {
 export interface INuevaEntrega {
   titulo: string;
   descripcion: string;
-  urlDocumento: string;
+  urlDocumento?: string;
+  archivo?: string;
+  archivoContentType?: string;
+  archivoNombre?: string;
   proyecto: { id: number };
 }
 

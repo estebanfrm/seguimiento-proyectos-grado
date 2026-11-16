@@ -81,7 +81,7 @@ class ProyectoWorkflowResourceTest {
                         fecha,
                         true,
                         -1L,
-                        List.of(new EntregaResumenDTO(2L, "Propuesta", 1, EstadoEntrega.ENVIADA, fecha, 2L)),
+                        List.of(new EntregaResumenDTO(2L, "Propuesta", 1, EstadoEntrega.ENVIADA, fecha, 2L, false)),
                         List.of()
                     )
                 ),

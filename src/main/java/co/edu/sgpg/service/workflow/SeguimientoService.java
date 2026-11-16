@@ -113,7 +113,8 @@ public class SeguimientoService {
                                 e.getVersion(),
                                 e.getEstado(),
                                 e.getFechaEntrega(),
-                                observaciones.countByEntregaIdAndResueltaFalse(e.getId())
+                                observaciones.countByEntregaIdAndResueltaFalse(e.getId()),
+                                e.getArchivo() != null && e.getArchivo().length > 0
                             )
                         )
                         .toList(),

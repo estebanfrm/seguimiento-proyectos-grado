@@ -9,6 +9,7 @@ import { Observable, finalize } from 'rxjs';
 import { Concepto } from 'app/entities/enumerations/concepto.model';
 import { EstadoEntrega } from 'app/entities/enumerations/estado-entrega.model';
 import { TipoObservacion } from 'app/entities/enumerations/tipo-observacion.model';
+import { DataUtils } from 'app/core/util/data-util.service';
 import { TranslateDirective } from 'app/shared/language';
 
 import { SeguimientoAlert } from './seguimiento-alert';
@@ -26,6 +27,9 @@ export type AccionSeguimiento = 'propuesta' | 'entrega' | 'revision' | 'observac
 export class SeguimientoDialog {
   readonly guardando = signal(false);
   readonly problema = signal<IProblemaSeguimiento | null>(null);
+  readonly errorArchivo = signal<string | null>(null);
+  readonly cargandoArchivo = signal(false);
+  readonly tamanoMaximoArchivo = 10 * 1024 * 1024;
   readonly conceptos = Object.values(Concepto);
   readonly tipos = Object.values(TipoObservacion);
   readonly estadosRevision = [EstadoEntrega.EN_REVISION, EstadoEntrega.CON_OBSERVACIONES, EstadoEntrega.APROBADA, EstadoEntrega.RECHAZADA];
@@ -35,6 +39,9 @@ export class SeguimientoDialog {
     programa: [''],
     descripcion: [''],
     urlDocumento: [''],
+    archivo: [''],
+    archivoContentType: [''],
+    archivoNombre: [''],
     estado: [EstadoEntrega.EN_REVISION],
     contenido: [''],
     tipo: [TipoObservacion.GENERAL],
@@ -49,6 +56,7 @@ export class SeguimientoDialog {
 
   private readonly service = inject(SeguimientoService);
   private readonly activeModal = inject(NgbActiveModal);
+  private readonly dataUtils = inject(DataUtils);
 
   get evaluacionIncoherente(): boolean {
     const { calificacion, concepto } = this.form.getRawValue();
@@ -68,7 +76,8 @@ export class SeguimientoDialog {
     }
     if (accion === 'entrega') {
       controls.titulo.setValidators([...requerido, Validators.maxLength(200)]);
-      controls.urlDocumento.setValidators([...requerido, Validators.maxLength(500), Validators.pattern(/^https?:\/\/[^\s]+$/)]);
+      controls.urlDocumento.setValidators([Validators.maxLength(500), Validators.pattern(/^https?:\/\/[^\s]+$/)]);
+      this.form.setValidators(() => (controls.archivo.value || controls.urlDocumento.value.trim() ? null : { documentoRequerido: true }));
     }
     if (accion === 'observacion') {
       controls.contenido.setValidators(requerido);
@@ -84,13 +93,42 @@ export class SeguimientoDialog {
     this.activeModal.dismiss();
   }
 
+  seleccionarArchivo(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    if (!archivo || this.cargandoArchivo()) return;
+    this.eliminarArchivo();
+    if (archivo.type !== 'application/pdf') {
+      this.errorArchivo.set('seguimiento.pdf.tipoInvalido');
+    } else if (archivo.size > this.tamanoMaximoArchivo) {
+      this.errorArchivo.set('seguimiento.pdf.tamanoExcedido');
+    } else if (archivo.name.length > 255) {
+      this.errorArchivo.set('seguimiento.pdf.nombreLargo');
+    } else {
+      this.cargandoArchivo.set(true);
+      this.dataUtils
+        .loadFileToForm(event, this.form, 'archivo', false)
+        .pipe(finalize(() => this.cargandoArchivo.set(false)))
+        .subscribe({
+          next: () => this.form.controls.archivoNombre.setValue(archivo.name),
+          error: () => this.errorArchivo.set('seguimiento.pdf.lecturaFallida'),
+        });
+    }
+    if (this.errorArchivo()) input.value = '';
+  }
+
+  eliminarArchivo(): void {
+    this.form.patchValue({ archivo: '', archivoContentType: '', archivoNombre: '' });
+    this.errorArchivo.set(null);
+  }
+
   guardar(): void {
     const controls = this.form.controls;
     [controls.titulo, controls.resumen, controls.programa, controls.urlDocumento, controls.contenido, controls.comentario].forEach(
       control => control.setValue(control.value.trim()),
     );
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.evaluacionIncoherente || this.guardando()) {
+    if (this.form.invalid || this.evaluacionIncoherente || this.guardando() || this.cargandoArchivo() || this.errorArchivo()) {
       return;
     }
     const value = this.form.getRawValue();
@@ -108,6 +146,13 @@ export class SeguimientoDialog {
           titulo: value.titulo.trim(),
           descripcion: value.descripcion.trim(),
           urlDocumento: value.urlDocumento.trim(),
+          ...(value.archivo
+            ? {
+                archivo: value.archivo,
+                archivoContentType: value.archivoContentType,
+                archivoNombre: value.archivoNombre,
+              }
+            : {}),
           proyecto: { id: this.proyectoId },
         });
         break;

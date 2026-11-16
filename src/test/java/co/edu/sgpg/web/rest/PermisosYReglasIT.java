@@ -166,6 +166,8 @@ class PermisosYReglasIT {
         return Map.of(
             "titulo",
             "Documento enviado",
+            "urlDocumento",
+            "https://example.org/documento.pdf",
             "proyecto",
             Map.of("id", proyecto.getId()),
             "etapa",
