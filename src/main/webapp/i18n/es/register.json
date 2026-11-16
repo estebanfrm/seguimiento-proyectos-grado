@@ -1,6 +1,7 @@
 {
   "register": {
     "title": "Registro",
+    "studentInfo": "Te registras como estudiante. Si eres tutor o jurado, la coordinación crea tu cuenta.",
     "form": {
       "button": "Crear la cuenta"
     },

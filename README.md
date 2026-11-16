@@ -153,6 +153,12 @@ Avanzar/cancelar reciben `{ "comentario": "texto" }` (opcional para avanzar, obl
 
 ## Usuarios y datos demo
 
+El registro público (`/account/register`, `POST /api/register`) está abierto a cualquier dominio de correo y crea una cuenta con **ROLE_USER y ROLE_ESTUDIANTE**. El servidor ignora los roles que envíe el cliente. La cuenta queda inactiva hasta confirmar el enlace del correo de activación.
+
+Los tutores y jurados los crea el coordinador (**ROLE_ADMIN**) desde **Administración → Gestión de usuarios → Crear un nuevo usuario**. Debe seleccionar **Usuario** y **Tutor** o **Jurado** en Perfiles (también puede asignar Estudiante). Las etiquetas corresponden a `ROLE_USER`, `ROLE_TUTOR`, `ROLE_JURADO` y `ROLE_ESTUDIANTE`; Coordinador corresponde a `ROLE_ADMIN`.
+
+El alta administrativa deja la cuenta activada, genera una contraseña aleatoria y una clave para definir la contraseña. `UserResource.createUser` llama a `MailService.sendCreationEmail`: el correo contiene un enlace a `/account/reset/finish?key=…`, donde el nuevo usuario define su contraseña (la clave vence a las 24 horas). No se envía la contraseña aleatoria. En desarrollo el correo se puede consultar en [Mailpit](http://localhost:8025), con el servicio de correo levantado como se indica en «Correos de la demo».
+
 Los once usuarios usan la contraseña **`user`**. Se reutiliza el hash BCrypt real del usuario base `user` de `config/liquibase/data/user.csv`; `DatosDemoTest` verifica la contraseña. Nombres y correos `@sgpg.example` son ficticios. Los enlaces de documentos también son ficticios y no alojan PDFs.
 
 | Login         | Rol adicional   | Qué probar                                                              |
@@ -316,7 +322,7 @@ Ejecuta solo una de las dos variantes por carga limpia. Para repetir la suite o 
 
 `E2E_BASE_URL` permite cambiar el origen (por defecto `http://localhost:8080`). Por ejemplo, en PowerShell: `$env:E2E_BASE_URL='http://localhost:8080'; npm run e2e`; en Bash: `E2E_BASE_URL=http://localhost:8080 npm run e2e`. También se puede ejecutar un spec: `npm run e2e -- e2e/permisos.spec.ts`.
 
-La configuración está en `e2e/playwright.config.ts`: solo Chromium, un worker, sin paralelismo completo ni reintentos automáticos. Cada flujo de escritura está contenido en un único test y actúa sobre un proyecto distinto; las comprobaciones de lectura no dependen de las etapas o del avance que cambian otros specs. El orden de archivos no condiciona el resultado. Cada test recibe una sesión de navegador aislada.
+La configuración está en `e2e/playwright.config.ts`: solo Chromium, un worker, sin paralelismo completo ni reintentos automáticos. Cada flujo de escritura está contenido en un único test y actúa sobre un proyecto distinto; `alta-usuarios.spec.ts` crea la cuenta ficticia `tutor3@sgpg.example` con ROLE_USER y ROLE_TUTOR y verifica su rol en la lista, sin depender del número total de usuarios. Las comprobaciones de lectura no dependen de las etapas o del avance que cambian otros specs. El orden de archivos no condiciona el resultado. Cada test recibe una sesión de navegador aislada.
 
 P4 ya se bloquea en la interfaz: el avance está deshabilitado y el checklist muestra los requisitos pendientes; la nueva entrega está deshabilitada junto al aviso de plazo/entrega bloqueada y la fecha VENCIDA. Los tests verifican esa prevención sin forzar botones deshabilitados para provocar un 409.
 

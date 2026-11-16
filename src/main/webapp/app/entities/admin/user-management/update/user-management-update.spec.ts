@@ -3,9 +3,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { provideTranslateService } from '@ngx-translate/core';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faBan, faSave } from '@fortawesome/free-solid-svg-icons';
+import { TranslateService, provideTranslateService } from '@ngx-translate/core';
 import { Subject, from, of } from 'rxjs';
 
+import userManagementTranslations from '../../../../../i18n/es/user-management.json';
 import { UserManagementService } from '../service/user-management.service';
 import { IUserManagement } from '../user-management.model';
 
@@ -53,6 +56,28 @@ describe('UserManagement Management Update Component', () => {
   });
 
   describe('save', () => {
+    it('should display readable roles and submit their authority codes when creating a tutor', () => {
+      const translate = TestBed.inject(TranslateService);
+      translate.setTranslation('es', userManagementTranslations);
+      translate.use('es');
+      TestBed.inject(FaIconLibrary).addIcons(faBan, faSave);
+      activatedRoute.data = of({ userManagement: null });
+      vi.spyOn(comp, 'authorities').mockReturnValue(['ROLE_ADMIN', 'ROLE_USER', 'ROLE_ESTUDIANTE', 'ROLE_TUTOR', 'ROLE_JURADO']);
+      vi.spyOn(userManagementService, 'create').mockReturnValue(of({ login: 'tutor3' }));
+      vi.spyOn(comp, 'previousState');
+      fixture.detectChanges();
+      comp.editForm.patchValue({ login: 'tutor3', email: 'tutor3@sgpg.example' });
+
+      const select = (fixture.nativeElement as HTMLElement).querySelector<HTMLSelectElement>('[data-cy="authorities"]')!;
+      expect(Array.from(select.options, option => option.textContent)).toEqual(['Coordinador', 'Usuario', 'Estudiante', 'Tutor', 'Jurado']);
+      comp.editForm.patchValue({ authorities: ['ROLE_USER', 'ROLE_TUTOR'] });
+      comp.save();
+
+      expect(userManagementService.create).toHaveBeenCalledWith(
+        expect.objectContaining({ login: 'tutor3', authorities: ['ROLE_USER', 'ROLE_TUTOR'] }),
+      );
+    });
+
     it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<IUserManagement>();

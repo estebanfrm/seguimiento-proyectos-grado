@@ -1,7 +1,7 @@
 {
   "userManagement": {
     "home": {
-      "title": "Usuarios",
+      "title": "Gestión de usuarios",
       "refreshListLabel": "Refrescar lista",
       "createLabel": "Crear un nuevo usuario",
       "createOrEditLabel": "Crear o editar un usuario"
@@ -22,6 +22,13 @@
     "activated": "Activado",
     "deactivated": "Desactivado",
     "profiles": "Perfiles",
+    "roles": {
+      "ROLE_ADMIN": "Coordinador",
+      "ROLE_USER": "Usuario",
+      "ROLE_ESTUDIANTE": "Estudiante",
+      "ROLE_TUTOR": "Tutor",
+      "ROLE_JURADO": "Jurado"
+    },
     "langKey": "Idioma",
     "createdBy": "Creado por",
     "createdDate": "Fecha de creación",

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import co.edu.sgpg.IntegrationTest;
 import co.edu.sgpg.domain.Authority;
 import co.edu.sgpg.repository.AuthorityRepository;
+import co.edu.sgpg.security.AuthoritiesConstants;
 import jakarta.persistence.EntityManager;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -134,6 +135,17 @@ class AuthorityResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].name").value(hasItem(authority.getName())));
+    }
+
+    @Test
+    @Transactional
+    void getAllAuthoritiesIncludesAcademicRoles() throws Exception {
+        restAuthorityMockMvc
+            .perform(get(ENTITY_API_URL))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[*].name").value(hasItem(AuthoritiesConstants.ESTUDIANTE)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(AuthoritiesConstants.TUTOR)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(AuthoritiesConstants.JURADO)));
     }
 
     @Test

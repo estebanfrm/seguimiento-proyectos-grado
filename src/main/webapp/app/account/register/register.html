@@ -3,6 +3,10 @@
     <div class="col-md-8">
       <h1 data-cy="registerTitle" jhiTranslate="register.title">Registro</h1>
 
+      <p class="alert alert-info" jhiTranslate="register.studentInfo">
+        Te registras como estudiante. Si eres tutor o jurado, la coordinación crea tu cuenta.
+      </p>
+
       @if (success()) {
         <div class="alert alert-success" jhiTranslate="register.messages.success">
           <strong>¡Registro guardado!</strong> Por favor, revise su correo electrónico para confirmar.

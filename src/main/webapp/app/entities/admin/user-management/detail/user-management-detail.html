@@ -54,7 +54,7 @@
             <ul class="list-unstyled">
               @for (authority of userManagementRef.authorities; track $index) {
                 <li>
-                  <span class="badge bg-info">{{ authority }}</span>
+                  <span class="badge bg-info" [jhiTranslate]="'userManagement.roles.' + authority">{{ authority }}</span>
                 </li>
               }
             </ul>

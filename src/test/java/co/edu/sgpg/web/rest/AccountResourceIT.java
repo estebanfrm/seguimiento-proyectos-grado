@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import co.edu.sgpg.IntegrationTest;
 import co.edu.sgpg.config.Constants;
+import co.edu.sgpg.domain.Authority;
 import co.edu.sgpg.domain.User;
-import co.edu.sgpg.repository.AuthorityRepository;
 import co.edu.sgpg.repository.UserRepository;
 import co.edu.sgpg.security.AuthoritiesConstants;
 import co.edu.sgpg.service.UserService;
@@ -47,9 +47,6 @@ class AccountResourceIT {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AuthorityRepository authorityRepository;
 
     @Autowired
     private UserService userService;
@@ -132,14 +129,18 @@ class AccountResourceIT {
         validUser.setEmail("test-register-valid@example.com");
         validUser.setImageUrl("http://placehold.it/50x50");
         validUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        validUser.setAuthorities(Set.of(AuthoritiesConstants.USER));
         assertThat(userRepository.findOneByLogin("test-register-valid")).isEmpty();
 
         restAccountMockMvc
             .perform(post("/api/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(validUser)))
             .andExpect(status().isCreated());
 
-        assertThat(userRepository.findOneByLogin("test-register-valid")).isPresent();
+        User registeredUser = userRepository.findOneWithAuthoritiesByLogin("test-register-valid").orElseThrow();
+        assertThat(registeredUser.getAuthorities())
+            .extracting(Authority::getName)
+            .containsExactlyInAnyOrder(AuthoritiesConstants.USER, AuthoritiesConstants.ESTUDIANTE);
+        assertThat(registeredUser.isActivated()).isFalse();
+        assertThat(registeredUser.getActivationKey()).isNotBlank();
 
         userService.deleteUser("test-register-valid");
     }
@@ -337,7 +338,7 @@ class AccountResourceIT {
 
     @Test
     @Transactional
-    void testRegisterAdminIsIgnored() throws Exception {
+    void testRegisterPrivilegedAuthoritiesAreIgnored() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
         validUser.setLogin("badguy");
         validUser.setPassword("password");
@@ -347,7 +348,7 @@ class AccountResourceIT {
         validUser.setActivated(true);
         validUser.setImageUrl("http://placehold.it/50x50");
         validUser.setLangKey(Constants.DEFAULT_LANGUAGE);
-        validUser.setAuthorities(Set.of(AuthoritiesConstants.ADMIN));
+        validUser.setAuthorities(Set.of(AuthoritiesConstants.ADMIN, AuthoritiesConstants.TUTOR, AuthoritiesConstants.JURADO));
 
         restAccountMockMvc
             .perform(post("/api/register").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(validUser)))
@@ -356,8 +357,9 @@ class AccountResourceIT {
         Optional<User> userDup = userRepository.findOneWithAuthoritiesByLogin("badguy");
         assertThat(userDup).isPresent();
         assertThat(userDup.orElseThrow().getAuthorities())
-            .hasSize(1)
-            .containsExactly(authorityRepository.findById(AuthoritiesConstants.USER).orElseThrow());
+            .extracting(Authority::getName)
+            .containsExactlyInAnyOrder(AuthoritiesConstants.USER, AuthoritiesConstants.ESTUDIANTE);
+        assertThat(userDup.orElseThrow().isActivated()).isFalse();
 
         userService.deleteUser("badguy");
     }
