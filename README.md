@@ -1,5 +1,7 @@
 # SGPG — Seguimiento de proyectos de grado
 
+[![CI](https://github.com/estebanfrm/seguimiento-proyectos-grado/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/estebanfrm/seguimiento-proyectos-grado/actions/workflows/ci.yml)
+
 SGPG demuestra un flujo académico completo: propuesta, revisión del tutor, evaluación de jurados, desarrollo, sustentación y cierre. Cada usuario ve los proyectos con los que tiene relación y cada transición exige evidencia verificable. El seguimiento reúne entregas, observaciones, evaluaciones, fechas límite e historial.
 
 La especificación es [docs/PLAN.md](docs/PLAN.md), el modelo es [sgpg.jdl](sgpg.jdl) y las decisiones están en [docs/decisiones.md](docs/decisiones.md). Las tablas siguientes describen el contrato funcional que implementan los streams de backend y frontend.
@@ -330,6 +332,16 @@ npx playwright test --config e2e/playwright.config.ts --list
 ```
 
 En el sandbox del worker solo se ejecutan estas comprobaciones estáticas. El coordinador ejecuta la suite contra la app y la base demo reales, además de `ng test`, el build y los tests de integración que requieren Docker.
+
+## Integración continua
+
+[GitHub Actions](https://github.com/estebanfrm/seguimiento-proyectos-grado/actions/workflows/ci.yml) ejecuta `.github/workflows/ci.yml` en cada push a `master` y en cada pull request, con runners `ubuntu-latest` y permisos `contents: read`. Una nueva ejecución cancela la anterior del mismo PR o rama.
+
+- `backend`: Temurin 21 y caché Maven; `./mvnw -ntp -B verify -Dskip.npm -Dskip.installnodenpm` ejecuta unitarios, integración con PostgreSQL de Testcontainers y Checkstyle/nohttp. Maven también aplica Spotless. Si falla, conserva los reportes Surefire/Failsafe y Checkstyle durante siete días.
+- `frontend`: Node según `engines.node` de `package.json` y caché npm; instala con `npm ci`, ejecuta lint y `ng test --watch=false --coverage=false` y construye con `npm run webapp:build`.
+- `e2e`: espera a que ambos jobs pasen para ahorrar Docker y Chromium ante fallos previos. Instala dependencias, construye el frontend y arranca Maven en perfil dev con PostgreSQL y Mailpit de `src/main/docker/services.yml`. Liquibase carga la demo de forma síncrona en una base nueva. Espera `/management/health`, instala Chromium y ejecuta `npm run e2e`. Si falla, muestra el log y conserva el informe, capturas, trazas y log durante siete días. Siempre detiene la app y elimina los servicios y volúmenes de la ejecución.
+
+Backend y frontend corren en paralelo. Los límites son 30, 20 y 30 minutos, con ocho minutos para la salud. Se fija UTC para el sistema y la JVM, coherente con `Clock` e Hibernate. Los jobs habilitan `mvnw` con `chmod +x`; `.gitattributes` fuerza LF para el wrapper y su configuración de texto.
 
 ## Comandos JHipster útiles
 

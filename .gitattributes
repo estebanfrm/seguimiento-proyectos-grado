@@ -30,6 +30,11 @@
 *.yaml          text
 *.yml           text
 
+# Maven Wrapper debe poder ejecutarse en Linux también tras un checkout en Windows.
+mvnw                       text eol=lf
+.mvn/*.config              text eol=lf
+.mvn/wrapper/*.properties  text eol=lf
+
 # Documents
 *.doc           diff=astextplain
 *.DOC           diff=astextplain

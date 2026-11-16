@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: 'true'
+  TZ: UTC
+  JAVA_TOOL_OPTIONS: -Duser.timezone=UTC
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Configurar Temurin 21 y caché Maven
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Habilitar Maven Wrapper en Linux
+        run: chmod +x mvnw
+      - name: Verificar backend, integración y Checkstyle
+        run: ./mvnw -ntp -B verify -Dskip.npm -Dskip.installnodenpm
+      - name: Conservar reportes del backend si falla
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-reportes
+          path: |
+            target/surefire-reports/
+            target/failsafe-reports/
+            target/checkstyle-result.xml
+          if-no-files-found: ignore
+          retention-days: 7
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Configurar Node según package.json y caché npm
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - name: Ejecutar pruebas de Angular sin modo interactivo
+        run: npx ng test --watch=false --coverage=false
+      - run: npm run webapp:build
+
+  e2e:
+    # Evita arrancar Docker y Chromium si ya fallaron las comprobaciones previas.
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Configurar Temurin 21 y caché Maven
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Configurar Node según package.json y caché npm
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run webapp:build
+      - name: Habilitar Maven Wrapper en Linux
+        run: chmod +x mvnw
+      - name: Arrancar la aplicación dev con una base demo nueva
+        env:
+          SPRING_PROFILES_ACTIVE: dev
+          # La demo debe estar cargada antes de que la app publique su salud.
+          APPLICATION_LIQUIBASE_ASYNCSTART: 'false'
+        run: |
+          nohup ./mvnw -ntp -B -Dskip.npm -Dskip.installnodenpm > target/e2e-app.log 2>&1 &
+          echo "$!" > target/e2e-app.pid
+      - name: Esperar a la salud de la aplicación
+        timeout-minutes: 8
+        run: |
+          for intento in {1..90}; do
+            if curl --fail --silent --show-error --max-time 3 http://localhost:8080/management/health; then
+              exit 0
+            fi
+            if ! kill -0 "$(cat target/e2e-app.pid)" 2>/dev/null; then
+              echo 'La aplicación terminó antes de estar disponible.'
+              exit 1
+            fi
+            sleep 5
+          done
+          echo 'La aplicación no estuvo disponible dentro del tiempo límite.'
+          exit 1
+      - name: Instalar Chromium y sus dependencias
+        run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - name: Mostrar el log de la aplicación si falla
+        if: failure()
+        run: |
+          if [[ -f target/e2e-app.log ]]; then
+            cat target/e2e-app.log
+          fi
+      - name: Conservar reportes y diagnóstico E2E si falla
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-reportes
+          path: |
+            target/e2e-report/
+            test-results/
+            target/e2e-app.log
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Detener la aplicación y los servicios
+        if: always()
+        run: |
+          if [[ -f target/e2e-app.pid ]]; then
+            kill "$(cat target/e2e-app.pid)" 2>/dev/null || true
+          fi
+          docker compose -f src/main/docker/services.yml down -v
