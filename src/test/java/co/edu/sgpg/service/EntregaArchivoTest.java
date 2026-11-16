@@ -29,6 +29,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.unit.DataSize;
 import tools.jackson.core.StreamReadConstraints;
@@ -61,6 +62,9 @@ class EntregaArchivoTest {
     @Mock
     private AvanceService avance;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     private EntregaServiceImpl servicio;
     private final EntregaMapperImpl mapper = new EntregaMapperImpl();
     private ProyectoGrado proyecto;
@@ -77,6 +81,7 @@ class EntregaArchivoTest {
             visibilidad,
             avance,
             Clock.systemUTC(),
+            eventPublisher,
             DataSize.ofBytes(PDF.length)
         );
         proyecto = new ProyectoGrado().id(1L).estado(EstadoProyecto.ACTIVO).etapaActual(Etapa.PROPUESTA);
