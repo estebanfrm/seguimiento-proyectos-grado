@@ -1,0 +1,16 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{email.notificacion.recordatorio.title(${tituloProyecto})}">Fecha límite próxima</title>
+  </head>
+  <body>
+    <p th:text="#{email.notificacion.saludo(${login})}">Hola.</p>
+    <h1 th:text="${tituloProyecto}">Proyecto de grado</h1>
+    <p th:text="#{email.notificacion.recordatorio.text(${etapa}, ${diasRestantes}, ${fechaLimite})}">
+      La fecha límite de la etapa está próxima.
+    </p>
+    <p><a th:href="${enlaceProyecto}" th:text="#{email.notificacion.enlace}">Ver seguimiento del proyecto</a></p>
+    <p th:text="#{email.notificacion.firma}">Equipo SGPG.</p>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "sgpgApp": {
+    "entrega": {
+      "home": {
+        "title": "Entregas",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Entrega",
+        "createOrEditLabel": "Crear o editar Entrega",
+        "notFound": "Ningún Entregas encontrado"
+      },
+      "created": "Un nuevo Entrega ha sido creado con el identificador {{ param }}",
+      "updated": "Un Entrega ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Entrega ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Entrega {{ id }}?"
+      },
+      "detail": {
+        "title": "Entrega"
+      },
+      "id": "ID",
+      "etapa": "Etapa",
+      "titulo": "Titulo",
+      "descripcion": "Descripcion",
+      "archivo": "Archivo",
+      "urlDocumento": "Url Documento",
+      "version": "Version",
+      "fechaEntrega": "Fecha Entrega",
+      "estado": "Estado",
+      "observacion": "Observacion",
+      "autor": "Autor",
+      "proyecto": "Proyecto"
+    }
+  }
+}

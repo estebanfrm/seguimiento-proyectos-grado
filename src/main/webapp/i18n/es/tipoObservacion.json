@@ -1,0 +1,9 @@
+{
+  "sgpgApp": {
+    "TipoObservacion": {
+      "null": "",
+      "GENERAL": "General",
+      "CORRECCION_REQUERIDA": "Corrección requerida"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Buzón SMTP local para la demo; no entrega mensajes a direcciones externas.
+name: sgpg
+services:
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - 127.0.0.1:1025:1025
+      - 127.0.0.1:8025:8025

@@ -1,0 +1,5 @@
+export enum TipoObservacion {
+  GENERAL = 'GENERAL',
+
+  CORRECCION_REQUERIDA = 'CORRECCION_REQUERIDA',
+}

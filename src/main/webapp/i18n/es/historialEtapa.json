@@ -1,0 +1,29 @@
+{
+  "sgpgApp": {
+    "historialEtapa": {
+      "home": {
+        "title": "Historial Etapas",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Historial Etapa",
+        "createOrEditLabel": "Crear o editar Historial Etapa",
+        "notFound": "Ningún Historial Etapas encontrado"
+      },
+      "created": "Un nuevo Historial Etapa ha sido creado con el identificador {{ param }}",
+      "updated": "Un Historial Etapa ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Historial Etapa ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Historial Etapa {{ id }}?"
+      },
+      "detail": {
+        "title": "Historial Etapa"
+      },
+      "id": "ID",
+      "etapaOrigen": "Etapa Origen",
+      "etapaDestino": "Etapa Destino",
+      "fecha": "Fecha",
+      "comentario": "Comentario",
+      "usuario": "Usuario",
+      "proyecto": "Proyecto"
+    }
+  }
+}

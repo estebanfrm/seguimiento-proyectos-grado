@@ -1,0 +1,60 @@
+{
+  "annotations": {
+    "changelogDate": "20231207211248"
+  },
+  "applications": ["sgpg"],
+  "documentation": "Evaluación de un jurado en una etapa evaluable.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "etapa",
+      "fieldType": "Etapa",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PROPUESTA,ANTEPROYECTO,DESARROLLO,SUSTENTACION,FINALIZADO"
+    },
+    {
+      "fieldName": "calificacion",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min", "max"],
+      "fieldValidateRulesMax": "5",
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "concepto",
+      "fieldType": "Concepto",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "APROBADO,APROBADO_CON_MODIFICACIONES,REPROBADO"
+    },
+    {
+      "fieldName": "comentarios",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "fechaEvaluacion",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Evaluacion",
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "jurado",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "titulo",
+      "otherEntityName": "proyectoGrado",
+      "otherEntityRelationshipName": "evaluacion",
+      "relationshipName": "proyecto",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

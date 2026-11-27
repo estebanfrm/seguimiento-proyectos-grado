@@ -1,0 +1,12 @@
+id;etapa;calificacion;concepto;comentarios;fecha_evaluacion;jurado_id;proyecto_id
+5001;ANTEPROYECTO;4.20;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-11-10T16:00:00;1009;2003
+5002;ANTEPROYECTO;4.20;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-09-12T16:00:00;1010;2004
+5003;ANTEPROYECTO;4.50;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-09-12T16:00:00;1011;2004
+5004;ANTEPROYECTO;4.20;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-09-12T16:00:00;1009;2005
+5005;ANTEPROYECTO;4.50;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-09-12T16:00:00;1011;2005
+5006;SUSTENTACION;4.20;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-11-10T18:00:00;1009;2005
+5007;SUSTENTACION;4.50;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-11-10T18:00:00;1011;2005
+5008;ANTEPROYECTO;4.20;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-09-12T16:00:00;1009;2006
+5009;ANTEPROYECTO;4.50;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-09-12T16:00:00;1010;2006
+5010;SUSTENTACION;4.20;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-10-22T16:00:00;1009;2006
+5011;SUSTENTACION;4.50;APROBADO;Se cumplen los criterios académicos de la etapa.;2026-10-22T16:00:00;1010;2006

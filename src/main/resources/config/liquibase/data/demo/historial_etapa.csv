@@ -1,0 +1,11 @@
+id;etapa_origen;etapa_destino;fecha;comentario;usuario_id;proyecto_id
+7001;PROPUESTA;ANTEPROYECTO;2026-08-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1008;2003
+7002;PROPUESTA;ANTEPROYECTO;2026-08-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1008;2004
+7003;ANTEPROYECTO;DESARROLLO;2026-09-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1008;2004
+7004;PROPUESTA;ANTEPROYECTO;2026-08-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1007;2005
+7005;ANTEPROYECTO;DESARROLLO;2026-09-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1007;2005
+7006;DESARROLLO;SUSTENTACION;2026-10-15T16:00:00;Etapa aprobada y requisitos de transición verificados.;1007;2005
+7007;PROPUESTA;ANTEPROYECTO;2026-08-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1008;2006
+7008;ANTEPROYECTO;DESARROLLO;2026-09-20T16:00:00;Etapa aprobada y requisitos de transición verificados.;1008;2006
+7009;DESARROLLO;SUSTENTACION;2026-10-15T16:00:00;Etapa aprobada y requisitos de transición verificados.;1008;2006
+7010;SUSTENTACION;FINALIZADO;2026-10-25T18:00:00;Cierre académico aprobado con promedio 4.35.;1008;2006

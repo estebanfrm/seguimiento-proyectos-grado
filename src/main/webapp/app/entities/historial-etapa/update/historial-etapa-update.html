@@ -1,0 +1,159 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-historial-etapa-heading"
+        data-cy="HistorialEtapaCreateUpdateHeading"
+        jhiTranslate="sgpgApp.historialEtapa.home.createOrEditLabel"
+      >
+        Crear o editar Historial Etapa
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_etapaOrigen" jhiTranslate="sgpgApp.historialEtapa.etapaOrigen">Etapa Origen</label>
+          <select class="form-select" name="etapaOrigen" formControlName="etapaOrigen" id="field_etapaOrigen" data-cy="etapaOrigen">
+            <option [ngValue]="null">{{ 'sgpgApp.Etapa.null' | translate }}</option>
+            @for (etapa of etapaValues; track $index) {
+              <option [value]="etapa">{{ 'sgpgApp.Etapa.' + etapa | translate }}</option>
+            }
+          </select>
+        </div>
+
+        @let etapaDestinoRef = editForm.get('etapaDestino')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_etapaDestino" jhiTranslate="sgpgApp.historialEtapa.etapaDestino">Etapa Destino</label>
+          <select class="form-select" name="etapaDestino" formControlName="etapaDestino" id="field_etapaDestino" data-cy="etapaDestino">
+            <option [ngValue]="null">{{ 'sgpgApp.Etapa.null' | translate }}</option>
+            @for (etapa of etapaValues; track $index) {
+              <option [value]="etapa">{{ 'sgpgApp.Etapa.' + etapa | translate }}</option>
+            }
+          </select>
+          @if (etapaDestinoRef.invalid && (etapaDestinoRef.dirty || etapaDestinoRef.touched)) {
+            <div>
+              @if (etapaDestinoRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let fechaRef = editForm.get('fecha')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_fecha" jhiTranslate="sgpgApp.historialEtapa.fecha">Fecha</label>
+          <div class="d-flex">
+            <input
+              id="field_fecha"
+              data-cy="fecha"
+              type="datetime-local"
+              class="form-control"
+              name="fecha"
+              formControlName="fecha"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (fechaRef.invalid && (fechaRef.dirty || fechaRef.touched)) {
+            <div>
+              @if (fechaRef.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              <small class="form-text text-danger" [hidden]="!fechaRef.errors?.datetimelocal" jhiTranslate="entity.validation.datetimelocal"
+                >Este campo debe ser una fecha y hora.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let comentarioRef = editForm.get('comentario')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_comentario" jhiTranslate="sgpgApp.historialEtapa.comentario">Comentario</label>
+          <input
+            type="text"
+            class="form-control"
+            name="comentario"
+            id="field_comentario"
+            data-cy="comentario"
+            formControlName="comentario"
+          />
+          @if (comentarioRef.invalid && (comentarioRef.dirty || comentarioRef.touched)) {
+            <div>
+              @if (comentarioRef.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >Este campo no puede superar más de 500 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_usuario" jhiTranslate="sgpgApp.historialEtapa.usuario">Usuario</label>
+          <select
+            class="form-select"
+            id="field_usuario"
+            data-cy="usuario"
+            name="usuario"
+            formControlName="usuario"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection(); track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_proyecto" jhiTranslate="sgpgApp.historialEtapa.proyecto">Proyecto</label>
+          <select
+            class="form-select"
+            id="field_proyecto"
+            data-cy="proyecto"
+            name="proyecto"
+            formControlName="proyecto"
+            [compareWith]="compareProyectoGrado"
+          >
+            @if (editForm.get(['proyecto'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (proyectoGradoOption of proyectoGradosSharedCollection(); track $index) {
+              <option [ngValue]="proyectoGradoOption">{{ proyectoGradoOption.titulo }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['proyecto'])!.invalid && (editForm.get(['proyecto'])!.dirty || editForm.get(['proyecto'])!.touched)) {
+          <div>
+            @if (editForm.get(['proyecto'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

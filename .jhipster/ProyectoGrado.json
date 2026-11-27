@@ -1,0 +1,115 @@
+{
+  "annotations": {
+    "changelogDate": "20231207210848"
+  },
+  "applications": ["sgpg"],
+  "documentation": "Proyecto de grado: unidad central del seguimiento.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "titulo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "250",
+      "fieldValidateRulesMinlength": "10"
+    },
+    {
+      "fieldName": "resumen",
+      "fieldType": "TextBlob",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "programa",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "etapaActual",
+      "fieldType": "Etapa",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PROPUESTA,ANTEPROYECTO,DESARROLLO,SUSTENTACION,FINALIZADO"
+    },
+    {
+      "fieldName": "estado",
+      "fieldType": "EstadoProyecto",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ACTIVO,APROBADO,REPROBADO,CANCELADO"
+    },
+    {
+      "fieldName": "porcentajeAvance",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["min", "max"],
+      "fieldValidateRulesMax": "100",
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "fechaRegistro",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fechaActualizacion",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "ProyectoGrado",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "entrega",
+      "otherEntityRelationshipName": "proyecto",
+      "relationshipName": "entrega",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "fechaLimiteEtapa",
+      "otherEntityRelationshipName": "proyecto",
+      "relationshipName": "fechaLimite",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "evaluacion",
+      "otherEntityRelationshipName": "proyecto",
+      "relationshipName": "evaluacion",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "historialEtapa",
+      "otherEntityRelationshipName": "proyecto",
+      "relationshipName": "historial",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "tutor",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "estudiante",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "jurado",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many",
+      "relationshipWithBuiltInEntity": true
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

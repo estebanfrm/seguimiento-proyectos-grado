@@ -1,0 +1,25 @@
+id;etapa;fecha_limite;descripcion;proyecto_id
+6001;PROPUESTA;2027-02-28T23:59:00;Fecha límite académica de la etapa;2001
+6002;ANTEPROYECTO;2027-04-30T23:59:00;Fecha límite académica de la etapa;2001
+6003;DESARROLLO;2027-08-31T23:59:00;Fecha límite académica de la etapa;2001
+6004;SUSTENTACION;2027-11-30T15:00:00;Fecha programada de sustentación (demo anticipada);2001
+6005;PROPUESTA;2027-02-28T23:59:00;Fecha límite académica de la etapa;2002
+6006;ANTEPROYECTO;2027-04-30T23:59:00;Fecha límite académica de la etapa;2002
+6007;DESARROLLO;2027-08-31T23:59:00;Fecha límite académica de la etapa;2002
+6008;SUSTENTACION;2027-11-30T15:00:00;Fecha programada de sustentación (demo anticipada);2002
+6009;PROPUESTA;2027-02-28T23:59:00;Fecha límite académica de la etapa;2003
+6010;ANTEPROYECTO;2027-04-30T23:59:00;Fecha límite académica de la etapa;2003
+6011;DESARROLLO;2027-08-31T23:59:00;Fecha límite académica de la etapa;2003
+6012;SUSTENTACION;2027-11-30T15:00:00;Fecha programada de sustentación (demo anticipada);2003
+6013;PROPUESTA;2027-02-28T23:59:00;Fecha límite académica de la etapa;2004
+6014;ANTEPROYECTO;2027-04-30T23:59:00;Fecha límite académica de la etapa;2004
+6015;DESARROLLO;2026-11-01T23:59:00;Fecha límite académica de la etapa;2004
+6016;SUSTENTACION;2027-11-30T15:00:00;Fecha programada de sustentación (demo anticipada);2004
+6017;PROPUESTA;2027-02-28T23:59:00;Fecha límite académica de la etapa;2005
+6018;ANTEPROYECTO;2027-04-30T23:59:00;Fecha límite académica de la etapa;2005
+6019;DESARROLLO;2027-08-31T23:59:00;Fecha límite académica de la etapa;2005
+6020;SUSTENTACION;2027-11-30T15:00:00;Fecha programada de sustentación (demo anticipada);2005
+6021;PROPUESTA;2027-02-28T23:59:00;Fecha límite académica de la etapa;2006
+6022;ANTEPROYECTO;2027-04-30T23:59:00;Fecha límite académica de la etapa;2006
+6023;DESARROLLO;2027-08-31T23:59:00;Fecha límite académica de la etapa;2006
+6024;SUSTENTACION;2027-11-30T15:00:00;Fecha programada de sustentación (demo anticipada);2006

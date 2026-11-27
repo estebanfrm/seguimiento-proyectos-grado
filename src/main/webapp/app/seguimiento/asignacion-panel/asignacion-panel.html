@@ -1,0 +1,77 @@
+@if (esAdmin()) {
+  <section class="card mb-3" aria-labelledby="asignacion-title" data-cy="asignacion-panel">
+    <div class="card-body">
+      <h3 class="h5" id="asignacion-title" jhiTranslate="seguimiento.admin.assignments">Asignaciones</h3>
+      <jhi-seguimiento-alert [problema]="problema()" />
+      @if (cargando()) {
+        <p role="status" jhiTranslate="seguimiento.loading">Cargando…</p>
+      }
+      @if (!usuariosCargados() && !cargando()) {
+        <button type="button" class="btn btn-outline-primary" (click)="cargarUsuarios()" jhiTranslate="seguimiento.retry">
+          Reintentar
+        </button>
+      }
+      <form [formGroup]="form" (ngSubmit)="guardar()">
+        <fieldset [disabled]="cargando() || guardando() || !usuariosCargados()">
+          <div class="mb-3">
+            <label class="form-label" for="asignacion-tutor" jhiTranslate="seguimiento.admin.tutor">Tutor</label>
+            <select id="asignacion-tutor" class="form-select" formControlName="tutorId">
+              <option [ngValue]="null" jhiTranslate="seguimiento.admin.noTutor">Sin tutor</option>
+              @for (usuario of opcionesTutores(); track usuario.id) {
+                <option [ngValue]="usuario.id">{{ usuario.firstName }} {{ usuario.lastName }} ({{ usuario.login }})</option>
+              }
+            </select>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label" for="asignacion-jurados" jhiTranslate="seguimiento.admin.jurados">Jurados</label>
+              <select
+                id="asignacion-jurados"
+                class="form-select"
+                formControlName="juradoIds"
+                multiple
+                size="5"
+                aria-describedby="asignacion-multiple-hint"
+              >
+                @for (usuario of opcionesJurados(); track usuario.id) {
+                  <option [ngValue]="usuario.id">{{ usuario.firstName }} {{ usuario.lastName }} ({{ usuario.login }})</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="asignacion-estudiantes" jhiTranslate="seguimiento.admin.students">Estudiantes</label>
+              <select
+                id="asignacion-estudiantes"
+                class="form-select"
+                formControlName="estudianteIds"
+                multiple
+                size="5"
+                aria-describedby="asignacion-multiple-hint"
+              >
+                @for (usuario of opcionesEstudiantes(); track usuario.id) {
+                  <option [ngValue]="usuario.id">{{ usuario.firstName }} {{ usuario.lastName }} ({{ usuario.login }})</option>
+                }
+              </select>
+            </div>
+          </div>
+          <p id="asignacion-multiple-hint" class="form-text" jhiTranslate="seguimiento.admin.multipleHint">
+            Use Ctrl o Cmd para seleccionar o quitar varias personas.
+          </p>
+          @if (faltaTutor()) {
+            <p class="alert alert-warning" role="status" data-cy="aviso-tutor" jhiTranslate="seguimiento.admin.tutorWarning">
+              Sin tutor no se cumple el requisito TUTOR_ASIGNADO.
+            </p>
+          }
+          @if (faltanJurados()) {
+            <p class="alert alert-warning" role="status" data-cy="aviso-jurados" jhiTranslate="seguimiento.admin.juradosWarning">
+              En ANTEPROYECTO se necesitan al menos dos jurados para cumplir JURADOS_ASIGNADOS.
+            </p>
+          }
+          <button type="submit" class="btn btn-primary" data-cy="guardar-asignacion" jhiTranslate="seguimiento.admin.saveAssignments">
+            Guardar asignaciones
+          </button>
+        </fieldset>
+      </form>
+    </div>
+  </section>
+}
